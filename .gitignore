@@ -1,0 +1,10 @@
+node_modules/
+.DS_Store
+
+# Generated card images (cards HTML is ok to commit)
+cards/**/card-*.png
+cards/**/*.png
+
+# Optional local tooling
+.cursor/
+.vscode/
