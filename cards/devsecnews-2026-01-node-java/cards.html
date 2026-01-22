@@ -290,7 +290,7 @@
     </div>
     <div class="nav" aria-label="카드 내비게이션">
       <button type="button" id="prev" aria-label="이전">이전</button>
-      <div class="count" id="count">1/6</div>
+      <div class="count" id="count">1/5</div>
       <button type="button" id="next" aria-label="다음">다음</button>
     </div>
     <main class="stage" id="stage">
@@ -415,28 +415,6 @@
     <div class="action"><strong>오늘 조치</strong><br/><p>이번 카드의 항목을 완료 처리합니다.</p>
 </div>
     <div class="hr"></div><div class="source">[Source] https://nodejs.org/en/blog/vulnerability/december-2025-security-releases</div>
-  </div>
-</section>
-
-<section class="card" data-card-idx="6">
-  <div class="top">
-    <div class="badge">팀 규칙</div>
-    <div class="meta">DevSecNews 2026-01 — Node.js/Java 보안 요약(개발자용)<br/>패턴→팀 규칙(5)</div>
-  </div>
-  <div class="mid">
-    <div class="title">팀 규칙</div><div class="body"><ol>
-<li>Node.js permission model은 보안 경계로 쓰지 않고 realpath allowlist+OS 격리를 기본으로 둡니다.</li>
-<li>파일 경로는 문자열 검증이 아니라 정규화+realpath 기준으로만 검증합니다.</li>
-<li><code>vm</code>으로 유저 코드를 실행하지 않고 불가피하면 별도 프로세스/컨테이너로 격리합니다.</li>
-<li>UDS(로컬 소켓) 경로는 입력에서 직접 받지 않고 allowlist로 고정합니다.</li>
-<li>EOL 개발 도구/확장은 즉시 제거하고 조직 표준 allowlist로만 설치합니다.</li>
-</ol>
-</div>
-  </div>
-  <div class="foot">
-    <div class="action"><strong>오늘 조치</strong><br/><p>팀 규칙을 PR 템플릿과 린트 규칙에 반영합니다.</p>
-</div>
-    <div class="hr"></div><div class="source">[Source] https://spring.io/security/cve-2026-22718</div>
   </div>
 </section>
     </main>

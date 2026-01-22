@@ -177,7 +177,7 @@ if (stat.mtimeMs < lastSeen) deny() // 타임스탬프를 보안 판단으로 �
 팀 규칙으로 고정합니다.
 [Source] https://nodejs.org/en/blog/vulnerability/december-2025-security-releases (2026-01-13)
 
-팀이 오늘 적용할 규칙/코드 조치를 팀 규칙과 PR 체크리스트에 반영합니다.
+팀이 오늘 적용할 규칙/코드 조치를 PR 체크리스트에 반영합니다.
 
 ## (2.4) 운영 참고(선택)
 
@@ -322,7 +322,7 @@ workspace 설정값 -> shell command 문자열로 결합 -> 실행
 팀 규칙으로 고정합니다.
 [Source] https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability (2026-01-12)
 
-팀이 오늘 적용할 규칙/코드 조치를 팀 규칙과 PR 체크리스트에 반영합니다.
+팀이 오늘 적용할 규칙/코드 조치를 PR 체크리스트에 반영합니다.
 
 ## (3.4) 운영 참고(선택)
 
@@ -349,19 +349,7 @@ workspace 설정값 -> shell command 문자열로 결합 -> 실행
 {"id":"checklist-1","kind":"checklist","header":"체크리스트","title":"이번 달 개발자 체크리스트(10)","bodyMd":"1. Node.js permission model은 보안 경계로 쓰지 않고 realpath allowlist+OS 격리를 기본으로 둡니다.\n2. 파일 경로는 문자열 검증이 아니라 정규화+realpath 기준으로만 검증합니다.\n3. `vm`으로 유저 코드를 실행하지 않고 불가피하면 별도 프로세스/컨테이너로 격리합니다.\n4. UDS(로컬 소켓) 경로는 입력에서 직접 받지 않고 allowlist로 고정합니다.\n5. EOL 개발 도구/확장은 즉시 제거하고 조직 표준 allowlist로만 설치합니다.\n6. Node.js 런타임을 보안 릴리스 버전으로 업데이트합니다.\n7. `fs.futimes()` 사용 여부를 점검하고 보안 의미로 파일 타임스탬프를 신뢰하지 않도록 설계를 바꿉니다.\n8. Struts 사용 시 S2-069 패치 버전으로 업그레이드하고 XML 파서에서 DTD/외부 엔티티를 비활성화합니다.\n9. JasperReports 사용 시 외부 템플릿 업로드/로딩 경로를 차단하고 컴포넌트를 업데이트합니다.\n10. 워크스페이스 신뢰를 기본 거부로 두고 신뢰된 레포에서만 확장을 실행합니다.","actionMd":"이번 카드의 항목을 완료 처리합니다.","source":"https://nodejs.org/en/blog/vulnerability/december-2025-security-releases"}
 -->
 
-# (6) 패턴→팀 규칙(5)
-
-1. Node.js permission model은 보안 경계로 쓰지 않고 realpath allowlist+OS 격리를 기본으로 둡니다.
-2. 파일 경로는 문자열 검증이 아니라 정규화+realpath 기준으로만 검증합니다.
-3. `vm`으로 유저 코드를 실행하지 않고 불가피하면 별도 프로세스/컨테이너로 격리합니다.
-4. UDS(로컬 소켓) 경로는 입력에서 직접 받지 않고 allowlist로 고정합니다.
-5. EOL 개발 도구/확장은 즉시 제거하고 조직 표준 allowlist로만 설치합니다.
-
-<!--CARD
-{"id":"rules-1","kind":"rules","header":"팀 규칙","title":"패턴→팀 규칙(5)","bodyMd":"1. Node.js permission model은 보안 경계로 쓰지 않고 realpath allowlist+OS 격리를 기본으로 둡니다.\n2. 파일 경로는 문자열 검증이 아니라 정규화+realpath 기준으로만 검증합니다.\n3. `vm`으로 유저 코드를 실행하지 않고 불가피하면 별도 프로세스/컨테이너로 격리합니다.\n4. UDS(로컬 소켓) 경로는 입력에서 직접 받지 않고 allowlist로 고정합니다.\n5. EOL 개발 도구/확장은 즉시 제거하고 조직 표준 allowlist로만 설치합니다.","actionMd":"팀 규칙을 PR 템플릿과 린트 규칙에 반영합니다.","source":"https://spring.io/security/cve-2026-22718"}
--->
-
-# (7) 참고자료
+# (6) 참고자료
 
 - https://nodejs.org/en/blog/vulnerability/december-2025-security-releases
 - https://cveawg.mitre.org/api/cve/CVE-2025-55131
