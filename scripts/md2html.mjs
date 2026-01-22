@@ -287,6 +287,10 @@ const html = `<!doctype html>
               <option value="">(목소리 자동)</option>
             </select>
             <label class="chk">
+              <input type="checkbox" id="tts-skip-urls" checked />
+              URL 제외
+            </label>
+            <label class="chk">
               <input type="checkbox" id="tts-skip-refs" checked />
               참고자료 제외
             </label>
@@ -448,6 +452,7 @@ ${htmlRest}
         const stopBtn = document.getElementById("tts-stop");
         const rateSel = document.getElementById("tts-rate");
         const voiceSel = document.getElementById("tts-voice");
+        const skipUrlsChk = document.getElementById("tts-skip-urls");
         const skipRefsChk = document.getElementById("tts-skip-refs");
         let queue = [];
         let speaking = false;
@@ -474,13 +479,35 @@ ${htmlRest}
           if (!root) return lines;
 
           const stopAtRefs = !!opts.stopAtRefs;
+          const skipUrls = !!opts.skipUrls;
           const nodes = root.querySelectorAll("h1,h2,h3,p,li");
           for (const el of nodes) {
             // Skip code and tables.
             if (el.closest("pre, code, table")) continue;
-            const t = (el.innerText || "").trim();
+            let t = (el.innerText || "").trim();
             if (!t) continue;
-            if (stopAtRefs && t.includes("(7) 참고자료")) break;
+            if (stopAtRefs && /참고자료/.test(t)) break;
+
+            // Remove trailing [Source] ... from a line (keeps the readable sentence).
+            const srcIdx = t.lastIndexOf(" [Source] ");
+            if (srcIdx !== -1) t = t.slice(0, srcIdx).trim();
+
+            // Drop standalone source lines or URL-only lines.
+            if (/^\[Source\]\s*/.test(t)) continue;
+            if (/^https?:\/\/\S+$/i.test(t)) continue;
+
+            // If URL skipping is enabled, strip URLs embedded in text.
+            if (skipUrls) {
+              t = t.replace(/https?:\/\/\S+/gi, "").trim();
+            }
+
+            // Minor cleanup for TTS: remove inline code backticks.
+            // NOTE: This JS snippet lives inside an HTML template string in this script,
+            // so we must not embed a raw backtick character here.
+            const BT = String.fromCharCode(96);
+            t = t.split(BT).join("").trim();
+
+            if (!t) continue;
             lines.push(t);
           }
           return lines;
@@ -490,9 +517,10 @@ ${htmlRest}
           const view = getActiveView();
           const sections = getSectionsForView(view);
           const stopAtRefs = !!(skipRefsChk && skipRefsChk.checked);
+          const skipUrls = !!(skipUrlsChk && skipUrlsChk.checked);
           const lines = [];
           for (const s of sections) {
-            lines.push(...extractReadableLines(s, { stopAtRefs }));
+            lines.push(...extractReadableLines(s, { stopAtRefs, skipUrls }));
           }
           return lines.join("\\n");
         }
@@ -504,23 +532,42 @@ ${htmlRest}
             .trim();
           if (!cleaned) return [];
 
-          // Split by paragraphs then by sentence-ish punctuation to keep utterances short.
-          const paras = cleaned.split(/\\n\\n+/);
-          const chunks = [];
-          for (const p of paras) {
-            const sents = p.split(/(?<=[\\.\\!\\?]|다\\.|다\\?|다\\!)\\s+/);
-            let buf = "";
-            for (const s of sents) {
-              const next = (buf ? buf + " " : "") + s.trim();
-              if (next.length > 240 && buf) {
-                chunks.push(buf);
-                buf = s.trim();
-              } else {
-                buf = next;
-              }
+          // Prefer Intl.Segmenter sentence splitting (more natural for Korean).
+          let sentences = [];
+          try {
+            if (typeof Intl !== "undefined" && Intl.Segmenter) {
+              const seg = new Intl.Segmenter("ko", { granularity: "sentence" });
+              sentences = Array.from(seg.segment(cleaned))
+                .map((x) => String(x.segment || "").trim())
+                .filter(Boolean);
             }
-            if (buf) chunks.push(buf);
+          } catch {}
+
+          // Fallback: split by paragraphs and punctuation.
+          if (!sentences.length) {
+            const paras = cleaned.split(/\\n\\n+/);
+            for (const p of paras) {
+              const sents = p
+                .split(/(?<=[\\.!?])\\s+|\\n+/)
+                .map((s) => s.trim())
+                .filter(Boolean);
+              sentences.push(...sents);
+            }
           }
+
+          // Merge sentences into small utterances (shorter sounds more natural and avoids long-utterance bugs).
+          const chunks = [];
+          let buf = "";
+          for (const s of sentences) {
+            const next = (buf ? buf + " " : "") + s;
+            if (next.length > 180 && buf) {
+              chunks.push(buf);
+              buf = s;
+            } else {
+              buf = next;
+            }
+          }
+          if (buf) chunks.push(buf);
           return chunks;
         }
 
@@ -579,6 +626,8 @@ ${htmlRest}
           if (v) u.voice = v;
           u.lang = (v && v.lang) ? v.lang : "ko-KR";
           u.rate = rateSel ? Number(rateSel.value || "1") : 1;
+          u.pitch = 1;
+          u.volume = 1;
           u.onend = () => speakNext();
           u.onerror = () => speakNext();
           speaking = true;
@@ -598,7 +647,8 @@ ${htmlRest}
           const text = buildTextForCurrentView();
           queue = chunkText(text);
           if (!queue.length) return;
-          speakNext();
+          // Some browsers need a micro-delay after cancel() before speak().
+          setTimeout(() => speakNext(), 60);
         }
 
         if (synth && playBtn) {
@@ -617,6 +667,9 @@ ${htmlRest}
             if (speaking) startTts();
           });
           rateSel && rateSel.addEventListener("change", () => {
+            if (speaking) startTts();
+          });
+          skipUrlsChk && skipUrlsChk.addEventListener("change", () => {
             if (speaking) startTts();
           });
           skipRefsChk && skipRefsChk.addEventListener("change", () => {
@@ -705,7 +758,9 @@ function splitByHeadings(md) {
   // We keep everything after Java as "rest" only if you want common sections always visible.
   // Current doc has common sections after Java, so we keep them as rest to always show them.
   const idxCommon = md.indexOf("# (4) 공통 트렌드/권장사항");
-  const idxRefs = md.indexOf("# (7) 참고자료");
+  const idxRefs6 = md.indexOf("# (6) 참고자료");
+  const idxRefs7 = md.indexOf("# (7) 참고자료");
+  const idxRefs = idxRefs6 !== -1 ? idxRefs6 : idxRefs7;
 
   if (idxCommon !== -1 && idxCommon > idxJava) {
     const java = md.slice(idxJava, idxCommon);
