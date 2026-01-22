@@ -97,6 +97,7 @@ if (rulesItems.length) {
 const html = buildCardsHtml({
   title: titleLine,
   cards,
+  reportHref: `../../${baseName}.html`,
 });
 
 const outFile = path.join(outDir, "cards.html");
@@ -181,7 +182,7 @@ function parseCardMetaBlocks(fullMd) {
   return out;
 }
 
-function buildCardsHtml({ title, cards }) {
+function buildCardsHtml({ title, cards, reportHref }) {
   const css = `
   :root { color-scheme: light; }
   body {
@@ -190,6 +191,34 @@ function buildCardsHtml({ title, cards }) {
     color: #111827;
     font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
   }
+  .links {
+    position: fixed;
+    top: 14px;
+    left: 14px;
+    z-index: 20;
+    display: inline-flex;
+    gap: 8px;
+    align-items: center;
+    background: rgba(255,255,255,0.92);
+    border: 1px solid rgba(31,35,40,0.14);
+    border-radius: 999px;
+    padding: 8px 10px;
+    backdrop-filter: blur(10px);
+  }
+  .links a {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    text-decoration: none;
+    color: rgba(15,23,42,0.92);
+    border: 1px solid rgba(31,35,40,0.18);
+    background: #fff;
+    border-radius: 999px;
+    padding: 6px 10px;
+    font-size: 12px;
+    line-height: 1;
+  }
+  .links a:hover { border-color: rgba(31,35,40,0.35); }
   .stage {
     height: 100vh;
     display: grid;
@@ -265,6 +294,7 @@ function buildCardsHtml({ title, cards }) {
   }
   /* Export mode for PNG: fixed canvas */
   body.export .stage { height: auto; display: block; padding: 24px; }
+  body.export .links { display: none; }
   body.export .card {
     display: block;
     width: 1080px;
@@ -428,6 +458,8 @@ function buildCardsHtml({ title, cards }) {
     .source { font-size: 12px; }
     .nav { top: 10px; right: 10px; padding: 6px 8px; }
     .nav button { padding: 6px 8px; }
+    .links { top: 10px; left: 10px; padding: 6px 8px; }
+    .links a { padding: 6px 8px; }
   }
   `;
 
@@ -487,6 +519,9 @@ function buildCardsHtml({ title, cards }) {
     <style>${css}</style>
   </head>
   <body>
+    <div class="links" aria-label="링크">
+      <a href="${escapeHtml(reportHref || "../../devsecnews-2026-01-node-java.html")}" id="reportLink" aria-label="본문 리포트로 이동">본문 리포트</a>
+    </div>
     <div class="nav" aria-label="카드 내비게이션">
       <button type="button" id="prev" aria-label="이전">이전</button>
       <div class="count" id="count">1/${cards.length}</div>
