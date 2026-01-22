@@ -25,12 +25,23 @@ XML 파서 기본값/구성요소 조합이 남아 있으면 XXE 계열 입력�
 
 ### CVE-2025-10492: JasperReports 역직렬화/RCE 리스크
 
-리포트/템플릿 파이프라인이 “업로드/외부 파일”을 그대로 받아 처리하면 RCE로 연결됩니다. 템플릿 업로드를 차단하고 불가피하면 샌드박스에서만 처리하며 컴포넌트를 업데이트합니다. [Source] https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability (2026-01-12)
+리포트/템플릿 파이프라인이 “업로드/외부 파일”을 그대로 받아 처리하면 RCE로 연결됩니다. 템플릿 업로드를 차단하고 불가피하면 격리된 실행 환경에서만 처리하며 컴포넌트를 업데이트합니다. [Source] https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability (2026-01-12)
 
 ### CVE-2026-22718: 개발 도구(확장) 명령 주입
 
 EOL 된 개발 도구는 “패치 없음”이 기본이어서, 취약점이 확인되면 제거가 사실상 유일한 대응입니다. 조직 표준 확장 목록에서 제거하고 신뢰되지 않은 워크스페이스 기본 거부를 적용합니다. [Source] https://spring.io/security/cve-2026-22718 (2026-01-16)
 [Source] https://github.com/advisories/GHSA-h34g-p94m-h76q (날짜 미표기)
+
+### 영향 여부 자가진단(빠른 확인)
+
+아래 명령으로 의존성(Struts/JasperReports)과 개발 도구(취약 확장) 설치 여부를 먼저 확인합니다.
+
+```bash
+mvn -q -DskipTests dependency:tree | grep -Ei "struts2|jasperreports" || true
+code --list-extensions | grep -Ei "spring|cli" || true
+```
+
+영향 가능성이 있으면 버전을 올리거나(라이브러리) 제거합니다(개발 도구).
 
 ## (3.3) 이번 달 취약 개발 패턴 Top 5
 
@@ -60,7 +71,7 @@ f.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
 
 ### 2) Java 역직렬화를 입력 포맷으로 허용
 
-공격자는 gadget chain을 이용해 역직렬화 시점에 코드 실행을 노립니다. 외부 입력은 JSON/Protobuf로 전환하고 필요 시 allowlist 필터를 강제합니다.
+공격자는 gadget chain(역직렬화로 이어지는 호출 연쇄)을 이용해 역직렬화 시점에 코드 실행을 노립니다. 외부 입력은 JSON/Protobuf로 전환하고 필요 시 allowlist 필터를 강제합니다.
 
 안 좋은 예:
 

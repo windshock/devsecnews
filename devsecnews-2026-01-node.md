@@ -24,17 +24,28 @@
 
 Node.js는 다수 취약점 패치를 포함한 보안 릴리스를 공개했습니다. 런타임을 보안 릴리스 버전으로 업데이트합니다. [Source] https://nodejs.org/en/blog/vulnerability/december-2025-security-releases (2026-01-13)
 
+### 영향 여부 자가진단(빠른 확인)
+
+아래 명령으로 런타임 버전과 실행 옵션(권한 모델 사용 여부)을 먼저 확인합니다.
+
+```bash
+node -v
+ps aux | grep -E "node .*--permission|node .*--allow-fs-" | grep -v grep || true
+```
+
+영향 가능성이 있으면 보안 릴리스 버전으로 업데이트합니다.
+
 ### CVE-2025-55131: `vm`+`timeout`에서 메모리 노출 가능
 
 `vm` 모듈에서 `timeout`로 실행을 끊는 흐름이 있으면, 버퍼 초기화가 기대대로 동작하지 않아 이전 메모리 잔여가 노출될 수 있습니다. `vm`으로 “유저 코드”를 실행하는 구조를 별도 프로세스/컨테이너로 분리하고 런타임을 업데이트합니다. [Source] https://nodejs.org/en/blog/vulnerability/december-2025-security-releases (2026-01-13)
 
 ### CVE-2025-55130: permission model 파일시스템 권한 우회(symlink)
 
-`--allow-fs-read`/`--allow-fs-write`는 입력 경로와 symlink 체인 조합으로 우회될 수 있어 “옵션만으로” 보안 경계를 만들면 위험합니다. 허용 경로를 realpath 기준 allowlist로 검증하고 런타임을 업데이트합니다. [Source] https://nodejs.org/en/blog/vulnerability/december-2025-security-releases (2026-01-13)
+`--allow-fs-read`/`--allow-fs-write`는 입력 경로와 symlink 체인 조합으로 우회될 수 있어 “옵션만으로” 보안 경계를 만들면 위험합니다. 허용 경로는 realpath(심볼릭 링크를 해소한 실제 경로) 기준 allowlist로 검증하고 런타임을 업데이트합니다. [Source] https://nodejs.org/en/blog/vulnerability/december-2025-security-releases (2026-01-13)
 
 ### CVE-2026-21636: `--permission`에서 UDS로 네트워크 제한 우회
 
-네트워크 권한을 제한했다고 해도 UDS(Unix Domain Socket) 연결은 다른 경로로 열릴 수 있습니다. UDS 경로는 입력에서 직접 받지 않도록 하고 allowlist+정규화로 통제하며 필요하면 OS 격리를 적용합니다. [Source] https://nodejs.org/en/blog/vulnerability/december-2025-security-releases (2026-01-13)
+네트워크 권한을 제한했다고 해도 UDS(Unix Domain Socket, 로컬 소켓) 연결은 다른 경로로 열릴 수 있습니다. UDS 경로는 입력에서 직접 받지 않도록 하고 allowlist+정규화로 통제하며 필요하면 OS 격리를 적용합니다. [Source] https://nodejs.org/en/blog/vulnerability/december-2025-security-releases (2026-01-13)
 
 ### CVE-2025-55132: `fs.futimes()`로 메타데이터(타임스탬프) 변경 가능
 

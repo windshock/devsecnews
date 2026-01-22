@@ -44,14 +44,6 @@ const htmlNode = parts.node ? marked.parse(parts.node) : "";
 const htmlJava = parts.java ? marked.parse(parts.java) : "";
 const htmlRest = marked.parse(parts.rest);
 
-const baseName = path.basename(input, path.extname(input));
-const cardsDir = path.join("cards", baseName);
-const cardPngs = listCardPngs(cardsDir).map((f) =>
-  // Make it relative to the generated HTML in repo root.
-  path.posix.join("cards", baseName, f)
-);
-const cardPngsJson = JSON.stringify(cardPngs);
-
 const githubMarkdownCss = readOptionalTextFile(
   path.join("node_modules", "github-markdown-css", "github-markdown.css")
 );
@@ -72,7 +64,27 @@ const css = `
   main { max-width: 980px; margin: 0 auto; padding: 28px 18px; }
   .markdown-body { box-sizing: border-box; min-width: 200px; }
   .markdown-body table { display: table; width: 100%; }
-  .markdown-body pre { padding: 12px; border-radius: 8px; }
+  /* Code blocks */
+  .markdown-body pre {
+    padding: 12px;
+    border-radius: 10px;
+    overflow: auto;
+    background: #f6f8fa;
+    border: 1px solid rgba(31,35,40,0.12);
+  }
+  /* Code blocks: bad vs good contrast (driven by JS classes on .codeblock) */
+  .codeblock.bad pre {
+    background: rgba(207,34,46,0.06);
+    border-color: rgba(207,34,46,0.20);
+  }
+  .codeblock.good pre {
+    background: rgba(26,127,55,0.06);
+    border-color: rgba(26,127,55,0.20);
+  }
+  .markdown-body code, .markdown-body pre code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-size: 0.92em;
+  }
   a { word-break: break-all; }
   .topbar {
     position: sticky;
@@ -164,97 +176,69 @@ const css = `
     padding: 6px 8px;
     white-space: nowrap;
   }
-  /* Card deck (PNG carousel) */
-  .cardsDock {
-    margin: 18px 0 22px;
+  /* Code copy button */
+  .codeblock {
+    position: relative;
   }
-  .cardsFrame {
-    border: 1px solid rgba(31,35,40,0.12);
-    border-radius: 14px;
-    background: #fff;
-    overflow: hidden;
-    box-shadow: 0 6px 24px rgba(31,35,40,0.08);
-  }
-  .cardsHeader {
-    padding: 10px 12px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
-    border-bottom: 1px solid rgba(31,35,40,0.08);
-    background: rgba(246,248,250,0.8);
-  }
-  .cardsTitle {
-    font-size: 13px;
-    color: rgba(31,35,40,0.8);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  .cardsCtrls {
-    display: inline-flex;
-    gap: 6px;
-    align-items: center;
-  }
-  .cardsCtrls button {
+  .copyBtn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
     appearance: none;
     border: 1px solid rgba(31,35,40,0.18);
     border-radius: 10px;
-    background: #fff;
+    background: rgba(255,255,255,0.96);
+    backdrop-filter: blur(6px);
     padding: 6px 10px;
     font-size: 12px;
     cursor: pointer;
+    color: rgba(31,35,40,0.9);
+    box-shadow: 0 2px 10px rgba(31,35,40,0.08);
   }
-  .cardsCtrls button[disabled] {
-    opacity: 0.55;
+  .codeblock.bad .copyBtn { border-color: rgba(207,34,46,0.28); }
+  .codeblock.good .copyBtn { border-color: rgba(26,127,55,0.28); }
+  .copyBtn:active { transform: translateY(1px); }
+  .copyBtn[aria-disabled="true"] {
+    opacity: 0.6;
     cursor: not-allowed;
   }
-  .cardsCount {
+  /* Subtle: show button more clearly on hover for desktop */
+  @media (hover: hover) {
+    .codeblock .copyBtn { opacity: 0.78; }
+    .codeblock:hover .copyBtn { opacity: 1; }
+  }
+  /* Jump affordance */
+  .jumpHint {
     font-size: 12px;
-    color: rgba(31,35,40,0.65);
-    min-width: 48px;
-    text-align: right;
-  }
-  .cardsViewport {
-    display: grid;
-    place-items: center;
-    padding: 12px;
-    background: #ffffff;
-  }
-  .cardsViewport img {
-    width: min(520px, 100%);
-    height: auto;
-    border-radius: 12px;
-    border: 1px solid rgba(31,35,40,0.10);
-    background: #fff;
-  }
-  .cardsDots {
-    display: flex;
-    gap: 6px;
-    padding: 10px 12px 12px;
-    align-items: center;
-    justify-content: center;
-    flex-wrap: wrap;
-    border-top: 1px solid rgba(31,35,40,0.08);
-    background: rgba(246,248,250,0.6);
-  }
-  .cardsDots button {
-    width: 10px;
-    height: 10px;
-    padding: 0;
-    border-radius: 999px;
-    border: 1px solid rgba(31,35,40,0.25);
-    background: transparent;
-    cursor: pointer;
-  }
-  .cardsDots button[aria-pressed="true"] {
-    background: rgba(9,105,218,0.75);
-    border-color: rgba(9,105,218,0.75);
+    color: rgba(31,35,40,0.6);
+    margin-top: 6px;
   }
   .view-summary { display: none; }
   .view-node { display: none; }
   .view-java { display: none; }
   .view-rest { display: none; }
+
+  /* Responsive (mobile-first adjustments) */
+  @media (max-width: 720px) {
+    main { padding: 16px 12px; }
+    .markdown-body { font-size: 15px; line-height: 1.7; }
+    .markdown-body h1 { font-size: 1.5em; }
+    .markdown-body h2 { font-size: 1.25em; }
+    .markdown-body h3 { font-size: 1.1em; }
+
+    /* Tables: horizontal scroll instead of layout break */
+    .markdown-body table { display: block; width: 100%; overflow-x: auto; white-space: nowrap; -webkit-overflow-scrolling: touch; }
+
+    /* Code: keep readable and avoid copy button overlap */
+    .markdown-body pre { font-size: 12px; }
+    .copyBtn { top: 6px; right: 6px; padding: 5px 8px; }
+
+    /* Topbar: allow wrap and reduce clutter */
+    .topbar-inner { gap: 8px; align-items: flex-start; }
+    .topbar-right { justify-content: flex-start; }
+    .segmented button { padding: 7px 10px; font-size: 12px; }
+    .hint { display: none; }
+  }
 
   body[data-view="all"] .view-summary { display: block; }
   body[data-view="all"] .view-node { display: block; }
@@ -311,24 +295,6 @@ const html = `<!doctype html>
       </div>
     </div>
     <main>
-      <section class="cardsDock" id="cardsDock" data-cards='${escapeHtmlAttr(
-        cardPngsJson
-      )}' style="${cardPngs.length ? "" : "display:none;"}">
-        <div class="cardsFrame" aria-label="카드뉴스">
-          <div class="cardsHeader">
-            <div class="cardsTitle">카드뉴스(요약/체크리스트/팀 규칙)</div>
-            <div class="cardsCtrls">
-              <button type="button" id="cardsPrev" aria-label="이전 카드">◀</button>
-              <button type="button" id="cardsNext" aria-label="다음 카드">▶</button>
-              <div class="cardsCount" id="cardsCount">0/0</div>
-            </div>
-          </div>
-          <div class="cardsViewport">
-            <img id="cardsImg" alt="카드뉴스 이미지" />
-          </div>
-          <div class="cardsDots" id="cardsDots" aria-label="카드 선택"></div>
-        </div>
-      </section>
       <article class="markdown-body">
 <section class="view-summary" data-view-section="summary">
 ${htmlPrelude}
@@ -349,89 +315,130 @@ ${htmlRest}
         const KEY = "devsecnews:view";
         const buttons = Array.from(document.querySelectorAll("[data-view-btn]"));
 
-        // Card deck (PNG carousel)
-        (function initCards() {
-          const dock = document.getElementById("cardsDock");
-          if (!dock) return;
-          let cards = [];
-          try {
-            const raw = dock.getAttribute("data-cards") || "[]";
-            cards = JSON.parse(raw);
-          } catch {}
-          if (!Array.isArray(cards) || cards.length === 0) {
-            dock.style.display = "none";
-            return;
+        function setView(v, persist) {
+          if (!["summary","all","node","java"].includes(v)) v = "all";
+          document.body.dataset.view = v;
+          for (const b of buttons) b.setAttribute("aria-pressed", String(b.dataset.viewBtn === v));
+          if (persist) {
+            try { localStorage.setItem(KEY, v); } catch {}
+          }
+          // Keep URL navigable/bookmarkable without reloading.
+          try { history.replaceState(null, "", v === "all" ? "#all" : ("#" + v)); } catch {}
+          // If speaking, restart to read the newly visible section only.
+          if (speaking) startTts();
+        }
+
+        // Code block: add copy buttons
+        (function initCopyButtons() {
+          const blocks = Array.from(document.querySelectorAll("pre"));
+          for (const pre of blocks) {
+            const code = pre.querySelector("code");
+            if (!code) continue;
+            // Wrap to position button
+            if (!pre.parentElement || pre.parentElement.classList.contains("codeblock")) continue;
+            const wrap = document.createElement("div");
+            wrap.className = "codeblock";
+            pre.parentElement.insertBefore(wrap, pre);
+            wrap.appendChild(pre);
+
+            // Tag codeblock based on preceding label text (Korean)
+            // Typical Markdown structure is: <p>안 좋은 예:</p><pre>...</pre>
+            // or: <p>안전한 대안:</p><pre>...</pre>
+            const prev = wrap.previousElementSibling;
+            const prevText = (prev && (prev.innerText || prev.textContent) ? (prev.innerText || prev.textContent) : "").trim();
+            if (prevText.startsWith("안 좋은 예")) wrap.classList.add("bad");
+            if (prevText.startsWith("안전한 대안")) wrap.classList.add("good");
+
+            const btn = document.createElement("button");
+            btn.type = "button";
+            btn.className = "copyBtn";
+            btn.textContent = "복사";
+            btn.setAttribute("aria-label", "코드 복사");
+            wrap.appendChild(btn);
+
+            btn.addEventListener("click", async () => {
+              const text = (code.innerText || code.textContent || "").trimEnd();
+              if (!text) return;
+              try {
+                await navigator.clipboard.writeText(text);
+                const old = btn.textContent;
+                btn.textContent = "복사됨";
+                setTimeout(() => (btn.textContent = old), 900);
+              } catch {
+                // Fallback
+                try {
+                  const ta = document.createElement("textarea");
+                  ta.value = text;
+                  ta.style.position = "fixed";
+                  ta.style.left = "-9999px";
+                  document.body.appendChild(ta);
+                  ta.focus();
+                  ta.select();
+                  document.execCommand("copy");
+                  document.body.removeChild(ta);
+                  const old = btn.textContent;
+                  btn.textContent = "복사됨";
+                  setTimeout(() => (btn.textContent = old), 900);
+                } catch {
+                  btn.setAttribute("aria-disabled", "true");
+                }
+              }
+            });
+          }
+        })();
+
+        // Checklist → details jump (by Source URL)
+        (function initChecklistJump() {
+          const summary = document.querySelector(".view-summary");
+          if (!summary) return;
+
+          // Find the checklist section by heading text.
+          const h = Array.from(summary.querySelectorAll("h1,h2,h3")).find((x) =>
+            (x.innerText || "").includes("(5) 이번 달 개발자 체크리스트")
+          );
+          if (!h) return;
+
+          const ol = h.nextElementSibling && h.nextElementSibling.tagName === "OL"
+            ? h.nextElementSibling
+            : summary.querySelector("ol");
+          if (!ol) return;
+
+          // Add a tiny hint once.
+          if (!summary.querySelector(".jumpHint")) {
+            const hint = document.createElement("div");
+            hint.className = "jumpHint";
+            hint.textContent = "체크리스트 항목을 클릭하면 본문으로 이동합니다.";
+            ol.parentElement.insertBefore(hint, ol.nextSibling);
           }
 
-          const img = document.getElementById("cardsImg");
-          const prev = document.getElementById("cardsPrev");
-          const next = document.getElementById("cardsNext");
-          const count = document.getElementById("cardsCount");
-          const dots = document.getElementById("cardsDots");
-          let idx = 0;
+          const items = Array.from(ol.querySelectorAll("li"));
+          for (const li of items) {
+            li.style.cursor = "pointer";
+            li.addEventListener("click", () => {
+              // Use the first external source URL inside the checklist item.
+              const a = li.querySelector('a[href^="http"]');
+              if (!a) return;
+              const href = a.getAttribute("href");
+              if (!href) return;
 
-          function set(i) {
-            idx = (i + cards.length) % cards.length;
-            if (img) img.src = cards[idx];
-            if (count) count.textContent = String(idx + 1) + "/" + String(cards.length);
-            if (prev) prev.disabled = cards.length <= 1;
-            if (next) next.disabled = cards.length <= 1;
-            if (dots) {
-              const btns = Array.from(dots.querySelectorAll("button[data-dot]"));
-              for (const b of btns) b.setAttribute("aria-pressed", String(Number(b.dataset.dot) === idx));
-            }
+              // Show full doc so target is visible, then scroll.
+              setView("all", true);
+
+              // Find same href elsewhere (skip the one inside the checklist item).
+              const links = Array.from(document.querySelectorAll('a[href="' + href.replace(/"/g, '\\"') + '"]'));
+              let target = null;
+              for (const l of links) {
+                if (li.contains(l)) continue;
+                target = l;
+                break;
+              }
+              if (!target) return;
+
+              // Scroll to nearest heading for context.
+              const heading = target.closest("section")?.querySelector("h1,h2,h3") || target.closest("h1,h2,h3");
+              (heading || target).scrollIntoView({ behavior: "smooth", block: "start" });
+            });
           }
-
-          function buildDots() {
-            if (!dots) return;
-            dots.innerHTML = "";
-            for (let i = 0; i < cards.length; i++) {
-              const b = document.createElement("button");
-              b.type = "button";
-              b.dataset.dot = String(i);
-              b.setAttribute("aria-label", "카드 " + String(i + 1));
-              b.setAttribute("aria-pressed", "false");
-              b.addEventListener("click", () => set(i));
-              dots.appendChild(b);
-            }
-          }
-
-          buildDots();
-          set(0);
-
-          prev && prev.addEventListener("click", () => set(idx - 1));
-          next && next.addEventListener("click", () => set(idx + 1));
-
-          // Keyboard arrows (avoid capturing when typing in inputs)
-          window.addEventListener("keydown", (e) => {
-            const t = e.target;
-            if (t && (t.tagName === "INPUT" || t.tagName === "TEXTAREA" || t.isContentEditable)) return;
-            if (e.key === "ArrowLeft") set(idx - 1);
-            if (e.key === "ArrowRight") set(idx + 1);
-          });
-
-          // Swipe (touch)
-          let startX = 0;
-          let startY = 0;
-          let active = false;
-          dock.addEventListener("touchstart", (e) => {
-            if (!e.touches || e.touches.length !== 1) return;
-            active = true;
-            startX = e.touches[0].clientX;
-            startY = e.touches[0].clientY;
-          }, { passive: true });
-          dock.addEventListener("touchend", (e) => {
-            if (!active) return;
-            active = false;
-            const touch = (e.changedTouches && e.changedTouches[0]) ? e.changedTouches[0] : null;
-            if (!touch) return;
-            const dx = touch.clientX - startX;
-            const dy = touch.clientY - startY;
-            // Prefer horizontal swipe; ignore mostly-vertical gestures to avoid scroll fights.
-            if (Math.abs(dx) < 40 || Math.abs(dx) < Math.abs(dy)) return;
-            if (dx < 0) set(idx + 1);
-            else set(idx - 1);
-          }, { passive: true });
         })();
 
         // TTS (Web Speech API)
@@ -621,18 +628,7 @@ ${htmlRest}
           if (tts) tts.style.display = "none";
         }
 
-        function setView(v, persist) {
-          if (!["summary","all","node","java"].includes(v)) v = "all";
-          document.body.dataset.view = v;
-          for (const b of buttons) b.setAttribute("aria-pressed", String(b.dataset.viewBtn === v));
-          if (persist) {
-            try { localStorage.setItem(KEY, v); } catch {}
-          }
-          // Keep URL navigable/bookmarkable without reloading.
-          try { history.replaceState(null, "", v === "all" ? "#all" : ("#" + v)); } catch {}
-          // If speaking, restart to read the newly visible section only.
-          if (speaking) startTts();
-        }
+        // setView is defined above to allow reuse by other UI features.
 
         for (const b of buttons) {
           b.addEventListener("click", () => setView(b.dataset.viewBtn, true));
@@ -726,14 +722,3 @@ function splitByHeadings(md) {
 
   return { prelude, node, java: md.slice(idxJava, idxAfterJava), rest: "" };
 }
-
-function escapeHtmlAttr(s) {
-  // For embedding JSON strings inside an HTML attribute.
-  return String(s)
-    .replaceAll("&", "&amp;")
-    .replaceAll("'", "&#39;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;");
-}
-

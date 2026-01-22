@@ -38,7 +38,8 @@ const page = await browser.newPage({
   deviceScaleFactor: 2,
 });
 
-const url = pathToFileURL(path.resolve(inputHtml)).toString();
+// Force export mode so layout stays fixed at 1080x1350 for consistent PNG.
+const url = pathToFileURL(path.resolve(inputHtml)).toString() + "?export=1";
 await page.goto(url, { waitUntil: "load" });
 
 // Ensure fonts/layout settle.

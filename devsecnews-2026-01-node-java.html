@@ -16,7 +16,27 @@
   main { max-width: 980px; margin: 0 auto; padding: 28px 18px; }
   .markdown-body { box-sizing: border-box; min-width: 200px; }
   .markdown-body table { display: table; width: 100%; }
-  .markdown-body pre { padding: 12px; border-radius: 8px; }
+  /* Code blocks */
+  .markdown-body pre {
+    padding: 12px;
+    border-radius: 10px;
+    overflow: auto;
+    background: #f6f8fa;
+    border: 1px solid rgba(31,35,40,0.12);
+  }
+  /* Code blocks: bad vs good contrast (driven by JS classes on .codeblock) */
+  .codeblock.bad pre {
+    background: rgba(207,34,46,0.06);
+    border-color: rgba(207,34,46,0.20);
+  }
+  .codeblock.good pre {
+    background: rgba(26,127,55,0.06);
+    border-color: rgba(26,127,55,0.20);
+  }
+  .markdown-body code, .markdown-body pre code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-size: 0.92em;
+  }
   a { word-break: break-all; }
   .topbar {
     position: sticky;
@@ -108,97 +128,69 @@
     padding: 6px 8px;
     white-space: nowrap;
   }
-  /* Card deck (PNG carousel) */
-  .cardsDock {
-    margin: 18px 0 22px;
+  /* Code copy button */
+  .codeblock {
+    position: relative;
   }
-  .cardsFrame {
-    border: 1px solid rgba(31,35,40,0.12);
-    border-radius: 14px;
-    background: #fff;
-    overflow: hidden;
-    box-shadow: 0 6px 24px rgba(31,35,40,0.08);
-  }
-  .cardsHeader {
-    padding: 10px 12px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
-    border-bottom: 1px solid rgba(31,35,40,0.08);
-    background: rgba(246,248,250,0.8);
-  }
-  .cardsTitle {
-    font-size: 13px;
-    color: rgba(31,35,40,0.8);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  .cardsCtrls {
-    display: inline-flex;
-    gap: 6px;
-    align-items: center;
-  }
-  .cardsCtrls button {
+  .copyBtn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
     appearance: none;
     border: 1px solid rgba(31,35,40,0.18);
     border-radius: 10px;
-    background: #fff;
+    background: rgba(255,255,255,0.96);
+    backdrop-filter: blur(6px);
     padding: 6px 10px;
     font-size: 12px;
     cursor: pointer;
+    color: rgba(31,35,40,0.9);
+    box-shadow: 0 2px 10px rgba(31,35,40,0.08);
   }
-  .cardsCtrls button[disabled] {
-    opacity: 0.55;
+  .codeblock.bad .copyBtn { border-color: rgba(207,34,46,0.28); }
+  .codeblock.good .copyBtn { border-color: rgba(26,127,55,0.28); }
+  .copyBtn:active { transform: translateY(1px); }
+  .copyBtn[aria-disabled="true"] {
+    opacity: 0.6;
     cursor: not-allowed;
   }
-  .cardsCount {
+  /* Subtle: show button more clearly on hover for desktop */
+  @media (hover: hover) {
+    .codeblock .copyBtn { opacity: 0.78; }
+    .codeblock:hover .copyBtn { opacity: 1; }
+  }
+  /* Jump affordance */
+  .jumpHint {
     font-size: 12px;
-    color: rgba(31,35,40,0.65);
-    min-width: 48px;
-    text-align: right;
-  }
-  .cardsViewport {
-    display: grid;
-    place-items: center;
-    padding: 12px;
-    background: #ffffff;
-  }
-  .cardsViewport img {
-    width: min(520px, 100%);
-    height: auto;
-    border-radius: 12px;
-    border: 1px solid rgba(31,35,40,0.10);
-    background: #fff;
-  }
-  .cardsDots {
-    display: flex;
-    gap: 6px;
-    padding: 10px 12px 12px;
-    align-items: center;
-    justify-content: center;
-    flex-wrap: wrap;
-    border-top: 1px solid rgba(31,35,40,0.08);
-    background: rgba(246,248,250,0.6);
-  }
-  .cardsDots button {
-    width: 10px;
-    height: 10px;
-    padding: 0;
-    border-radius: 999px;
-    border: 1px solid rgba(31,35,40,0.25);
-    background: transparent;
-    cursor: pointer;
-  }
-  .cardsDots button[aria-pressed="true"] {
-    background: rgba(9,105,218,0.75);
-    border-color: rgba(9,105,218,0.75);
+    color: rgba(31,35,40,0.6);
+    margin-top: 6px;
   }
   .view-summary { display: none; }
   .view-node { display: none; }
   .view-java { display: none; }
   .view-rest { display: none; }
+
+  /* Responsive (mobile-first adjustments) */
+  @media (max-width: 720px) {
+    main { padding: 16px 12px; }
+    .markdown-body { font-size: 15px; line-height: 1.7; }
+    .markdown-body h1 { font-size: 1.5em; }
+    .markdown-body h2 { font-size: 1.25em; }
+    .markdown-body h3 { font-size: 1.1em; }
+
+    /* Tables: horizontal scroll instead of layout break */
+    .markdown-body table { display: block; width: 100%; overflow-x: auto; white-space: nowrap; -webkit-overflow-scrolling: touch; }
+
+    /* Code: keep readable and avoid copy button overlap */
+    .markdown-body pre { font-size: 12px; }
+    .copyBtn { top: 6px; right: 6px; padding: 5px 8px; }
+
+    /* Topbar: allow wrap and reduce clutter */
+    .topbar-inner { gap: 8px; align-items: flex-start; }
+    .topbar-right { justify-content: flex-start; }
+    .segmented button { padding: 7px 10px; font-size: 12px; }
+    .hint { display: none; }
+  }
 
   body[data-view="all"] .view-summary { display: block; }
   body[data-view="all"] .view-node { display: block; }
@@ -1590,97 +1582,60 @@ code.hljs {
       </div>
     </div>
     <main>
-      <section class="cardsDock" id="cardsDock" data-cards='[]' style="display:none;">
-        <div class="cardsFrame" aria-label="카드뉴스">
-          <div class="cardsHeader">
-            <div class="cardsTitle">카드뉴스(요약/체크리스트/팀 규칙)</div>
-            <div class="cardsCtrls">
-              <button type="button" id="cardsPrev" aria-label="이전 카드">◀</button>
-              <button type="button" id="cardsNext" aria-label="다음 카드">▶</button>
-              <div class="cardsCount" id="cardsCount">0/0</div>
-            </div>
-          </div>
-          <div class="cardsViewport">
-            <img id="cardsImg" alt="카드뉴스 이미지" />
-          </div>
-          <div class="cardsDots" id="cardsDots" aria-label="카드 선택"></div>
-        </div>
-      </section>
       <article class="markdown-body">
 <section class="view-summary" data-view-section="summary">
 <h1>DevSecNews 2026-01 — Node.js/Java 보안 요약(개발자용)</h1>
 <h1>(1) Summary</h1>
 <ul>
-<li>Node.js는 보안 릴리스(Active release lines)에 다수 취약점을 패치했고, 특히 <strong>권한 모델 우회</strong>, <strong>메모리 노출</strong>, <strong>권한 경계 관련 이슈</strong>가 개발·운영 코드에 직접 영향을 줍니다. 런타임을 보안 릴리스 버전으로 업데이트합니다. [Source] <a href="https://nodejs.org/en/blog/vulnerability/december-2025-security-releases">https://nodejs.org/en/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)</li>
-<li>Java 쪽은 “외부 입력을 XML/템플릿/직렬화로 처리”하는 경로가 계속 위험 지점으로 남아 있습니다. 외부 입력 기반 템플릿·직렬화 경로를 차단하거나 샌드박스로 분리합니다. [Source] <a href="https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability">https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability</a> (2026-01-12)</li>
-<li>Apache Struts의 XXE 이슈(S2-069)는 “XML 파서 기본값”이 그대로 남아 있으면 다시 공격면이 됩니다. Struts를 패치 버전으로 올리고 XML 파서 보안 설정을 강제합니다. [Source] <a href="https://cwiki.apache.org/confluence/display/WW/S2-069">https://cwiki.apache.org/confluence/display/WW/S2-069</a> (2026-01-11)</li>
-<li>개발자 도구도 공격면으로 확인됐습니다(Spring CLI VSCode extension 명령 주입). 조직 표준 확장 목록에서 해당 확장을 제거하고 “워크스페이스 신뢰”를 기본 거부로 둡니다. [Source] <a href="https://spring.io/security/cve-2026-22718">https://spring.io/security/cve-2026-22718</a> (2026-01-16)</li>
+<li>Node.js는 권한 경계(권한 모델/경로/소켓) 관련 취약점을 묶어서 패치했습니다. 런타임을 보안 릴리스 버전으로 업데이트합니다. [Source] <a href="https://nodejs.org/en/blog/vulnerability/december-2025-security-releases">https://nodejs.org/en/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)</li>
+<li>Java는 외부 입력이 XML/템플릿/직렬화로 흘러가는 경로가 핵심 위험 지점입니다. 외부 입력 기반 템플릿·직렬화 경로를 차단하거나 격리합니다. [Source] <a href="https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability">https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability</a> (2026-01-12)</li>
+<li>Struts(XXE, S2-069)는 XML 파서 기본값이 그대로면 다시 공격면이 됩니다. Struts를 패치 버전으로 올리고 XML 파서 보안 설정을 강제합니다. [Source] <a href="https://cwiki.apache.org/confluence/display/WW/S2-069">https://cwiki.apache.org/confluence/display/WW/S2-069</a> (2026-01-11)</li>
+<li>개발자 도구(Spring CLI VSCode extension)는 명령 주입이 확인됐고, EOL이면 제거가 우선입니다. 조직 표준 확장 목록에서 해당 확장을 제거하고 워크스페이스 신뢰를 기본 거부로 둡니다. [Source] <a href="https://spring.io/security/cve-2026-22718">https://spring.io/security/cve-2026-22718</a> (2026-01-16)</li>
 </ul>
+<!--CARD
+{"id":"summary-1","kind":"summary","header":"요약","title":"Node.js 권한 경계 패치","bodyMd":"이번 달은 권한 경계를 흔드는 이슈가 한꺼번에 공개됐습니다. 파일 경로와 로컬 소켓까지 같이 봅니다.","whyMd":"옵션만 믿으면 symlink/UDS 같은 우회 경로로 보안 경계가 깨집니다.","impactMd":"허용 범위를 벗어난 파일 접근이나 내부 소켓 접근이 생깁니다.","actionMd":"런타임을 보안 릴리스 버전으로 업데이트합니다.","source":"https://nodejs.org/en/blog/vulnerability/december-2025-security-releases"}
+-->
+<!--CARD
+{"id":"summary-2","kind":"summary","header":"요약","title":"Java 입력 경계(XML/템플릿/직렬화)","bodyMd":"입력이 XML 파서나 템플릿, 역직렬화로 들어가는 지점이 문제의 시작입니다. 이 경로를 먼저 정리합니다.","whyMd":"‘입력=코드’가 되는 경로에서 가젯 체인이나 XXE로 이어집니다.","impactMd":"RCE나 정보 노출로 이어질 수 있습니다.","actionMd":"외부 입력 기반 템플릿·직렬화 경로를 차단하거나 격리합니다.","source":"https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability"}
+-->
+<!--CARD
+{"id":"summary-3","kind":"summary","header":"요약","title":"Struts S2-069(XXE)","bodyMd":"XML 파서 기본값이 남아 있으면, XXE 입력이 다시 처리됩니다. 파서 설정이 곧 방어선입니다.","whyMd":"외부 엔티티/DTD가 살아 있으면 외부 자원 접근이 열립니다.","impactMd":"내부 자원 노출이나 SSRF 같은 파생 위험이 생깁니다.","actionMd":"Struts를 패치 버전으로 올리고 XML 파서 보안 설정을 강제합니다.","source":"https://cwiki.apache.org/confluence/display/WW/S2-069"}
+-->
+<!--CARD
+{"id":"summary-4","kind":"summary","header":"요약","title":"개발자 도구(EOL 확장) 명령 주입","bodyMd":"개발자 도구 취약점은 서버보다 먼저 개발자 PC를 때립니다. EOL 확장은 패치가 없어서 제거가 빠릅니다.","whyMd":"레포/워크스페이스 입력이 확장 동작을 흔들어 로컬 실행으로 이어집니다.","impactMd":"개발자 PC에서 임의 명령 실행로 번질 수 있습니다.","actionMd":"조직 표준 확장 목록에서 해당 확장을 제거하고 워크스페이스 신뢰를 기본 거부로 둡니다.","source":"https://spring.io/security/cve-2026-22718"}
+-->
+
 
 </section>
 <section class="view-node" data-view-section="node">
 <h1>(2) Node.js</h1>
 <h2>(2.1) CVE/이슈 표</h2>
-<table>
-<thead>
-<tr>
-<th>CVE</th>
-<th>영향 버전</th>
-<th>공격 영향(C/I/A)</th>
-<th>악용 여부(in-the-wild)</th>
-<th>권장 조치(업데이트/완화책)</th>
-<th>관련 CWE</th>
-<th>Source URL</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>CVE-2025-55131</td>
-<td>Node.js v20/v22/v24/v25 (Active release lines)</td>
-<td>C</td>
-<td>확인 불가</td>
-<td>Node.js를 보안 릴리스 버전으로 업데이트하고 <code>vm</code>+<code>timeout</code> 조합을 격리/제거합니다.</td>
-<td>CWE-200</td>
-<td><a href="https://nodejs.org/en/blog/vulnerability/december-2025-security-releases">https://nodejs.org/en/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)</td>
-</tr>
-<tr>
-<td>CVE-2025-55130</td>
-<td>Node.js permission model 사용 시(v20/v22/v24/v25)</td>
-<td>C/I</td>
-<td>확인 불가</td>
-<td>Node.js를 업데이트하고 허용 경로를 realpath 기준 allowlist로 검증하며 symlink 체인을 차단합니다.</td>
-<td>CWE-22</td>
-<td><a href="https://nodejs.org/en/blog/vulnerability/december-2025-security-releases">https://nodejs.org/en/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)</td>
-</tr>
-<tr>
-<td>CVE-2026-21636</td>
-<td>Node.js v25 <code>--permission</code> 사용 시</td>
-<td>C/I</td>
-<td>확인 불가</td>
-<td><code>--permission</code>을 보안 경계로 쓰지 않고 UDS 경로 allowlist 및 OS 격리로 보완합니다.</td>
-<td>CWE-269</td>
-<td><a href="https://nodejs.org/en/blog/vulnerability/december-2025-security-releases">https://nodejs.org/en/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)</td>
-</tr>
-<tr>
-<td>CVE-2025-55132</td>
-<td>Node.js v20/v22/v24/v25 (permission model 사용 시)</td>
-<td>I</td>
-<td>확인 불가</td>
-<td><code>fs.futimes()</code> 사용 여부를 점검하고 보안 의미로 타임스탬프를 신뢰하지 않도록 설계를 바꿉니다.</td>
-<td>CWE-284</td>
-<td><a href="https://nodejs.org/en/blog/vulnerability/december-2025-security-releases">https://nodejs.org/en/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)</td>
-</tr>
-</tbody></table>
+<p>| CVE | 영향 버전 | 공격 영향(C/I/A) | 악용 여부(in-the-wild) | 권장 조치(업데이트/완화책) | Source URL |
+|---|---|---|---|---|---|---|
+| CVE-2025-55131 | Node.js v20/v22/v24/v25 (Active release lines) | C | 확인 불가 | Node.js를 보안 릴리스 버전으로 업데이트하고 <code>vm</code>+<code>timeout</code> 조합을 격리/제거합니다. | <a href="https://nodejs.org/en/blog/vulnerability/december-2025-security-releases">https://nodejs.org/en/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)<br><a href="https://cveawg.mitre.org/api/cve/CVE-2025-55131">https://cveawg.mitre.org/api/cve/CVE-2025-55131</a> (날짜 미표기) |
+| CVE-2025-55130 | Node.js permission model 사용 시(v20/v22/v24/v25) | C/I | 확인 불가 | Node.js를 업데이트하고 허용 경로를 realpath 기준 allowlist로 검증하며 symlink 체인을 차단합니다. | <a href="https://nodejs.org/en/blog/vulnerability/december-2025-security-releases">https://nodejs.org/en/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)<br><a href="https://cveawg.mitre.org/api/cve/CVE-2025-55130">https://cveawg.mitre.org/api/cve/CVE-2025-55130</a> (날짜 미표기) |
+| CVE-2026-21636 | Node.js v25 <code>--permission</code> 사용 시 | C/I | 확인 불가 | <code>--permission</code>을 보안 경계로 쓰지 않고 UDS 경로 allowlist 및 OS 격리로 보완합니다. | <a href="https://nodejs.org/en/blog/vulnerability/december-2025-security-releases">https://nodejs.org/en/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)<br><a href="https://cveawg.mitre.org/api/cve/CVE-2026-21636">https://cveawg.mitre.org/api/cve/CVE-2026-21636</a> (날짜 미표기) |
+| CVE-2025-55132 | Node.js v20/v22/v24/v25 (permission model 사용 시) | I | 확인 불가 | <code>fs.futimes()</code> 사용 여부를 점검하고 보안 의미로 타임스탬프를 신뢰하지 않도록 설계를 바꿉니다. | <a href="https://nodejs.org/en/blog/vulnerability/december-2025-security-releases">https://nodejs.org/en/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)<br><a href="https://cveawg.mitre.org/api/cve/CVE-2025-55132">https://cveawg.mitre.org/api/cve/CVE-2025-55132</a> (날짜 미표기) |</p>
 <h2>(2.2) 항목별 설명</h2>
 <h3>Node.js 보안 릴리스(Active release lines)</h3>
 <p>Node.js는 다수 취약점 패치를 포함한 보안 릴리스를 공개했습니다. 런타임을 보안 릴리스 버전으로 업데이트합니다. [Source] <a href="https://nodejs.org/en/blog/vulnerability/december-2025-security-releases">https://nodejs.org/en/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)</p>
+<h3>영향 여부 자가진단(빠른 확인)</h3>
+<p>아래 명령으로 런타임 버전과 실행 옵션(권한 모델 사용 여부)을 먼저 확인합니다.</p>
+<pre><code class="hljs language-bash">node -v
+ps aux | grep -E <span class="hljs-string">&quot;node .*--permission|node .*--allow-fs-&quot;</span> | grep -v grep || <span class="hljs-literal">true</span>
+</code></pre><p>영향 가능성이 있으면 보안 릴리스 버전으로 업데이트합니다.</p>
 <h3>CVE-2025-55131: <code>vm</code>+<code>timeout</code>에서 메모리 노출 가능</h3>
-<p><code>vm</code> 모듈에서 <code>timeout</code>로 실행을 끊는 흐름이 있으면, 버퍼 초기화가 기대대로 동작하지 않아 이전 메모리 잔여가 노출될 수 있습니다. <code>vm</code>으로 “유저 코드”를 실행하는 구조를 별도 프로세스/컨테이너로 분리하고 런타임을 업데이트합니다. [Source] <a href="https://nodejs.org/en/blog/vulnerability/december-2025-security-releases">https://nodejs.org/en/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)</p>
+<p><code>vm</code> 모듈에서 <code>timeout</code>로 실행을 끊는 흐름이 있으면, 버퍼 초기화가 기대대로 동작하지 않아 이전 메모리 잔여가 노출될 수 있습니다. <code>vm</code>으로 “유저 코드”를 실행하는 구조를 별도 프로세스/컨테이너로 분리하고 런타임을 업데이트합니다. [Source] <a href="https://nodejs.org/en/blog/vulnerability/december-2025-security-releases">https://nodejs.org/en/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)
+[Source] <a href="https://cveawg.mitre.org/api/cve/CVE-2025-55131">https://cveawg.mitre.org/api/cve/CVE-2025-55131</a> (날짜 미표기)</p>
 <h3>CVE-2025-55130: permission model 파일시스템 권한 우회(symlink)</h3>
-<p><code>--allow-fs-read</code>/<code>--allow-fs-write</code>는 입력 경로와 symlink 체인 조합으로 우회될 수 있어 “옵션만으로” 보안 경계를 만들면 위험합니다. 허용 경로를 realpath 기준 allowlist로 검증하고 런타임을 업데이트합니다. [Source] <a href="https://nodejs.org/en/blog/vulnerability/december-2025-security-releases">https://nodejs.org/en/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)</p>
+<p><code>--allow-fs-read</code>/<code>--allow-fs-write</code>는 입력 경로와 symlink 체인 조합으로 우회될 수 있어 “옵션만으로” 보안 경계를 만들면 위험합니다. 허용 경로는 realpath(심볼릭 링크를 해소한 실제 경로) 기준 allowlist로 검증하고 런타임을 업데이트합니다. [Source] <a href="https://nodejs.org/en/blog/vulnerability/december-2025-security-releases">https://nodejs.org/en/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)
+[Source] <a href="https://cveawg.mitre.org/api/cve/CVE-2025-55130">https://cveawg.mitre.org/api/cve/CVE-2025-55130</a> (날짜 미표기)</p>
 <h3>CVE-2026-21636: <code>--permission</code>에서 UDS로 네트워크 제한 우회</h3>
-<p>네트워크 권한을 제한했다고 해도 UDS(Unix Domain Socket) 연결은 다른 경로로 열릴 수 있습니다. UDS 경로는 입력에서 직접 받지 않도록 하고 allowlist+정규화로 통제하며 필요하면 OS 격리를 적용합니다. [Source] <a href="https://nodejs.org/en/blog/vulnerability/december-2025-security-releases">https://nodejs.org/en/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)</p>
+<p>네트워크 권한을 제한했다고 해도 UDS(Unix Domain Socket, 로컬 소켓) 연결은 다른 경로로 열릴 수 있습니다. UDS 경로는 입력에서 직접 받지 않도록 하고 allowlist+정규화로 통제하며 필요하면 OS 격리를 적용합니다. [Source] <a href="https://nodejs.org/en/blog/vulnerability/december-2025-security-releases">https://nodejs.org/en/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)
+[Source] <a href="https://cveawg.mitre.org/api/cve/CVE-2026-21636">https://cveawg.mitre.org/api/cve/CVE-2026-21636</a> (날짜 미표기)</p>
 <h3>CVE-2025-55132: <code>fs.futimes()</code>로 메타데이터(타임스탬프) 변경 가능</h3>
-<p>읽기 권한만 가정한 환경에서도 파일 타임스탬프가 변경될 수 있어, 타임라인 기반 감시/감사 로직이 깨질 수 있습니다. <code>fs.futimes()</code> 사용 여부를 점검하고 보안 의미로 파일 타임스탬프를 신뢰하지 않도록 설계를 바꿉니다. [Source] <a href="https://nodejs.org/en/blog/vulnerability/december-2025-security-releases">https://nodejs.org/en/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)</p>
+<p>읽기 권한만 가정한 환경에서도 파일 타임스탬프가 변경될 수 있어, 타임라인 기반 감시/감사 로직이 깨질 수 있습니다. <code>fs.futimes()</code> 사용 여부를 점검하고 보안 의미로 파일 타임스탬프를 신뢰하지 않도록 설계를 바꿉니다. [Source] <a href="https://nodejs.org/en/blog/vulnerability/december-2025-security-releases">https://nodejs.org/en/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)
+[Source] <a href="https://cveawg.mitre.org/api/cve/CVE-2025-55132">https://cveawg.mitre.org/api/cve/CVE-2025-55132</a> (날짜 미표기)</p>
 <h2>(2.3) 이번 달 취약 개발 패턴 Top 5</h2>
 <h3>1) “permission 모델을 켰으니 안전”이라는 가정</h3>
 <p>공격자는 symlink/UDS 같은 우회 경로로 “권한 옵션의 의도”와 다른 접근을 만들려고 합니다. 허용 경로/소켓 경로를 allowlist로 고정하고 런타임을 업데이트합니다.</p>
@@ -1694,7 +1649,8 @@ fs.<span class="hljs-title function_">readFileSync</span>(userInput.<span class=
 <span class="hljs-keyword">const</span> p = path.<span class="hljs-title function_">resolve</span>(<span class="hljs-variable constant_">ROOT</span>, userInput.<span class="hljs-property">path</span>)
 <span class="hljs-keyword">if</span> (!p.<span class="hljs-title function_">startsWith</span>(<span class="hljs-variable constant_">ROOT</span> + path.<span class="hljs-property">sep</span>)) <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Error</span>(<span class="hljs-string">&quot;blocked&quot;</span>)
 fs.<span class="hljs-title function_">readFileSync</span>(p, <span class="hljs-string">&quot;utf8&quot;</span>)
-</code></pre><p>관련 CWE + 정적분석/CodeQL 탐지 아이디어: CWE-22/CWE-269; “외부 입력이 fs/net/uds 경로로 흐르는지” 데이터흐름으로 탐지해 차단합니다. 룰로 고정합니다. [Source] <a href="https://nodejs.org/en/blog/vulnerability/december-2025-security-releases">https://nodejs.org/en/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)</p>
+</code></pre><p>팀 규칙으로 고정합니다.
+[Source] <a href="https://nodejs.org/en/blog/vulnerability/december-2025-security-releases">https://nodejs.org/en/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)</p>
 <h3>2) symlink/realpath를 고려하지 않은 “경로 검증”</h3>
 <p>공격자는 “문자열 기반 경로 체크”를 우회해 허용 디렉터리 밖 파일에 접근하려고 합니다. realpath 기준 allowlist 검증을 적용합니다.</p>
 <p>안 좋은 예:</p>
@@ -1704,7 +1660,8 @@ fs.<span class="hljs-title function_">readFileSync</span>(userInput.<span class=
 <pre><code class="hljs language-js"><span class="hljs-keyword">const</span> real = fs.<span class="hljs-title function_">realpathSync</span>(userInput.<span class="hljs-property">path</span>)
 <span class="hljs-keyword">if</span> (!real.<span class="hljs-title function_">startsWith</span>(<span class="hljs-string">&quot;/srv/app/data/&quot;</span>)) <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Error</span>(<span class="hljs-string">&quot;blocked&quot;</span>)
 fs.<span class="hljs-title function_">readFileSync</span>(real, <span class="hljs-string">&quot;utf8&quot;</span>)
-</code></pre><p>관련 CWE + 정적분석/CodeQL 탐지 아이디어: CWE-22; “startsWith 기반 경로 검증 + 파일 접근” 패턴을 린트로 올립니다. 룰로 고정합니다. [Source] <a href="https://nodejs.org/en/blog/vulnerability/december-2025-security-releases">https://nodejs.org/en/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)</p>
+</code></pre><p>팀 규칙으로 고정합니다.
+[Source] <a href="https://nodejs.org/en/blog/vulnerability/december-2025-security-releases">https://nodejs.org/en/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)</p>
 <h3>3) <code>vm</code>에서 유저 코드를 돌리고 timeout으로 끊기</h3>
 <p>공격자는 타이밍 경합으로 버퍼 초기화/정리 타이밍을 흔들어 정보 노출이나 비정상 동작을 유도합니다. 유저 코드는 별도 프로세스/컨테이너로 분리하고 IPC로만 통신합니다.</p>
 <p>안 좋은 예:</p>
@@ -1712,7 +1669,8 @@ fs.<span class="hljs-title function_">readFileSync</span>(real, <span class="hlj
 </code></pre><p>안전한 대안:</p>
 <pre><code class="hljs language-js"><span class="hljs-comment">// untrusted code는 별도 프로세스/컨테이너에서 실행하고</span>
 <span class="hljs-comment">// 결과만 IPC로 받습니다.</span>
-</code></pre><p>관련 CWE + 정적분석/CodeQL 탐지 아이디어: CWE-200; “vm.*에 untrustedCode가 전달되는지” 데이터흐름을 경고로 올립니다. 룰로 고정합니다. [Source] <a href="https://nodejs.org/en/blog/vulnerability/december-2025-security-releases">https://nodejs.org/en/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)</p>
+</code></pre><p>팀 규칙으로 고정합니다.
+[Source] <a href="https://nodejs.org/en/blog/vulnerability/december-2025-security-releases">https://nodejs.org/en/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)</p>
 <h3>4) UDS 경로를 입력으로 받아 내부 소켓에 연결</h3>
 <p>공격자는 네트워크 권한 경계를 우회하기 위해 로컬 소켓(UDS) 경로를 입력으로 주입하려고 합니다. UDS 경로는 allowlist로 고정하고 입력에서 직접 받지 않도록 설계를 바꿉니다.</p>
 <p>안 좋은 예:</p>
@@ -1721,14 +1679,16 @@ fs.<span class="hljs-title function_">readFileSync</span>(real, <span class="hlj
 <pre><code class="hljs language-js"><span class="hljs-keyword">const</span> <span class="hljs-variable constant_">ALLOWED_UDS</span> = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Set</span>([<span class="hljs-string">&quot;/run/app.sock&quot;</span>])
 <span class="hljs-keyword">if</span> (!<span class="hljs-variable constant_">ALLOWED_UDS</span>.<span class="hljs-title function_">has</span>(userInput.<span class="hljs-property">socketPath</span>)) <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Error</span>(<span class="hljs-string">&quot;blocked&quot;</span>)
 net.<span class="hljs-title function_">connect</span>(userInput.<span class="hljs-property">socketPath</span>)
-</code></pre><p>관련 CWE + 정적분석/CodeQL 탐지 아이디어: CWE-269; “userInput이 net.connect socketPath로 흐르는지” 데이터흐름을 탐지합니다. 룰로 고정합니다. [Source] <a href="https://nodejs.org/en/blog/vulnerability/december-2025-security-releases">https://nodejs.org/en/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)</p>
+</code></pre><p>팀 규칙으로 고정합니다.
+[Source] <a href="https://nodejs.org/en/blog/vulnerability/december-2025-security-releases">https://nodejs.org/en/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)</p>
 <h3>5) 파일 타임스탬프를 보안 신호로 신뢰</h3>
 <p>공격자는 로그/감사 흐름을 흐리게 만들기 위해 메타데이터(타임스탬프) 조작 가능성을 악용합니다. 타임스탬프를 보안 판단에 직접 쓰지 않고, 별도 감사 이벤트/해시 기반으로 설계를 바꿉니다.</p>
 <p>안 좋은 예:</p>
 <pre><code class="hljs language-js"><span class="hljs-keyword">if</span> (stat.<span class="hljs-property">mtimeMs</span> &lt; lastSeen) <span class="hljs-title function_">deny</span>() <span class="hljs-comment">// 타임스탬프를 보안 판단으로 사용</span>
 </code></pre><p>안전한 대안:</p>
 <pre><code class="hljs language-js"><span class="hljs-comment">// 파일 내용 해시/서명 검증 + 별도 감사 이벤트 기록으로 전환</span>
-</code></pre><p>관련 CWE + 정적분석/CodeQL 탐지 아이디어: CWE-284/CWE-290; “mtime/atime 기반 보안 분기” 패턴을 탐지합니다. 룰로 고정합니다. [Source] <a href="https://nodejs.org/en/blog/vulnerability/december-2025-security-releases">https://nodejs.org/en/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)</p>
+</code></pre><p>팀 규칙으로 고정합니다.
+[Source] <a href="https://nodejs.org/en/blog/vulnerability/december-2025-security-releases">https://nodejs.org/en/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)</p>
 <p>팀이 오늘 적용할 규칙/코드 조치를 팀 규칙과 PR 체크리스트에 반영합니다.</p>
 <h2>(2.4) 운영 참고(선택)</h2>
 
@@ -1736,54 +1696,27 @@ net.<span class="hljs-title function_">connect</span>(userInput.<span class="hlj
 <section class="view-java" data-view-section="java">
 <h1>(3) Java</h1>
 <h2>(3.1) CVE/이슈 표</h2>
-<table>
-<thead>
-<tr>
-<th>CVE</th>
-<th>영향 버전</th>
-<th>공격 영향(C/I/A)</th>
-<th>악용 여부(in-the-wild)</th>
-<th>권장 조치(업데이트/완화책)</th>
-<th>관련 CWE</th>
-<th>Source URL</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>CVE-2025-68493 (S2-069)</td>
-<td>Apache Struts 영향 버전(공지 참조)</td>
-<td>C/I/A</td>
-<td>확인 불가</td>
-<td>Struts를 패치 버전으로 업데이트하고 XML 파서에서 DTD/외부 엔티티를 비활성화합니다.</td>
-<td>CWE-611</td>
-<td><a href="https://cwiki.apache.org/confluence/display/WW/S2-069">https://cwiki.apache.org/confluence/display/WW/S2-069</a> (2026-01-11)</td>
-</tr>
-<tr>
-<td>CVE-2025-10492</td>
-<td>JasperReports 관련 컴포넌트(공지 참조)</td>
-<td>C/I/A</td>
-<td>확인 불가</td>
-<td>JasperReports 관련 컴포넌트를 업데이트하고 외부 템플릿/직렬화 입력 경로를 차단합니다.</td>
-<td>CWE-502</td>
-<td><a href="https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability">https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability</a> (2026-01-12)</td>
-</tr>
-<tr>
-<td>CVE-2026-22718</td>
-<td>Spring CLI VSCode Extension &lt;= 0.9.0 (EOL)</td>
-<td>C/I</td>
-<td>확인 불가</td>
-<td>해당 확장을 제거하고 워크스페이스 신뢰를 기본 거부로 설정합니다.</td>
-<td>CWE-78</td>
-<td><a href="https://spring.io/security/cve-2026-22718">https://spring.io/security/cve-2026-22718</a> (2026-01-16)<br><a href="https://github.com/advisories/GHSA-h34g-p94m-h76q">https://github.com/advisories/GHSA-h34g-p94m-h76q</a> (날짜 미표기)</td>
-</tr>
-</tbody></table>
+<p>| CVE | 영향 버전 | 공격 영향(C/I/A) | 악용 여부(in-the-wild) | 권장 조치(업데이트/완화책) | Source URL |
+|---|---|---|---|---|---|---|
+| CVE-2025-68493 (S2-069) | Apache Struts 영향 버전(공지 참조) | C/I/A | 확인 불가 | Struts를 패치 버전으로 업데이트하고 XML 파서에서 DTD/외부 엔티티를 비활성화합니다. | <a href="https://cwiki.apache.org/confluence/display/WW/S2-069">https://cwiki.apache.org/confluence/display/WW/S2-069</a> (2026-01-11)<br><a href="https://cveawg.mitre.org/api/cve/CVE-2025-68493">https://cveawg.mitre.org/api/cve/CVE-2025-68493</a> (날짜 미표기) |
+| CVE-2025-10492 | JasperReports 관련 컴포넌트(공지 참조) | C/I/A | 확인 불가 | JasperReports 관련 컴포넌트를 업데이트하고 외부 템플릿/직렬화 입력 경로를 차단합니다. | <a href="https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability">https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability</a> (2026-01-12)<br><a href="https://cveawg.mitre.org/api/cve/CVE-2025-10492">https://cveawg.mitre.org/api/cve/CVE-2025-10492</a> (날짜 미표기) |
+| CVE-2026-22718 | Spring CLI VSCode Extension &lt;= 0.9.0 (EOL) | C/I | 확인 불가 | 해당 확장을 제거하고 워크스페이스 신뢰를 기본 거부로 설정합니다. | <a href="https://spring.io/security/cve-2026-22718">https://spring.io/security/cve-2026-22718</a> (2026-01-16)<br><a href="https://github.com/advisories/GHSA-h34g-p94m-h76q">https://github.com/advisories/GHSA-h34g-p94m-h76q</a> (날짜 미표기)<br><a href="https://cveawg.mitre.org/api/cve/CVE-2026-22718">https://cveawg.mitre.org/api/cve/CVE-2026-22718</a> (날짜 미표기) |</p>
 <h2>(3.2) 항목별 설명</h2>
 <h3>CVE-2025-68493 (S2-069): Struts XXE 계열 입력 처리</h3>
-<p>XML 파서 기본값/구성요소 조합이 남아 있으면 XXE 계열 입력이 다시 공격 표면이 됩니다. Struts를 패치 버전으로 올리고 XML 파서에서 DTD/외부 엔티티를 비활성화합니다. [Source] <a href="https://cwiki.apache.org/confluence/display/WW/S2-069">https://cwiki.apache.org/confluence/display/WW/S2-069</a> (2026-01-11)</p>
+<p>XML 파서 기본값/구성요소 조합이 남아 있으면 XXE 계열 입력이 다시 공격 표면이 됩니다. Struts를 패치 버전으로 올리고 XML 파서에서 DTD/외부 엔티티를 비활성화합니다. [Source] <a href="https://cwiki.apache.org/confluence/display/WW/S2-069">https://cwiki.apache.org/confluence/display/WW/S2-069</a> (2026-01-11)
+[Source] <a href="https://cveawg.mitre.org/api/cve/CVE-2025-68493">https://cveawg.mitre.org/api/cve/CVE-2025-68493</a> (날짜 미표기)</p>
 <h3>CVE-2025-10492: JasperReports 역직렬화/RCE 리스크</h3>
-<p>리포트/템플릿 파이프라인이 “업로드/외부 파일”을 그대로 받아 처리하면 RCE로 연결됩니다. 템플릿 업로드를 차단하고 불가피하면 샌드박스에서만 처리하며 컴포넌트를 업데이트합니다. [Source] <a href="https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability">https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability</a> (2026-01-12)</p>
+<p>리포트/템플릿 파이프라인이 “업로드/외부 파일”을 그대로 받아 처리하면 RCE로 연결됩니다. 템플릿 업로드를 차단하고 불가피하면 격리된 실행 환경에서만 처리하며 컴포넌트를 업데이트합니다. [Source] <a href="https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability">https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability</a> (2026-01-12)
+[Source] <a href="https://cveawg.mitre.org/api/cve/CVE-2025-10492">https://cveawg.mitre.org/api/cve/CVE-2025-10492</a> (날짜 미표기)</p>
 <h3>CVE-2026-22718: 개발 도구(확장) 명령 주입</h3>
 <p>EOL 된 개발 도구는 “패치 없음”이 기본이어서, 취약점이 확인되면 제거가 사실상 유일한 대응입니다. 조직 표준 확장 목록에서 제거하고 신뢰되지 않은 워크스페이스 기본 거부를 적용합니다. [Source] <a href="https://spring.io/security/cve-2026-22718">https://spring.io/security/cve-2026-22718</a> (2026-01-16)
-[Source] <a href="https://github.com/advisories/GHSA-h34g-p94m-h76q">https://github.com/advisories/GHSA-h34g-p94m-h76q</a> (날짜 미표기)</p>
+[Source] <a href="https://github.com/advisories/GHSA-h34g-p94m-h76q">https://github.com/advisories/GHSA-h34g-p94m-h76q</a> (날짜 미표기)
+[Source] <a href="https://cveawg.mitre.org/api/cve/CVE-2026-22718">https://cveawg.mitre.org/api/cve/CVE-2026-22718</a> (날짜 미표기)</p>
+<h3>영향 여부 자가진단(빠른 확인)</h3>
+<p>아래 명령으로 의존성(Struts/JasperReports)과 개발 도구(취약 확장) 설치 여부를 먼저 확인합니다.</p>
+<pre><code class="hljs language-bash">mvn -q -DskipTests dependency:tree | grep -Ei <span class="hljs-string">&quot;struts2|jasperreports&quot;</span> || <span class="hljs-literal">true</span>
+code --list-extensions | grep -Ei <span class="hljs-string">&quot;spring|cli&quot;</span> || <span class="hljs-literal">true</span>
+</code></pre><p>영향 가능성이 있으면 버전을 올리거나(라이브러리) 제거합니다(개발 도구).</p>
 <h2>(3.3) 이번 달 취약 개발 패턴 Top 5</h2>
 <h3>1) 외부 입력(XML)을 파서 기본값으로 처리</h3>
 <p>공격자는 XXE/SSRF/정보 노출을 노리고 “파서 기본값”을 파고듭니다. 외부 엔티티/DTD를 비활성화하고 허용 스키마만 처리합니다.</p>
@@ -1796,40 +1729,40 @@ net.<span class="hljs-title function_">connect</span>(userInput.<span class="hlj
 f.setFeature(<span class="hljs-string">&quot;http://apache.org/xml/features/disallow-doctype-decl&quot;</span>, <span class="hljs-literal">true</span>);
 f.setFeature(<span class="hljs-string">&quot;http://xml.org/sax/features/external-general-entities&quot;</span>, <span class="hljs-literal">false</span>);
 f.setFeature(<span class="hljs-string">&quot;http://xml.org/sax/features/external-parameter-entities&quot;</span>, <span class="hljs-literal">false</span>);
-</code></pre><p>관련 CWE + 정적분석/CodeQL 탐지 아이디어: CWE-611; “XML 파서 생성 후 보안 feature 미설정” 패턴을 탐지합니다.
-룰로 고정합니다. [Source] <a href="https://cwiki.apache.org/confluence/display/WW/S2-069">https://cwiki.apache.org/confluence/display/WW/S2-069</a> (2026-01-11)</p>
+</code></pre><p>팀 규칙으로 고정합니다.
+[Source] <a href="https://cwiki.apache.org/confluence/display/WW/S2-069">https://cwiki.apache.org/confluence/display/WW/S2-069</a> (2026-01-11)</p>
 <h3>2) Java 역직렬화를 입력 포맷으로 허용</h3>
-<p>공격자는 gadget chain을 이용해 역직렬화 시점에 코드 실행을 노립니다. 외부 입력은 JSON/Protobuf로 전환하고 필요 시 allowlist 필터를 강제합니다.</p>
+<p>공격자는 gadget chain(역직렬화로 이어지는 호출 연쇄)을 이용해 역직렬화 시점에 코드 실행을 노립니다. 외부 입력은 JSON/Protobuf로 전환하고 필요 시 allowlist 필터를 강제합니다.</p>
 <p>안 좋은 예:</p>
 <pre><code class="hljs language-java"><span class="hljs-type">Object</span> <span class="hljs-variable">obj</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ObjectInputStream</span>(request.getInputStream()).readObject();
 </code></pre><p>안전한 대안:</p>
 <pre><code class="hljs language-java"><span class="hljs-comment">// 외부 입력은 JSON/Protobuf로 받고 명시적 DTO로 파싱합니다.</span>
-</code></pre><p>관련 CWE + 정적분석/CodeQL 탐지 아이디어: CWE-502; “ObjectInputStream.readObject()에 request stream이 연결”되는 흐름을 차단합니다.
-룰로 고정합니다. [Source] <a href="https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability">https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability</a> (2026-01-12)</p>
+</code></pre><p>팀 규칙으로 고정합니다.
+[Source] <a href="https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability">https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability</a> (2026-01-12)</p>
 <h3>3) 리포트/템플릿 파이프라인에서 신뢰 경계를 지우는 패턴</h3>
 <p>공격자는 “템플릿=코드”가 되는 지점을 노립니다. 템플릿 업로드를 금지하거나 격리된 렌더러에서만 처리합니다.</p>
 <p>안 좋은 예:</p>
 <pre><code class="hljs language-java">compileAndRender(userUploadedTemplate);
 </code></pre><p>안전한 대안:</p>
 <pre><code class="hljs language-java"><span class="hljs-comment">// 템플릿은 저장소에서만 로드하고 서명/해시로 무결성을 검증합니다.</span>
-</code></pre><p>관련 CWE + 정적분석/CodeQL 탐지 아이디어: CWE-94/CWE-502; “템플릿 업로드 → 컴파일/실행 API 호출” 흐름을 탐지합니다.
-룰로 고정합니다. [Source] <a href="https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability">https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability</a> (2026-01-12)</p>
+</code></pre><p>팀 규칙으로 고정합니다.
+[Source] <a href="https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability">https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability</a> (2026-01-12)</p>
 <h3>4) 개발툴/확장이 실행하는 명령을 프로젝트 입력이 좌우</h3>
 <p>공격자는 레포/워크스페이스 설정을 통해 개발자 PC에서 명령 실행을 유도합니다. 취약 확장을 제거하고 워크스페이스 신뢰를 기본 거부로 둡니다.</p>
 <p>안 좋은 예:</p>
 <pre><code class="hljs language-text">workspace 설정값 -&gt; shell command 문자열로 결합 -&gt; 실행
 </code></pre><p>안전한 대안:</p>
 <pre><code class="hljs language-text">확장 설치 allowlist + 신뢰되지 않은 워크스페이스 기본 거부 + EOL 확장 제거
-</code></pre><p>관련 CWE + 정적분석/CodeQL 탐지 아이디어: CWE-78; “입력값을 쉘 커맨드로 조합” 규칙을 도구 정책으로 차단합니다.
-룰로 고정합니다. [Source] <a href="https://spring.io/security/cve-2026-22718">https://spring.io/security/cve-2026-22718</a> (2026-01-16)</p>
+</code></pre><p>팀 규칙으로 고정합니다.
+[Source] <a href="https://spring.io/security/cve-2026-22718">https://spring.io/security/cve-2026-22718</a> (2026-01-16)</p>
 <h3>5) XML/직렬화 입력 경로를 로그/모니터링에서 빼버림</h3>
 <p>공격자는 탐지되지 않는 입력 경로로 반복 시도해 성공 확률을 올립니다. 파서 진입을 보안 이벤트로 분리해 메타데이터를 남깁니다.</p>
 <p>안 좋은 예:</p>
 <pre><code class="hljs language-text">/upload, /report 렌더 API는 요청 메타데이터를 거의 기록하지 않음
 </code></pre><p>안전한 대안:</p>
 <pre><code class="hljs language-text">요청 크기/파일 타입/해시/렌더 결과 코드 등 최소 메타데이터를 보안 이벤트로 기록
-</code></pre><p>관련 CWE + 정적분석/CodeQL 탐지 아이디어: CWE-778; “업로드/리포트/파서 진입 API에서 로깅 누락”을 탐지하고 필수 필드를 고정합니다.
-룰로 고정합니다. [Source] <a href="https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability">https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability</a> (2026-01-12)</p>
+</code></pre><p>팀 규칙으로 고정합니다.
+[Source] <a href="https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability">https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability</a> (2026-01-12)</p>
 <p>팀이 오늘 적용할 규칙/코드 조치를 팀 규칙과 PR 체크리스트에 반영합니다.</p>
 <h2>(3.4) 운영 참고(선택)</h2>
 
@@ -1843,32 +1776,47 @@ f.setFeature(<span class="hljs-string">&quot;http://xml.org/sax/features/externa
 </ul>
 <h1>(5) 이번 달 개발자 체크리스트</h1>
 <ol>
+<li>Node.js permission model은 보안 경계로 쓰지 않고 realpath allowlist+OS 격리를 기본으로 둡니다. [Source] <a href="https://nodejs.org/en/blog/vulnerability/december-2025-security-releases">https://nodejs.org/en/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)</li>
+<li>파일 경로는 문자열 검증이 아니라 정규화+realpath 기준으로만 검증합니다. [Source] <a href="https://nodejs.org/en/blog/vulnerability/december-2025-security-releases">https://nodejs.org/en/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)</li>
+<li><code>vm</code>으로 유저 코드를 실행하지 않고 불가피하면 별도 프로세스/컨테이너로 격리합니다. [Source] <a href="https://nodejs.org/en/blog/vulnerability/december-2025-security-releases">https://nodejs.org/en/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)</li>
+<li>UDS(로컬 소켓) 경로는 입력에서 직접 받지 않고 allowlist로 고정합니다. [Source] <a href="https://nodejs.org/en/blog/vulnerability/december-2025-security-releases">https://nodejs.org/en/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)</li>
+<li>EOL 개발 도구/확장은 즉시 제거하고 조직 표준 allowlist로만 설치합니다. [Source] <a href="https://spring.io/security/cve-2026-22718">https://spring.io/security/cve-2026-22718</a> (2026-01-16)</li>
 <li>Node.js 런타임을 보안 릴리스 버전으로 업데이트합니다. [Source] <a href="https://nodejs.org/en/blog/vulnerability/december-2025-security-releases">https://nodejs.org/en/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)</li>
-<li><code>vm</code>+<code>timeout</code>으로 유저 코드를 돌리는 기능을 제거하거나 별도 프로세스/컨테이너로 격리합니다. [Source] <a href="https://nodejs.org/en/blog/vulnerability/december-2025-security-releases">https://nodejs.org/en/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)</li>
-<li>Node.js permission model 사용 시 realpath 기준 allowlist 검증과 symlink 체인 차단을 추가합니다. [Source] <a href="https://nodejs.org/en/blog/vulnerability/december-2025-security-releases">https://nodejs.org/en/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)</li>
-<li><code>--permission</code> 사용 시 UDS 경로 입력을 allowlist로 고정하고 OS 격리(컨테이너/유저 분리)를 적용합니다. [Source] <a href="https://nodejs.org/en/blog/vulnerability/december-2025-security-releases">https://nodejs.org/en/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)</li>
 <li><code>fs.futimes()</code> 사용 여부를 점검하고 보안 의미로 파일 타임스탬프를 신뢰하지 않도록 설계를 바꿉니다. [Source] <a href="https://nodejs.org/en/blog/vulnerability/december-2025-security-releases">https://nodejs.org/en/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)</li>
 <li>Struts 사용 시 S2-069 패치 버전으로 업그레이드하고 XML 파서에서 DTD/외부 엔티티를 비활성화합니다. [Source] <a href="https://cwiki.apache.org/confluence/display/WW/S2-069">https://cwiki.apache.org/confluence/display/WW/S2-069</a> (2026-01-11)</li>
 <li>JasperReports 사용 시 외부 템플릿 업로드/로딩 경로를 차단하고 컴포넌트를 업데이트합니다. [Source] <a href="https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability">https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability</a> (2026-01-12)</li>
-<li>Spring CLI VSCode extension을 조직 표준에서 제거하고 개발자 PC에서 설치 여부를 점검해 제거합니다. [Source] <a href="https://spring.io/security/cve-2026-22718">https://spring.io/security/cve-2026-22718</a> (2026-01-16)</li>
 <li>워크스페이스 신뢰를 기본 거부로 두고 신뢰된 레포에서만 확장을 실행합니다. [Source] <a href="https://spring.io/security/cve-2026-22718">https://spring.io/security/cve-2026-22718</a> (2026-01-16)</li>
-<li>“리포트/업로드/파서 진입” 경로는 보안 이벤트로 분리해 최소 메타데이터(요청 크기/파일 타입/해시/결과 코드)를 기록합니다. [Source] <a href="https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability">https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability</a> (2026-01-12)</li>
 </ol>
+<!--CARD
+{"id":"checklist-1","kind":"checklist","header":"체크리스트","title":"이번 달 개발자 체크리스트(10)","bodyMd":"1. Node.js permission model은 보안 경계로 쓰지 않고 realpath allowlist+OS 격리를 기본으로 둡니다.\n2. 파일 경로는 문자열 검증이 아니라 정규화+realpath 기준으로만 검증합니다.\n3. `vm`으로 유저 코드를 실행하지 않고 불가피하면 별도 프로세스/컨테이너로 격리합니다.\n4. UDS(로컬 소켓) 경로는 입력에서 직접 받지 않고 allowlist로 고정합니다.\n5. EOL 개발 도구/확장은 즉시 제거하고 조직 표준 allowlist로만 설치합니다.\n6. Node.js 런타임을 보안 릴리스 버전으로 업데이트합니다.\n7. `fs.futimes()` 사용 여부를 점검하고 보안 의미로 파일 타임스탬프를 신뢰하지 않도록 설계를 바꿉니다.\n8. Struts 사용 시 S2-069 패치 버전으로 업그레이드하고 XML 파서에서 DTD/외부 엔티티를 비활성화합니다.\n9. JasperReports 사용 시 외부 템플릿 업로드/로딩 경로를 차단하고 컴포넌트를 업데이트합니다.\n10. 워크스페이스 신뢰를 기본 거부로 두고 신뢰된 레포에서만 확장을 실행합니다.","actionMd":"이번 카드의 항목을 완료 처리합니다.","source":"https://nodejs.org/en/blog/vulnerability/december-2025-security-releases"}
+-->
+
 <h1>(6) 패턴→팀 규칙(5)</h1>
 <ol>
 <li>Node.js permission model은 보안 경계로 쓰지 않고 realpath allowlist+OS 격리를 기본으로 둡니다.</li>
 <li>파일 경로는 문자열 검증이 아니라 정규화+realpath 기준으로만 검증합니다.</li>
 <li><code>vm</code>으로 유저 코드를 실행하지 않고 불가피하면 별도 프로세스/컨테이너로 격리합니다.</li>
-<li>네트워크 입력 처리에는 timeout/최대 크기/에러 핸들링을 코드로 고정합니다.</li>
+<li>UDS(로컬 소켓) 경로는 입력에서 직접 받지 않고 allowlist로 고정합니다.</li>
 <li>EOL 개발 도구/확장은 즉시 제거하고 조직 표준 allowlist로만 설치합니다.</li>
 </ol>
+<!--CARD
+{"id":"rules-1","kind":"rules","header":"팀 규칙","title":"패턴→팀 규칙(5)","bodyMd":"1. Node.js permission model은 보안 경계로 쓰지 않고 realpath allowlist+OS 격리를 기본으로 둡니다.\n2. 파일 경로는 문자열 검증이 아니라 정규화+realpath 기준으로만 검증합니다.\n3. `vm`으로 유저 코드를 실행하지 않고 불가피하면 별도 프로세스/컨테이너로 격리합니다.\n4. UDS(로컬 소켓) 경로는 입력에서 직접 받지 않고 allowlist로 고정합니다.\n5. EOL 개발 도구/확장은 즉시 제거하고 조직 표준 allowlist로만 설치합니다.","actionMd":"팀 규칙을 PR 템플릿과 린트 규칙에 반영합니다.","source":"https://spring.io/security/cve-2026-22718"}
+-->
+
 <h1>(7) 참고자료</h1>
 <ul>
 <li><a href="https://nodejs.org/en/blog/vulnerability/december-2025-security-releases">https://nodejs.org/en/blog/vulnerability/december-2025-security-releases</a></li>
+<li><a href="https://cveawg.mitre.org/api/cve/CVE-2025-55131">https://cveawg.mitre.org/api/cve/CVE-2025-55131</a></li>
+<li><a href="https://cveawg.mitre.org/api/cve/CVE-2025-55130">https://cveawg.mitre.org/api/cve/CVE-2025-55130</a></li>
+<li><a href="https://cveawg.mitre.org/api/cve/CVE-2026-21636">https://cveawg.mitre.org/api/cve/CVE-2026-21636</a></li>
+<li><a href="https://cveawg.mitre.org/api/cve/CVE-2025-55132">https://cveawg.mitre.org/api/cve/CVE-2025-55132</a></li>
 <li><a href="https://cwiki.apache.org/confluence/display/WW/S2-069">https://cwiki.apache.org/confluence/display/WW/S2-069</a></li>
+<li><a href="https://cveawg.mitre.org/api/cve/CVE-2025-68493">https://cveawg.mitre.org/api/cve/CVE-2025-68493</a></li>
 <li><a href="https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability">https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability</a></li>
+<li><a href="https://cveawg.mitre.org/api/cve/CVE-2025-10492">https://cveawg.mitre.org/api/cve/CVE-2025-10492</a></li>
 <li><a href="https://spring.io/security/cve-2026-22718">https://spring.io/security/cve-2026-22718</a></li>
 <li><a href="https://github.com/advisories/GHSA-h34g-p94m-h76q">https://github.com/advisories/GHSA-h34g-p94m-h76q</a></li>
+<li><a href="https://cveawg.mitre.org/api/cve/CVE-2026-22718">https://cveawg.mitre.org/api/cve/CVE-2026-22718</a></li>
 </ul>
 
 </section>
@@ -1879,89 +1827,130 @@ f.setFeature(<span class="hljs-string">&quot;http://xml.org/sax/features/externa
         const KEY = "devsecnews:view";
         const buttons = Array.from(document.querySelectorAll("[data-view-btn]"));
 
-        // Card deck (PNG carousel)
-        (function initCards() {
-          const dock = document.getElementById("cardsDock");
-          if (!dock) return;
-          let cards = [];
-          try {
-            const raw = dock.getAttribute("data-cards") || "[]";
-            cards = JSON.parse(raw);
-          } catch {}
-          if (!Array.isArray(cards) || cards.length === 0) {
-            dock.style.display = "none";
-            return;
+        function setView(v, persist) {
+          if (!["summary","all","node","java"].includes(v)) v = "all";
+          document.body.dataset.view = v;
+          for (const b of buttons) b.setAttribute("aria-pressed", String(b.dataset.viewBtn === v));
+          if (persist) {
+            try { localStorage.setItem(KEY, v); } catch {}
+          }
+          // Keep URL navigable/bookmarkable without reloading.
+          try { history.replaceState(null, "", v === "all" ? "#all" : ("#" + v)); } catch {}
+          // If speaking, restart to read the newly visible section only.
+          if (speaking) startTts();
+        }
+
+        // Code block: add copy buttons
+        (function initCopyButtons() {
+          const blocks = Array.from(document.querySelectorAll("pre"));
+          for (const pre of blocks) {
+            const code = pre.querySelector("code");
+            if (!code) continue;
+            // Wrap to position button
+            if (!pre.parentElement || pre.parentElement.classList.contains("codeblock")) continue;
+            const wrap = document.createElement("div");
+            wrap.className = "codeblock";
+            pre.parentElement.insertBefore(wrap, pre);
+            wrap.appendChild(pre);
+
+            // Tag codeblock based on preceding label text (Korean)
+            // Typical Markdown structure is: <p>안 좋은 예:</p><pre>...</pre>
+            // or: <p>안전한 대안:</p><pre>...</pre>
+            const prev = wrap.previousElementSibling;
+            const prevText = (prev && (prev.innerText || prev.textContent) ? (prev.innerText || prev.textContent) : "").trim();
+            if (prevText.startsWith("안 좋은 예")) wrap.classList.add("bad");
+            if (prevText.startsWith("안전한 대안")) wrap.classList.add("good");
+
+            const btn = document.createElement("button");
+            btn.type = "button";
+            btn.className = "copyBtn";
+            btn.textContent = "복사";
+            btn.setAttribute("aria-label", "코드 복사");
+            wrap.appendChild(btn);
+
+            btn.addEventListener("click", async () => {
+              const text = (code.innerText || code.textContent || "").trimEnd();
+              if (!text) return;
+              try {
+                await navigator.clipboard.writeText(text);
+                const old = btn.textContent;
+                btn.textContent = "복사됨";
+                setTimeout(() => (btn.textContent = old), 900);
+              } catch {
+                // Fallback
+                try {
+                  const ta = document.createElement("textarea");
+                  ta.value = text;
+                  ta.style.position = "fixed";
+                  ta.style.left = "-9999px";
+                  document.body.appendChild(ta);
+                  ta.focus();
+                  ta.select();
+                  document.execCommand("copy");
+                  document.body.removeChild(ta);
+                  const old = btn.textContent;
+                  btn.textContent = "복사됨";
+                  setTimeout(() => (btn.textContent = old), 900);
+                } catch {
+                  btn.setAttribute("aria-disabled", "true");
+                }
+              }
+            });
+          }
+        })();
+
+        // Checklist → details jump (by Source URL)
+        (function initChecklistJump() {
+          const summary = document.querySelector(".view-summary");
+          if (!summary) return;
+
+          // Find the checklist section by heading text.
+          const h = Array.from(summary.querySelectorAll("h1,h2,h3")).find((x) =>
+            (x.innerText || "").includes("(5) 이번 달 개발자 체크리스트")
+          );
+          if (!h) return;
+
+          const ol = h.nextElementSibling && h.nextElementSibling.tagName === "OL"
+            ? h.nextElementSibling
+            : summary.querySelector("ol");
+          if (!ol) return;
+
+          // Add a tiny hint once.
+          if (!summary.querySelector(".jumpHint")) {
+            const hint = document.createElement("div");
+            hint.className = "jumpHint";
+            hint.textContent = "체크리스트 항목을 클릭하면 본문으로 이동합니다.";
+            ol.parentElement.insertBefore(hint, ol.nextSibling);
           }
 
-          const img = document.getElementById("cardsImg");
-          const prev = document.getElementById("cardsPrev");
-          const next = document.getElementById("cardsNext");
-          const count = document.getElementById("cardsCount");
-          const dots = document.getElementById("cardsDots");
-          let idx = 0;
+          const items = Array.from(ol.querySelectorAll("li"));
+          for (const li of items) {
+            li.style.cursor = "pointer";
+            li.addEventListener("click", () => {
+              // Use the first external source URL inside the checklist item.
+              const a = li.querySelector('a[href^="http"]');
+              if (!a) return;
+              const href = a.getAttribute("href");
+              if (!href) return;
 
-          function set(i) {
-            idx = (i + cards.length) % cards.length;
-            if (img) img.src = cards[idx];
-            if (count) count.textContent = String(idx + 1) + "/" + String(cards.length);
-            if (prev) prev.disabled = cards.length <= 1;
-            if (next) next.disabled = cards.length <= 1;
-            if (dots) {
-              const btns = Array.from(dots.querySelectorAll("button[data-dot]"));
-              for (const b of btns) b.setAttribute("aria-pressed", String(Number(b.dataset.dot) === idx));
-            }
+              // Show full doc so target is visible, then scroll.
+              setView("all", true);
+
+              // Find same href elsewhere (skip the one inside the checklist item).
+              const links = Array.from(document.querySelectorAll('a[href="' + href.replace(/"/g, '\"') + '"]'));
+              let target = null;
+              for (const l of links) {
+                if (li.contains(l)) continue;
+                target = l;
+                break;
+              }
+              if (!target) return;
+
+              // Scroll to nearest heading for context.
+              const heading = target.closest("section")?.querySelector("h1,h2,h3") || target.closest("h1,h2,h3");
+              (heading || target).scrollIntoView({ behavior: "smooth", block: "start" });
+            });
           }
-
-          function buildDots() {
-            if (!dots) return;
-            dots.innerHTML = "";
-            for (let i = 0; i < cards.length; i++) {
-              const b = document.createElement("button");
-              b.type = "button";
-              b.dataset.dot = String(i);
-              b.setAttribute("aria-label", "카드 " + String(i + 1));
-              b.setAttribute("aria-pressed", "false");
-              b.addEventListener("click", () => set(i));
-              dots.appendChild(b);
-            }
-          }
-
-          buildDots();
-          set(0);
-
-          prev && prev.addEventListener("click", () => set(idx - 1));
-          next && next.addEventListener("click", () => set(idx + 1));
-
-          // Keyboard arrows (avoid capturing when typing in inputs)
-          window.addEventListener("keydown", (e) => {
-            const t = e.target;
-            if (t && (t.tagName === "INPUT" || t.tagName === "TEXTAREA" || t.isContentEditable)) return;
-            if (e.key === "ArrowLeft") set(idx - 1);
-            if (e.key === "ArrowRight") set(idx + 1);
-          });
-
-          // Swipe (touch)
-          let startX = 0;
-          let startY = 0;
-          let active = false;
-          dock.addEventListener("touchstart", (e) => {
-            if (!e.touches || e.touches.length !== 1) return;
-            active = true;
-            startX = e.touches[0].clientX;
-            startY = e.touches[0].clientY;
-          }, { passive: true });
-          dock.addEventListener("touchend", (e) => {
-            if (!active) return;
-            active = false;
-            const touch = (e.changedTouches && e.changedTouches[0]) ? e.changedTouches[0] : null;
-            if (!touch) return;
-            const dx = touch.clientX - startX;
-            const dy = touch.clientY - startY;
-            // Prefer horizontal swipe; ignore mostly-vertical gestures to avoid scroll fights.
-            if (Math.abs(dx) < 40 || Math.abs(dx) < Math.abs(dy)) return;
-            if (dx < 0) set(idx + 1);
-            else set(idx - 1);
-          }, { passive: true });
         })();
 
         // TTS (Web Speech API)
@@ -2151,18 +2140,7 @@ f.setFeature(<span class="hljs-string">&quot;http://xml.org/sax/features/externa
           if (tts) tts.style.display = "none";
         }
 
-        function setView(v, persist) {
-          if (!["summary","all","node","java"].includes(v)) v = "all";
-          document.body.dataset.view = v;
-          for (const b of buttons) b.setAttribute("aria-pressed", String(b.dataset.viewBtn === v));
-          if (persist) {
-            try { localStorage.setItem(KEY, v); } catch {}
-          }
-          // Keep URL navigable/bookmarkable without reloading.
-          try { history.replaceState(null, "", v === "all" ? "#all" : ("#" + v)); } catch {}
-          // If speaking, restart to read the newly visible section only.
-          if (speaking) startTts();
-        }
+        // setView is defined above to allow reuse by other UI features.
 
         for (const b of buttons) {
           b.addEventListener("click", () => setView(b.dataset.viewBtn, true));
