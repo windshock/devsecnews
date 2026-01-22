@@ -5,6 +5,9 @@ node_modules/
 cards/**/card-*.png
 cards/**/*.png
 
+# GitHub Pages output (commit files under docs/)
+!docs/**
+
 # Optional local tooling
 .cursor/
 .vscode/

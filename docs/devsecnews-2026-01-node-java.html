@@ -1,0 +1,2161 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>devsecnews-2026-01-node-java.md</title>
+    <style>
+  :root { color-scheme: light; }
+  body {
+    margin: 0;
+    background: #ffffff;
+    color: #1f2328;
+    font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+    line-height: 1.6;
+  }
+  main { max-width: 980px; margin: 0 auto; padding: 28px 18px; }
+  .markdown-body { box-sizing: border-box; min-width: 200px; }
+  .markdown-body table { display: table; width: 100%; }
+  /* Code blocks */
+  .markdown-body pre {
+    padding: 12px;
+    border-radius: 10px;
+    overflow: auto;
+    background: #f6f8fa;
+    border: 1px solid rgba(31,35,40,0.12);
+  }
+  /* Code blocks: bad vs good contrast (driven by JS classes on .codeblock) */
+  .codeblock.bad pre {
+    background: rgba(207,34,46,0.06);
+    border-color: rgba(207,34,46,0.20);
+  }
+  .codeblock.good pre {
+    background: rgba(26,127,55,0.06);
+    border-color: rgba(26,127,55,0.20);
+  }
+  .markdown-body code, .markdown-body pre code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-size: 0.92em;
+  }
+  a { word-break: break-all; }
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid rgba(31,35,40,0.12);
+  }
+  .topbar-inner {
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 10px 18px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .segmented {
+    display: inline-flex;
+    border: 1px solid rgba(31,35,40,0.18);
+    border-radius: 999px;
+    overflow: hidden;
+    background: #fff;
+  }
+  .segmented button {
+    appearance: none;
+    border: 0;
+    background: transparent;
+    padding: 8px 12px;
+    font-size: 13px;
+    cursor: pointer;
+    color: #1f2328;
+  }
+  .segmented button[aria-pressed="true"] {
+    background: rgba(9,105,218,0.12);
+    color: #0969da;
+    font-weight: 600;
+  }
+  .hint {
+    font-size: 12px;
+    color: rgba(31,35,40,0.65);
+    white-space: nowrap;
+  }
+  .topbar-right {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+  }
+  .tts {
+    display: inline-flex;
+    gap: 6px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .tts button, .tts select, .tts label {
+    font-size: 12px;
+  }
+  .tts button {
+    appearance: none;
+    border: 1px solid rgba(31,35,40,0.18);
+    border-radius: 8px;
+    background: #fff;
+    padding: 6px 10px;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .tts button[disabled] {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+  .tts select {
+    appearance: none;
+    border: 1px solid rgba(31,35,40,0.18);
+    border-radius: 8px;
+    background: #fff;
+    padding: 6px 8px;
+    max-width: 220px;
+  }
+  .tts .chk {
+    display: inline-flex;
+    gap: 6px;
+    align-items: center;
+    border: 1px solid rgba(31,35,40,0.18);
+    border-radius: 8px;
+    background: #fff;
+    padding: 6px 8px;
+    white-space: nowrap;
+  }
+  /* Code copy button */
+  .codeblock {
+    position: relative;
+  }
+  .copyBtn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    appearance: none;
+    border: 1px solid rgba(31,35,40,0.18);
+    border-radius: 10px;
+    background: rgba(255,255,255,0.96);
+    backdrop-filter: blur(6px);
+    padding: 6px 10px;
+    font-size: 12px;
+    cursor: pointer;
+    color: rgba(31,35,40,0.9);
+    box-shadow: 0 2px 10px rgba(31,35,40,0.08);
+  }
+  .codeblock.bad .copyBtn { border-color: rgba(207,34,46,0.28); }
+  .codeblock.good .copyBtn { border-color: rgba(26,127,55,0.28); }
+  .copyBtn:active { transform: translateY(1px); }
+  .copyBtn[aria-disabled="true"] {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  /* Subtle: show button more clearly on hover for desktop */
+  @media (hover: hover) {
+    .codeblock .copyBtn { opacity: 0.78; }
+    .codeblock:hover .copyBtn { opacity: 1; }
+  }
+  /* Jump affordance */
+  .jumpHint {
+    font-size: 12px;
+    color: rgba(31,35,40,0.6);
+    margin-top: 6px;
+  }
+  .view-summary { display: none; }
+  .view-node { display: none; }
+  .view-java { display: none; }
+  .view-rest { display: none; }
+
+  /* Responsive (mobile-first adjustments) */
+  @media (max-width: 720px) {
+    main { padding: 16px 12px; }
+    .markdown-body { font-size: 15px; line-height: 1.7; }
+    .markdown-body h1 { font-size: 1.5em; }
+    .markdown-body h2 { font-size: 1.25em; }
+    .markdown-body h3 { font-size: 1.1em; }
+
+    /* Tables: horizontal scroll instead of layout break */
+    .markdown-body table { display: block; width: 100%; overflow-x: auto; white-space: nowrap; -webkit-overflow-scrolling: touch; }
+
+    /* Code: keep readable and avoid copy button overlap */
+    .markdown-body pre { font-size: 12px; }
+    .copyBtn { top: 6px; right: 6px; padding: 5px 8px; }
+
+    /* Topbar: allow wrap and reduce clutter */
+    .topbar-inner { gap: 8px; align-items: flex-start; }
+    .topbar-right { justify-content: flex-start; }
+    .segmented button { padding: 7px 10px; font-size: 12px; }
+    .hint { display: none; }
+  }
+
+  body[data-view="all"] .view-summary { display: block; }
+  body[data-view="all"] .view-node { display: block; }
+  body[data-view="all"] .view-java { display: block; }
+  body[data-view="all"] .view-rest { display: block; }
+
+  body[data-view="summary"] .view-summary { display: block; }
+  body[data-view="node"] .view-node { display: block; }
+  body[data-view="java"] .view-java { display: block; }
+  .markdown-body {
+  --base-size-4: 0.25rem;
+  --base-size-8: 0.5rem;
+  --base-size-16: 1rem;
+  --base-size-24: 1.5rem;
+  --base-size-40: 2.5rem;
+  --base-text-weight-normal: 400;
+  --base-text-weight-medium: 500;
+  --base-text-weight-semibold: 600;
+  --fontStack-monospace: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace;
+  --fgColor-accent: Highlight;
+}
+@media (prefers-color-scheme: dark) {
+  .markdown-body, [data-theme="dark"] {
+    /* dark */
+    color-scheme: dark;
+    --focus-outlineColor: #1f6feb;
+    --fgColor-default: #f0f6fc;
+    --fgColor-muted: #9198a1;
+    --fgColor-accent: #4493f8;
+    --fgColor-success: #3fb950;
+    --fgColor-attention: #d29922;
+    --fgColor-danger: #f85149;
+    --fgColor-done: #ab7df8;
+    --bgColor-default: #0d1117;
+    --bgColor-muted: #151b23;
+    --bgColor-neutral-muted: #656c7633;
+    --bgColor-attention-muted: #bb800926;
+    --borderColor-default: #3d444d;
+    --borderColor-muted: #3d444db3;
+    --borderColor-neutral-muted: #3d444db3;
+    --borderColor-accent-emphasis: #1f6feb;
+    --borderColor-success-emphasis: #238636;
+    --borderColor-attention-emphasis: #9e6a03;
+    --borderColor-danger-emphasis: #da3633;
+    --borderColor-done-emphasis: #8957e5;
+    --color-prettylights-syntax-comment: #9198a1;
+    --color-prettylights-syntax-constant: #79c0ff;
+    --color-prettylights-syntax-constant-other-reference-link: #a5d6ff;
+    --color-prettylights-syntax-entity: #d2a8ff;
+    --color-prettylights-syntax-storage-modifier-import: #f0f6fc;
+    --color-prettylights-syntax-entity-tag: #7ee787;
+    --color-prettylights-syntax-keyword: #ff7b72;
+    --color-prettylights-syntax-string: #a5d6ff;
+    --color-prettylights-syntax-variable: #ffa657;
+    --color-prettylights-syntax-brackethighlighter-unmatched: #f85149;
+    --color-prettylights-syntax-brackethighlighter-angle: #9198a1;
+    --color-prettylights-syntax-invalid-illegal-text: #f0f6fc;
+    --color-prettylights-syntax-invalid-illegal-bg: #8e1519;
+    --color-prettylights-syntax-carriage-return-text: #f0f6fc;
+    --color-prettylights-syntax-carriage-return-bg: #b62324;
+    --color-prettylights-syntax-string-regexp: #7ee787;
+    --color-prettylights-syntax-markup-list: #f2cc60;
+    --color-prettylights-syntax-markup-heading: #1f6feb;
+    --color-prettylights-syntax-markup-italic: #f0f6fc;
+    --color-prettylights-syntax-markup-bold: #f0f6fc;
+    --color-prettylights-syntax-markup-deleted-text: #ffdcd7;
+    --color-prettylights-syntax-markup-deleted-bg: #67060c;
+    --color-prettylights-syntax-markup-inserted-text: #aff5b4;
+    --color-prettylights-syntax-markup-inserted-bg: #033a16;
+    --color-prettylights-syntax-markup-changed-text: #ffdfb6;
+    --color-prettylights-syntax-markup-changed-bg: #5a1e02;
+    --color-prettylights-syntax-markup-ignored-text: #f0f6fc;
+    --color-prettylights-syntax-markup-ignored-bg: #1158c7;
+    --color-prettylights-syntax-meta-diff-range: #d2a8ff;
+    --color-prettylights-syntax-sublimelinter-gutter-mark: #3d444d;
+  }
+}
+@media (prefers-color-scheme: light) {
+  .markdown-body, [data-theme="light"] {
+    /* light */
+    color-scheme: light;
+    --focus-outlineColor: #0969da;
+    --fgColor-default: #1f2328;
+    --fgColor-muted: #59636e;
+    --fgColor-accent: #0969da;
+    --fgColor-success: #1a7f37;
+    --fgColor-attention: #9a6700;
+    --fgColor-danger: #d1242f;
+    --fgColor-done: #8250df;
+    --bgColor-default: #ffffff;
+    --bgColor-muted: #f6f8fa;
+    --bgColor-neutral-muted: #818b981f;
+    --bgColor-attention-muted: #fff8c5;
+    --borderColor-default: #d1d9e0;
+    --borderColor-muted: #d1d9e0b3;
+    --borderColor-neutral-muted: #d1d9e0b3;
+    --borderColor-accent-emphasis: #0969da;
+    --borderColor-success-emphasis: #1a7f37;
+    --borderColor-attention-emphasis: #9a6700;
+    --borderColor-danger-emphasis: #cf222e;
+    --borderColor-done-emphasis: #8250df;
+    --color-prettylights-syntax-comment: #59636e;
+    --color-prettylights-syntax-constant: #0550ae;
+    --color-prettylights-syntax-constant-other-reference-link: #0a3069;
+    --color-prettylights-syntax-entity: #6639ba;
+    --color-prettylights-syntax-storage-modifier-import: #1f2328;
+    --color-prettylights-syntax-entity-tag: #0550ae;
+    --color-prettylights-syntax-keyword: #cf222e;
+    --color-prettylights-syntax-string: #0a3069;
+    --color-prettylights-syntax-variable: #953800;
+    --color-prettylights-syntax-brackethighlighter-unmatched: #82071e;
+    --color-prettylights-syntax-brackethighlighter-angle: #59636e;
+    --color-prettylights-syntax-invalid-illegal-text: #f6f8fa;
+    --color-prettylights-syntax-invalid-illegal-bg: #82071e;
+    --color-prettylights-syntax-carriage-return-text: #f6f8fa;
+    --color-prettylights-syntax-carriage-return-bg: #cf222e;
+    --color-prettylights-syntax-string-regexp: #116329;
+    --color-prettylights-syntax-markup-list: #3b2300;
+    --color-prettylights-syntax-markup-heading: #0550ae;
+    --color-prettylights-syntax-markup-italic: #1f2328;
+    --color-prettylights-syntax-markup-bold: #1f2328;
+    --color-prettylights-syntax-markup-deleted-text: #82071e;
+    --color-prettylights-syntax-markup-deleted-bg: #ffebe9;
+    --color-prettylights-syntax-markup-inserted-text: #116329;
+    --color-prettylights-syntax-markup-inserted-bg: #dafbe1;
+    --color-prettylights-syntax-markup-changed-text: #953800;
+    --color-prettylights-syntax-markup-changed-bg: #ffd8b5;
+    --color-prettylights-syntax-markup-ignored-text: #d1d9e0;
+    --color-prettylights-syntax-markup-ignored-bg: #0550ae;
+    --color-prettylights-syntax-meta-diff-range: #8250df;
+    --color-prettylights-syntax-sublimelinter-gutter-mark: #818b98;
+  }
+}
+
+.markdown-body {
+  -ms-text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+  margin: 0;
+  color: var(--fgColor-default);
+  background-color: var(--bgColor-default);
+  font-family: -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji";
+  font-size: 16px;
+  line-height: 1.5;
+  word-wrap: break-word;
+}
+
+.markdown-body .octicon {
+  display: inline-block;
+  fill: currentColor;
+  vertical-align: text-bottom;
+}
+
+.markdown-body h1:hover .anchor .octicon-link:before,
+.markdown-body h2:hover .anchor .octicon-link:before,
+.markdown-body h3:hover .anchor .octicon-link:before,
+.markdown-body h4:hover .anchor .octicon-link:before,
+.markdown-body h5:hover .anchor .octicon-link:before,
+.markdown-body h6:hover .anchor .octicon-link:before {
+  width: 16px;
+  height: 16px;
+  content: ' ';
+  display: inline-block;
+  background-color: currentColor;
+  -webkit-mask-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' version='1.1' aria-hidden='true'><path fill-rule='evenodd' d='M7.775 3.275a.75.75 0 001.06 1.06l1.25-1.25a2 2 0 112.83 2.83l-2.5 2.5a2 2 0 01-2.83 0 .75.75 0 00-1.06 1.06 3.5 3.5 0 004.95 0l2.5-2.5a3.5 3.5 0 00-4.95-4.95l-1.25 1.25zm-4.69 9.64a2 2 0 010-2.83l2.5-2.5a2 2 0 012.83 0 .75.75 0 001.06-1.06 3.5 3.5 0 00-4.95 0l-2.5 2.5a3.5 3.5 0 004.95 4.95l1.25-1.25a.75.75 0 00-1.06-1.06l-1.25 1.25a2 2 0 01-2.83 0z'></path></svg>");
+  mask-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' version='1.1' aria-hidden='true'><path fill-rule='evenodd' d='M7.775 3.275a.75.75 0 001.06 1.06l1.25-1.25a2 2 0 112.83 2.83l-2.5 2.5a2 2 0 01-2.83 0 .75.75 0 00-1.06 1.06 3.5 3.5 0 004.95 0l2.5-2.5a3.5 3.5 0 00-4.95-4.95l-1.25 1.25zm-4.69 9.64a2 2 0 010-2.83l2.5-2.5a2 2 0 012.83 0 .75.75 0 001.06-1.06 3.5 3.5 0 00-4.95 0l-2.5 2.5a3.5 3.5 0 004.95 4.95l1.25-1.25a.75.75 0 00-1.06-1.06l-1.25 1.25a2 2 0 01-2.83 0z'></path></svg>");
+}
+
+.markdown-body details,
+.markdown-body figcaption,
+.markdown-body figure {
+  display: block;
+}
+
+.markdown-body summary {
+  display: list-item;
+}
+
+.markdown-body [hidden] {
+  display: none !important;
+}
+
+.markdown-body a {
+  background-color: transparent;
+  color: var(--fgColor-accent);
+  text-decoration: none;
+}
+
+.markdown-body abbr[title] {
+  border-bottom: none;
+  -webkit-text-decoration: underline dotted;
+  text-decoration: underline dotted;
+}
+
+.markdown-body b,
+.markdown-body strong {
+  font-weight: var(--base-text-weight-semibold, 600);
+}
+
+.markdown-body dfn {
+  font-style: italic;
+}
+
+.markdown-body h1 {
+  margin: .67em 0;
+  font-weight: var(--base-text-weight-semibold, 600);
+  padding-bottom: .3em;
+  font-size: 2em;
+  border-bottom: 1px solid var(--borderColor-muted);
+}
+
+.markdown-body mark {
+  background-color: var(--bgColor-attention-muted);
+  color: var(--fgColor-default);
+}
+
+.markdown-body small {
+  font-size: 90%;
+}
+
+.markdown-body sub,
+.markdown-body sup {
+  font-size: 75%;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+
+.markdown-body sub {
+  bottom: -0.25em;
+}
+
+.markdown-body sup {
+  top: -0.5em;
+}
+
+.markdown-body img {
+  border-style: none;
+  max-width: 100%;
+  box-sizing: content-box;
+}
+
+.markdown-body code,
+.markdown-body kbd,
+.markdown-body pre,
+.markdown-body samp {
+  font-family: monospace;
+  font-size: 1em;
+}
+
+.markdown-body figure {
+  margin: 1em var(--base-size-40);
+}
+
+.markdown-body hr {
+  box-sizing: content-box;
+  overflow: hidden;
+  background: transparent;
+  border-bottom: 1px solid var(--borderColor-muted);
+  height: .25em;
+  padding: 0;
+  margin: var(--base-size-24) 0;
+  background-color: var(--borderColor-default);
+  border: 0;
+}
+
+.markdown-body input {
+  font: inherit;
+  margin: 0;
+  overflow: visible;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+}
+
+.markdown-body [type=button],
+.markdown-body [type=reset],
+.markdown-body [type=submit] {
+  -webkit-appearance: button;
+  appearance: button;
+}
+
+.markdown-body [type=checkbox],
+.markdown-body [type=radio] {
+  box-sizing: border-box;
+  padding: 0;
+}
+
+.markdown-body [type=number]::-webkit-inner-spin-button,
+.markdown-body [type=number]::-webkit-outer-spin-button {
+  height: auto;
+}
+
+.markdown-body [type=search]::-webkit-search-cancel-button,
+.markdown-body [type=search]::-webkit-search-decoration {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.markdown-body ::-webkit-input-placeholder {
+  color: inherit;
+  opacity: .54;
+}
+
+.markdown-body ::-webkit-file-upload-button {
+  -webkit-appearance: button;
+  appearance: button;
+  font: inherit;
+}
+
+.markdown-body a:hover {
+  text-decoration: underline;
+}
+
+.markdown-body ::placeholder {
+  color: var(--fgColor-muted);
+  opacity: 1;
+}
+
+.markdown-body hr::before {
+  display: table;
+  content: "";
+}
+
+.markdown-body hr::after {
+  display: table;
+  clear: both;
+  content: "";
+}
+
+.markdown-body table {
+  border-spacing: 0;
+  border-collapse: collapse;
+  display: block;
+  width: max-content;
+  max-width: 100%;
+  overflow: auto;
+  font-variant: tabular-nums;
+}
+
+.markdown-body td,
+.markdown-body th {
+  padding: 0;
+}
+
+.markdown-body details summary {
+  cursor: pointer;
+}
+
+.markdown-body a:focus,
+.markdown-body [role=button]:focus,
+.markdown-body input[type=radio]:focus,
+.markdown-body input[type=checkbox]:focus {
+  outline: 2px solid var(--focus-outlineColor);
+  outline-offset: -2px;
+  box-shadow: none;
+}
+
+.markdown-body a:focus:not(:focus-visible),
+.markdown-body [role=button]:focus:not(:focus-visible),
+.markdown-body input[type=radio]:focus:not(:focus-visible),
+.markdown-body input[type=checkbox]:focus:not(:focus-visible) {
+  outline: solid 1px transparent;
+}
+
+.markdown-body a:focus-visible,
+.markdown-body [role=button]:focus-visible,
+.markdown-body input[type=radio]:focus-visible,
+.markdown-body input[type=checkbox]:focus-visible {
+  outline: 2px solid var(--focus-outlineColor);
+  outline-offset: -2px;
+  box-shadow: none;
+}
+
+.markdown-body a:not([class]):focus,
+.markdown-body a:not([class]):focus-visible,
+.markdown-body input[type=radio]:focus,
+.markdown-body input[type=radio]:focus-visible,
+.markdown-body input[type=checkbox]:focus,
+.markdown-body input[type=checkbox]:focus-visible {
+  outline-offset: 0;
+}
+
+.markdown-body kbd {
+  display: inline-block;
+  padding: var(--base-size-4);
+  font: 11px var(--fontStack-monospace, ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace);
+  line-height: 10px;
+  color: var(--fgColor-default);
+  vertical-align: middle;
+  background-color: var(--bgColor-muted);
+  border: solid 1px var(--borderColor-neutral-muted);
+  border-bottom-color: var(--borderColor-neutral-muted);
+  border-radius: 6px;
+  box-shadow: inset 0 -1px 0 var(--borderColor-neutral-muted);
+}
+
+.markdown-body h1,
+.markdown-body h2,
+.markdown-body h3,
+.markdown-body h4,
+.markdown-body h5,
+.markdown-body h6 {
+  margin-top: var(--base-size-24);
+  margin-bottom: var(--base-size-16);
+  font-weight: var(--base-text-weight-semibold, 600);
+  line-height: 1.25;
+}
+
+.markdown-body h2 {
+  font-weight: var(--base-text-weight-semibold, 600);
+  padding-bottom: .3em;
+  font-size: 1.5em;
+  border-bottom: 1px solid var(--borderColor-muted);
+}
+
+.markdown-body h3 {
+  font-weight: var(--base-text-weight-semibold, 600);
+  font-size: 1.25em;
+}
+
+.markdown-body h4 {
+  font-weight: var(--base-text-weight-semibold, 600);
+  font-size: 1em;
+}
+
+.markdown-body h5 {
+  font-weight: var(--base-text-weight-semibold, 600);
+  font-size: .875em;
+}
+
+.markdown-body h6 {
+  font-weight: var(--base-text-weight-semibold, 600);
+  font-size: .85em;
+  color: var(--fgColor-muted);
+}
+
+.markdown-body p {
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+
+.markdown-body blockquote {
+  margin: 0;
+  padding: 0 1em;
+  color: var(--fgColor-muted);
+  border-left: .25em solid var(--borderColor-default);
+}
+
+.markdown-body ul,
+.markdown-body ol {
+  margin-top: 0;
+  margin-bottom: 0;
+  padding-left: 2em;
+}
+
+.markdown-body ol ol,
+.markdown-body ul ol {
+  list-style-type: lower-roman;
+}
+
+.markdown-body ul ul ol,
+.markdown-body ul ol ol,
+.markdown-body ol ul ol,
+.markdown-body ol ol ol {
+  list-style-type: lower-alpha;
+}
+
+.markdown-body dd {
+  margin-left: 0;
+}
+
+.markdown-body tt,
+.markdown-body code,
+.markdown-body samp {
+  font-family: var(--fontStack-monospace, ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace);
+  font-size: 12px;
+}
+
+.markdown-body pre {
+  margin-top: 0;
+  margin-bottom: 0;
+  font-family: var(--fontStack-monospace, ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace);
+  font-size: 12px;
+  word-wrap: normal;
+}
+
+.markdown-body .octicon {
+  display: inline-block;
+  overflow: visible !important;
+  vertical-align: text-bottom;
+  fill: currentColor;
+}
+
+.markdown-body input::-webkit-outer-spin-button,
+.markdown-body input::-webkit-inner-spin-button {
+  margin: 0;
+  appearance: none;
+}
+
+.markdown-body .mr-2 {
+  margin-right: var(--base-size-8, 8px) !important;
+}
+
+.markdown-body::before {
+  display: table;
+  content: "";
+}
+
+.markdown-body::after {
+  display: table;
+  clear: both;
+  content: "";
+}
+
+.markdown-body>*:first-child {
+  margin-top: 0 !important;
+}
+
+.markdown-body>*:last-child {
+  margin-bottom: 0 !important;
+}
+
+.markdown-body a:not([href]) {
+  color: inherit;
+  text-decoration: none;
+}
+
+.markdown-body .absent {
+  color: var(--fgColor-danger);
+}
+
+.markdown-body .anchor {
+  float: left;
+  padding-right: var(--base-size-4);
+  margin-left: -20px;
+  line-height: 1;
+}
+
+.markdown-body .anchor:focus {
+  outline: none;
+}
+
+.markdown-body p,
+.markdown-body blockquote,
+.markdown-body ul,
+.markdown-body ol,
+.markdown-body dl,
+.markdown-body table,
+.markdown-body pre,
+.markdown-body details {
+  margin-top: 0;
+  margin-bottom: var(--base-size-16);
+}
+
+.markdown-body blockquote>:first-child {
+  margin-top: 0;
+}
+
+.markdown-body blockquote>:last-child {
+  margin-bottom: 0;
+}
+
+.markdown-body h1 .octicon-link,
+.markdown-body h2 .octicon-link,
+.markdown-body h3 .octicon-link,
+.markdown-body h4 .octicon-link,
+.markdown-body h5 .octicon-link,
+.markdown-body h6 .octicon-link {
+  color: var(--fgColor-default);
+  vertical-align: middle;
+  visibility: hidden;
+}
+
+.markdown-body h1:hover .anchor,
+.markdown-body h2:hover .anchor,
+.markdown-body h3:hover .anchor,
+.markdown-body h4:hover .anchor,
+.markdown-body h5:hover .anchor,
+.markdown-body h6:hover .anchor {
+  text-decoration: none;
+}
+
+.markdown-body h1:hover .anchor .octicon-link,
+.markdown-body h2:hover .anchor .octicon-link,
+.markdown-body h3:hover .anchor .octicon-link,
+.markdown-body h4:hover .anchor .octicon-link,
+.markdown-body h5:hover .anchor .octicon-link,
+.markdown-body h6:hover .anchor .octicon-link {
+  visibility: visible;
+}
+
+.markdown-body h1 tt,
+.markdown-body h1 code,
+.markdown-body h2 tt,
+.markdown-body h2 code,
+.markdown-body h3 tt,
+.markdown-body h3 code,
+.markdown-body h4 tt,
+.markdown-body h4 code,
+.markdown-body h5 tt,
+.markdown-body h5 code,
+.markdown-body h6 tt,
+.markdown-body h6 code {
+  padding: 0 .2em;
+  font-size: inherit;
+}
+
+.markdown-body summary h1,
+.markdown-body summary h2,
+.markdown-body summary h3,
+.markdown-body summary h4,
+.markdown-body summary h5,
+.markdown-body summary h6 {
+  display: inline-block;
+}
+
+.markdown-body summary h1 .anchor,
+.markdown-body summary h2 .anchor,
+.markdown-body summary h3 .anchor,
+.markdown-body summary h4 .anchor,
+.markdown-body summary h5 .anchor,
+.markdown-body summary h6 .anchor {
+  margin-left: -40px;
+}
+
+.markdown-body summary h1,
+.markdown-body summary h2 {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.markdown-body ul.no-list,
+.markdown-body ol.no-list {
+  padding: 0;
+  list-style-type: none;
+}
+
+.markdown-body ol[type="a s"] {
+  list-style-type: lower-alpha;
+}
+
+.markdown-body ol[type="A s"] {
+  list-style-type: upper-alpha;
+}
+
+.markdown-body ol[type="i s"] {
+  list-style-type: lower-roman;
+}
+
+.markdown-body ol[type="I s"] {
+  list-style-type: upper-roman;
+}
+
+.markdown-body ol[type="1"] {
+  list-style-type: decimal;
+}
+
+.markdown-body div>ol:not([type]) {
+  list-style-type: decimal;
+}
+
+.markdown-body ul ul,
+.markdown-body ul ol,
+.markdown-body ol ol,
+.markdown-body ol ul {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.markdown-body li>p {
+  margin-top: var(--base-size-16);
+}
+
+.markdown-body li+li {
+  margin-top: .25em;
+}
+
+.markdown-body dl {
+  padding: 0;
+}
+
+.markdown-body dl dt {
+  padding: 0;
+  margin-top: var(--base-size-16);
+  font-size: 1em;
+  font-style: italic;
+  font-weight: var(--base-text-weight-semibold, 600);
+}
+
+.markdown-body dl dd {
+  padding: 0 var(--base-size-16);
+  margin-bottom: var(--base-size-16);
+}
+
+.markdown-body table th {
+  font-weight: var(--base-text-weight-semibold, 600);
+}
+
+.markdown-body table th,
+.markdown-body table td {
+  padding: 6px 13px;
+  border: 1px solid var(--borderColor-default);
+}
+
+.markdown-body table td>:last-child {
+  margin-bottom: 0;
+}
+
+.markdown-body table tr {
+  background-color: var(--bgColor-default);
+  border-top: 1px solid var(--borderColor-muted);
+}
+
+.markdown-body table tr:nth-child(2n) {
+  background-color: var(--bgColor-muted);
+}
+
+.markdown-body table img {
+  background-color: transparent;
+}
+
+.markdown-body img[align=right] {
+  padding-left: 20px;
+}
+
+.markdown-body img[align=left] {
+  padding-right: 20px;
+}
+
+.markdown-body .emoji {
+  max-width: none;
+  vertical-align: text-top;
+  background-color: transparent;
+}
+
+.markdown-body span.frame {
+  display: block;
+  overflow: hidden;
+}
+
+.markdown-body span.frame>span {
+  display: block;
+  float: left;
+  width: auto;
+  padding: 7px;
+  margin: 13px 0 0;
+  overflow: hidden;
+  border: 1px solid var(--borderColor-default);
+}
+
+.markdown-body span.frame span img {
+  display: block;
+  float: left;
+}
+
+.markdown-body span.frame span span {
+  display: block;
+  padding: 5px 0 0;
+  clear: both;
+  color: var(--fgColor-default);
+}
+
+.markdown-body span.align-center {
+  display: block;
+  overflow: hidden;
+  clear: both;
+}
+
+.markdown-body span.align-center>span {
+  display: block;
+  margin: 13px auto 0;
+  overflow: hidden;
+  text-align: center;
+}
+
+.markdown-body span.align-center span img {
+  margin: 0 auto;
+  text-align: center;
+}
+
+.markdown-body span.align-right {
+  display: block;
+  overflow: hidden;
+  clear: both;
+}
+
+.markdown-body span.align-right>span {
+  display: block;
+  margin: 13px 0 0;
+  overflow: hidden;
+  text-align: right;
+}
+
+.markdown-body span.align-right span img {
+  margin: 0;
+  text-align: right;
+}
+
+.markdown-body span.float-left {
+  display: block;
+  float: left;
+  margin-right: 13px;
+  overflow: hidden;
+}
+
+.markdown-body span.float-left span {
+  margin: 13px 0 0;
+}
+
+.markdown-body span.float-right {
+  display: block;
+  float: right;
+  margin-left: 13px;
+  overflow: hidden;
+}
+
+.markdown-body span.float-right>span {
+  display: block;
+  margin: 13px auto 0;
+  overflow: hidden;
+  text-align: right;
+}
+
+.markdown-body code,
+.markdown-body tt {
+  padding: .2em .4em;
+  margin: 0;
+  font-size: 85%;
+  white-space: break-spaces;
+  background-color: var(--bgColor-neutral-muted);
+  border-radius: 6px;
+}
+
+.markdown-body code br,
+.markdown-body tt br {
+  display: none;
+}
+
+.markdown-body del code {
+  text-decoration: inherit;
+}
+
+.markdown-body samp {
+  font-size: 85%;
+}
+
+.markdown-body pre code {
+  font-size: 100%;
+}
+
+.markdown-body pre>code {
+  padding: 0;
+  margin: 0;
+  word-break: normal;
+  white-space: pre;
+  background: transparent;
+  border: 0;
+}
+
+.markdown-body .highlight {
+  margin-bottom: var(--base-size-16);
+}
+
+.markdown-body .highlight pre {
+  margin-bottom: 0;
+  word-break: normal;
+}
+
+.markdown-body .highlight pre,
+.markdown-body pre {
+  padding: var(--base-size-16);
+  overflow: auto;
+  font-size: 85%;
+  line-height: 1.45;
+  color: var(--fgColor-default);
+  background-color: var(--bgColor-muted);
+  border-radius: 6px;
+}
+
+.markdown-body pre code,
+.markdown-body pre tt {
+  display: inline;
+  max-width: auto;
+  padding: 0;
+  margin: 0;
+  overflow: visible;
+  line-height: inherit;
+  word-wrap: normal;
+  background-color: transparent;
+  border: 0;
+}
+
+.markdown-body .csv-data td,
+.markdown-body .csv-data th {
+  padding: 5px;
+  overflow: hidden;
+  font-size: 12px;
+  line-height: 1;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.markdown-body .csv-data .blob-num {
+  padding: 10px var(--base-size-8) 9px;
+  text-align: right;
+  background: var(--bgColor-default);
+  border: 0;
+}
+
+.markdown-body .csv-data tr {
+  border-top: 0;
+}
+
+.markdown-body .csv-data th {
+  font-weight: var(--base-text-weight-semibold, 600);
+  background: var(--bgColor-muted);
+  border-top: 0;
+}
+
+.markdown-body [data-footnote-ref]::before {
+  content: "[";
+}
+
+.markdown-body [data-footnote-ref]::after {
+  content: "]";
+}
+
+.markdown-body .footnotes {
+  font-size: 12px;
+  color: var(--fgColor-muted);
+  border-top: 1px solid var(--borderColor-default);
+}
+
+.markdown-body .footnotes ol {
+  padding-left: var(--base-size-16);
+}
+
+.markdown-body .footnotes ol ul {
+  display: inline-block;
+  padding-left: var(--base-size-16);
+  margin-top: var(--base-size-16);
+}
+
+.markdown-body .footnotes li {
+  position: relative;
+}
+
+.markdown-body .footnotes li:target::before {
+  position: absolute;
+  top: calc(var(--base-size-8)*-1);
+  right: calc(var(--base-size-8)*-1);
+  bottom: calc(var(--base-size-8)*-1);
+  left: calc(var(--base-size-24)*-1);
+  pointer-events: none;
+  content: "";
+  border: 2px solid var(--borderColor-accent-emphasis);
+  border-radius: 6px;
+}
+
+.markdown-body .footnotes li:target {
+  color: var(--fgColor-default);
+}
+
+.markdown-body .footnotes .data-footnote-backref g-emoji {
+  font-family: monospace;
+}
+
+.markdown-body body:has(:modal) {
+  padding-right: var(--dialog-scrollgutter) !important;
+}
+
+.markdown-body .pl-c {
+  color: var(--color-prettylights-syntax-comment);
+}
+
+.markdown-body .pl-c1,
+.markdown-body .pl-s .pl-v {
+  color: var(--color-prettylights-syntax-constant);
+}
+
+.markdown-body .pl-e,
+.markdown-body .pl-en {
+  color: var(--color-prettylights-syntax-entity);
+}
+
+.markdown-body .pl-smi,
+.markdown-body .pl-s .pl-s1 {
+  color: var(--color-prettylights-syntax-storage-modifier-import);
+}
+
+.markdown-body .pl-ent {
+  color: var(--color-prettylights-syntax-entity-tag);
+}
+
+.markdown-body .pl-k {
+  color: var(--color-prettylights-syntax-keyword);
+}
+
+.markdown-body .pl-s,
+.markdown-body .pl-pds,
+.markdown-body .pl-s .pl-pse .pl-s1,
+.markdown-body .pl-sr,
+.markdown-body .pl-sr .pl-cce,
+.markdown-body .pl-sr .pl-sre,
+.markdown-body .pl-sr .pl-sra {
+  color: var(--color-prettylights-syntax-string);
+}
+
+.markdown-body .pl-v,
+.markdown-body .pl-smw {
+  color: var(--color-prettylights-syntax-variable);
+}
+
+.markdown-body .pl-bu {
+  color: var(--color-prettylights-syntax-brackethighlighter-unmatched);
+}
+
+.markdown-body .pl-ii {
+  color: var(--color-prettylights-syntax-invalid-illegal-text);
+  background-color: var(--color-prettylights-syntax-invalid-illegal-bg);
+}
+
+.markdown-body .pl-c2 {
+  color: var(--color-prettylights-syntax-carriage-return-text);
+  background-color: var(--color-prettylights-syntax-carriage-return-bg);
+}
+
+.markdown-body .pl-sr .pl-cce {
+  font-weight: bold;
+  color: var(--color-prettylights-syntax-string-regexp);
+}
+
+.markdown-body .pl-ml {
+  color: var(--color-prettylights-syntax-markup-list);
+}
+
+.markdown-body .pl-mh,
+.markdown-body .pl-mh .pl-en,
+.markdown-body .pl-ms {
+  font-weight: bold;
+  color: var(--color-prettylights-syntax-markup-heading);
+}
+
+.markdown-body .pl-mi {
+  font-style: italic;
+  color: var(--color-prettylights-syntax-markup-italic);
+}
+
+.markdown-body .pl-mb {
+  font-weight: bold;
+  color: var(--color-prettylights-syntax-markup-bold);
+}
+
+.markdown-body .pl-md {
+  color: var(--color-prettylights-syntax-markup-deleted-text);
+  background-color: var(--color-prettylights-syntax-markup-deleted-bg);
+}
+
+.markdown-body .pl-mi1 {
+  color: var(--color-prettylights-syntax-markup-inserted-text);
+  background-color: var(--color-prettylights-syntax-markup-inserted-bg);
+}
+
+.markdown-body .pl-mc {
+  color: var(--color-prettylights-syntax-markup-changed-text);
+  background-color: var(--color-prettylights-syntax-markup-changed-bg);
+}
+
+.markdown-body .pl-mi2 {
+  color: var(--color-prettylights-syntax-markup-ignored-text);
+  background-color: var(--color-prettylights-syntax-markup-ignored-bg);
+}
+
+.markdown-body .pl-mdr {
+  font-weight: bold;
+  color: var(--color-prettylights-syntax-meta-diff-range);
+}
+
+.markdown-body .pl-ba {
+  color: var(--color-prettylights-syntax-brackethighlighter-angle);
+}
+
+.markdown-body .pl-sg {
+  color: var(--color-prettylights-syntax-sublimelinter-gutter-mark);
+}
+
+.markdown-body .pl-corl {
+  text-decoration: underline;
+  color: var(--color-prettylights-syntax-constant-other-reference-link);
+}
+
+.markdown-body [role=button]:focus:not(:focus-visible),
+.markdown-body [role=tabpanel][tabindex="0"]:focus:not(:focus-visible),
+.markdown-body button:focus:not(:focus-visible),
+.markdown-body summary:focus:not(:focus-visible),
+.markdown-body a:focus:not(:focus-visible) {
+  outline: none;
+  box-shadow: none;
+}
+
+.markdown-body [tabindex="0"]:focus:not(:focus-visible),
+.markdown-body details-dialog:focus:not(:focus-visible) {
+  outline: none;
+}
+
+.markdown-body g-emoji {
+  display: inline-block;
+  min-width: 1ch;
+  font-family: "Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
+  font-size: 1em;
+  font-style: normal !important;
+  font-weight: var(--base-text-weight-normal, 400);
+  line-height: 1;
+  vertical-align: -0.075em;
+}
+
+.markdown-body g-emoji img {
+  width: 1em;
+  height: 1em;
+}
+
+.markdown-body .task-list-item {
+  list-style-type: none;
+}
+
+.markdown-body .task-list-item label {
+  font-weight: var(--base-text-weight-normal, 400);
+}
+
+.markdown-body .task-list-item.enabled label {
+  cursor: pointer;
+}
+
+.markdown-body .task-list-item+.task-list-item {
+  margin-top: var(--base-size-4);
+}
+
+.markdown-body .task-list-item .handle {
+  display: none;
+}
+
+.markdown-body .task-list-item-checkbox {
+  margin: 0 .2em .25em -1.4em;
+  vertical-align: middle;
+}
+
+.markdown-body ul:dir(rtl) .task-list-item-checkbox {
+  margin: 0 -1.6em .25em .2em;
+}
+
+.markdown-body ol:dir(rtl) .task-list-item-checkbox {
+  margin: 0 -1.6em .25em .2em;
+}
+
+.markdown-body .contains-task-list:hover .task-list-item-convert-container,
+.markdown-body .contains-task-list:focus-within .task-list-item-convert-container {
+  display: block;
+  width: auto;
+  height: 24px;
+  overflow: visible;
+  clip: auto;
+}
+
+.markdown-body ::-webkit-calendar-picker-indicator {
+  filter: invert(50%);
+}
+
+.markdown-body .markdown-alert {
+  padding: var(--base-size-8) var(--base-size-16);
+  margin-bottom: var(--base-size-16);
+  color: inherit;
+  border-left: .25em solid var(--borderColor-default);
+}
+
+.markdown-body .markdown-alert>:first-child {
+  margin-top: 0;
+}
+
+.markdown-body .markdown-alert>:last-child {
+  margin-bottom: 0;
+}
+
+.markdown-body .markdown-alert .markdown-alert-title {
+  display: flex;
+  font-weight: var(--base-text-weight-medium, 500);
+  align-items: center;
+  line-height: 1;
+}
+
+.markdown-body .markdown-alert.markdown-alert-note {
+  border-left-color: var(--borderColor-accent-emphasis);
+}
+
+.markdown-body .markdown-alert.markdown-alert-note .markdown-alert-title {
+  color: var(--fgColor-accent);
+}
+
+.markdown-body .markdown-alert.markdown-alert-important {
+  border-left-color: var(--borderColor-done-emphasis);
+}
+
+.markdown-body .markdown-alert.markdown-alert-important .markdown-alert-title {
+  color: var(--fgColor-done);
+}
+
+.markdown-body .markdown-alert.markdown-alert-warning {
+  border-left-color: var(--borderColor-attention-emphasis);
+}
+
+.markdown-body .markdown-alert.markdown-alert-warning .markdown-alert-title {
+  color: var(--fgColor-attention);
+}
+
+.markdown-body .markdown-alert.markdown-alert-tip {
+  border-left-color: var(--borderColor-success-emphasis);
+}
+
+.markdown-body .markdown-alert.markdown-alert-tip .markdown-alert-title {
+  color: var(--fgColor-success);
+}
+
+.markdown-body .markdown-alert.markdown-alert-caution {
+  border-left-color: var(--borderColor-danger-emphasis);
+}
+
+.markdown-body .markdown-alert.markdown-alert-caution .markdown-alert-title {
+  color: var(--fgColor-danger);
+}
+
+.markdown-body>*:first-child>.heading-element:first-child {
+  margin-top: 0 !important;
+}
+
+.markdown-body .highlight pre:has(+.zeroclipboard-container) {
+  min-height: 52px;
+}
+
+
+  pre code.hljs {
+  display: block;
+  overflow-x: auto;
+  padding: 1em
+}
+code.hljs {
+  padding: 3px 5px
+}
+/*!
+  Theme: GitHub
+  Description: Light theme as seen on github.com
+  Author: github.com
+  Maintainer: @Hirse
+  Updated: 2021-05-15
+
+  Outdated base version: https://github.com/primer/github-syntax-light
+  Current colors taken from GitHub's CSS
+*/
+.hljs {
+  color: #24292e;
+  background: #ffffff
+}
+.hljs-doctag,
+.hljs-keyword,
+.hljs-meta .hljs-keyword,
+.hljs-template-tag,
+.hljs-template-variable,
+.hljs-type,
+.hljs-variable.language_ {
+  /* prettylights-syntax-keyword */
+  color: #d73a49
+}
+.hljs-title,
+.hljs-title.class_,
+.hljs-title.class_.inherited__,
+.hljs-title.function_ {
+  /* prettylights-syntax-entity */
+  color: #6f42c1
+}
+.hljs-attr,
+.hljs-attribute,
+.hljs-literal,
+.hljs-meta,
+.hljs-number,
+.hljs-operator,
+.hljs-variable,
+.hljs-selector-attr,
+.hljs-selector-class,
+.hljs-selector-id {
+  /* prettylights-syntax-constant */
+  color: #005cc5
+}
+.hljs-regexp,
+.hljs-string,
+.hljs-meta .hljs-string {
+  /* prettylights-syntax-string */
+  color: #032f62
+}
+.hljs-built_in,
+.hljs-symbol {
+  /* prettylights-syntax-variable */
+  color: #e36209
+}
+.hljs-comment,
+.hljs-code,
+.hljs-formula {
+  /* prettylights-syntax-comment */
+  color: #6a737d
+}
+.hljs-name,
+.hljs-quote,
+.hljs-selector-tag,
+.hljs-selector-pseudo {
+  /* prettylights-syntax-entity-tag */
+  color: #22863a
+}
+.hljs-subst {
+  /* prettylights-syntax-storage-modifier-import */
+  color: #24292e
+}
+.hljs-section {
+  /* prettylights-syntax-markup-heading */
+  color: #005cc5;
+  font-weight: bold
+}
+.hljs-bullet {
+  /* prettylights-syntax-markup-list */
+  color: #735c0f
+}
+.hljs-emphasis {
+  /* prettylights-syntax-markup-italic */
+  color: #24292e;
+  font-style: italic
+}
+.hljs-strong {
+  /* prettylights-syntax-markup-bold */
+  color: #24292e;
+  font-weight: bold
+}
+.hljs-addition {
+  /* prettylights-syntax-markup-inserted */
+  color: #22863a;
+  background-color: #f0fff4
+}
+.hljs-deletion {
+  /* prettylights-syntax-markup-deleted */
+  color: #b31d28;
+  background-color: #ffeef0
+}
+.hljs-char.escape_,
+.hljs-link,
+.hljs-params,
+.hljs-property,
+.hljs-punctuation,
+.hljs-tag {
+  /* purposely ignored */
+  
+}
+</style>
+  </head>
+  <body data-view="all">
+    <div class="topbar">
+      <div class="topbar-inner">
+        <div class="segmented" role="group" aria-label="보기 선택">
+          <button type="button" data-view-btn="summary" aria-pressed="false">요약</button>
+          <button type="button" data-view-btn="node" aria-pressed="false">Node.js</button>
+          <button type="button" data-view-btn="java" aria-pressed="false">Java</button>
+          <button type="button" data-view-btn="all" aria-pressed="true">전체</button>
+        </div>
+        <div class="topbar-right">
+          <div class="hint">상단 탭으로 필요한 부분만 봅니다.</div>
+          <div class="tts" aria-label="읽어주기(TTS)">
+            <button type="button" id="tts-play">읽기</button>
+            <button type="button" id="tts-pause" disabled>일시정지</button>
+            <button type="button" id="tts-stop" disabled>중지</button>
+            <select id="tts-rate" aria-label="읽기 속도">
+              <option value="0.9">0.9x</option>
+              <option value="1" selected>1.0x</option>
+              <option value="1.1">1.1x</option>
+              <option value="1.2">1.2x</option>
+            </select>
+            <select id="tts-voice" aria-label="목소리 선택">
+              <option value="">(목소리 자동)</option>
+            </select>
+            <label class="chk">
+              <input type="checkbox" id="tts-skip-refs" checked />
+              참고자료 제외
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+    <main>
+      <article class="markdown-body">
+<section class="view-summary" data-view-section="summary">
+<h1>DevSecNews 2026-01 — Node.js/Java 보안 요약(개발자용)</h1>
+<h1>(1) Summary</h1>
+<ul>
+<li>Node.js는 권한 경계(권한 모델/경로/소켓) 관련 취약점을 묶어서 패치했습니다. 런타임을 보안 릴리스 버전으로 업데이트합니다. [Source] <a href="https://nodejs.org/en/blog/vulnerability/december-2025-security-releases">https://nodejs.org/en/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)</li>
+<li>Java는 외부 입력이 XML/템플릿/직렬화로 흘러가는 경로가 핵심 위험 지점입니다. 외부 입력 기반 템플릿·직렬화 경로를 차단하거나 격리합니다. [Source] <a href="https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability">https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability</a> (2026-01-12)</li>
+<li>Struts(XXE, S2-069)는 XML 파서 기본값이 그대로면 다시 공격면이 됩니다. Struts를 패치 버전으로 올리고 XML 파서 보안 설정을 강제합니다. [Source] <a href="https://cwiki.apache.org/confluence/display/WW/S2-069">https://cwiki.apache.org/confluence/display/WW/S2-069</a> (2026-01-11)</li>
+<li>개발자 도구(Spring CLI VSCode extension)는 명령 주입이 확인됐고, EOL이면 제거가 우선입니다. 조직 표준 확장 목록에서 해당 확장을 제거하고 워크스페이스 신뢰를 기본 거부로 둡니다. [Source] <a href="https://spring.io/security/cve-2026-22718">https://spring.io/security/cve-2026-22718</a> (2026-01-16)</li>
+</ul>
+<!--CARD
+{"id":"summary-1","kind":"summary","header":"요약","title":"Node.js 권한 경계 패치","bodyMd":"이번 달은 권한 경계를 흔드는 이슈가 한꺼번에 공개됐습니다. 파일 경로와 로컬 소켓까지 같이 봅니다.","whyMd":"옵션만 믿으면 symlink/UDS 같은 우회 경로로 보안 경계가 깨집니다.","impactMd":"허용 범위를 벗어난 파일 접근이나 내부 소켓 접근이 생깁니다.","actionMd":"런타임을 보안 릴리스 버전으로 업데이트합니다.","source":"https://nodejs.org/en/blog/vulnerability/december-2025-security-releases"}
+-->
+<!--CARD
+{"id":"summary-2","kind":"summary","header":"요약","title":"Java 입력 경계(XML/템플릿/직렬화)","bodyMd":"입력이 XML 파서나 템플릿, 역직렬화로 들어가는 지점이 문제의 시작입니다. 이 경로를 먼저 정리합니다.","whyMd":"‘입력=코드’가 되는 경로에서 가젯 체인이나 XXE로 이어집니다.","impactMd":"RCE나 정보 노출로 이어질 수 있습니다.","actionMd":"외부 입력 기반 템플릿·직렬화 경로를 차단하거나 격리합니다.","source":"https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability"}
+-->
+<!--CARD
+{"id":"summary-3","kind":"summary","header":"요약","title":"Struts S2-069(XXE)","bodyMd":"XML 파서 기본값이 남아 있으면, XXE 입력이 다시 처리됩니다. 파서 설정이 곧 방어선입니다.","whyMd":"외부 엔티티/DTD가 살아 있으면 외부 자원 접근이 열립니다.","impactMd":"내부 자원 노출이나 SSRF 같은 파생 위험이 생깁니다.","actionMd":"Struts를 패치 버전으로 올리고 XML 파서 보안 설정을 강제합니다.","source":"https://cwiki.apache.org/confluence/display/WW/S2-069"}
+-->
+<!--CARD
+{"id":"summary-4","kind":"summary","header":"요약","title":"개발자 도구(EOL 확장) 명령 주입","bodyMd":"개발자 도구 취약점은 서버보다 먼저 개발자 PC를 때립니다. EOL 확장은 패치가 없어서 제거가 빠릅니다.","whyMd":"레포/워크스페이스 입력이 확장 동작을 흔들어 로컬 실행으로 이어집니다.","impactMd":"개발자 PC에서 임의 명령 실행로 번질 수 있습니다.","actionMd":"조직 표준 확장 목록에서 해당 확장을 제거하고 워크스페이스 신뢰를 기본 거부로 둡니다.","source":"https://spring.io/security/cve-2026-22718"}
+-->
+
+
+</section>
+<section class="view-node" data-view-section="node">
+<h1>(2) Node.js</h1>
+<h2>(2.1) CVE/이슈 표</h2>
+<p>| CVE | 영향 버전 | 공격 영향(C/I/A) | 악용 여부(in-the-wild) | 권장 조치(업데이트/완화책) | Source URL |
+|---|---|---|---|---|---|---|
+| CVE-2025-55131 | Node.js v20/v22/v24/v25 (Active release lines) | C | 확인 불가 | Node.js를 보안 릴리스 버전으로 업데이트하고 <code>vm</code>+<code>timeout</code> 조합을 격리/제거합니다. | <a href="https://nodejs.org/en/blog/vulnerability/december-2025-security-releases">https://nodejs.org/en/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)<br><a href="https://cveawg.mitre.org/api/cve/CVE-2025-55131">https://cveawg.mitre.org/api/cve/CVE-2025-55131</a> (날짜 미표기) |
+| CVE-2025-55130 | Node.js permission model 사용 시(v20/v22/v24/v25) | C/I | 확인 불가 | Node.js를 업데이트하고 허용 경로를 realpath 기준 allowlist로 검증하며 symlink 체인을 차단합니다. | <a href="https://nodejs.org/en/blog/vulnerability/december-2025-security-releases">https://nodejs.org/en/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)<br><a href="https://cveawg.mitre.org/api/cve/CVE-2025-55130">https://cveawg.mitre.org/api/cve/CVE-2025-55130</a> (날짜 미표기) |
+| CVE-2026-21636 | Node.js v25 <code>--permission</code> 사용 시 | C/I | 확인 불가 | <code>--permission</code>을 보안 경계로 쓰지 않고 UDS 경로 allowlist 및 OS 격리로 보완합니다. | <a href="https://nodejs.org/en/blog/vulnerability/december-2025-security-releases">https://nodejs.org/en/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)<br><a href="https://cveawg.mitre.org/api/cve/CVE-2026-21636">https://cveawg.mitre.org/api/cve/CVE-2026-21636</a> (날짜 미표기) |
+| CVE-2025-55132 | Node.js v20/v22/v24/v25 (permission model 사용 시) | I | 확인 불가 | <code>fs.futimes()</code> 사용 여부를 점검하고 보안 의미로 타임스탬프를 신뢰하지 않도록 설계를 바꿉니다. | <a href="https://nodejs.org/en/blog/vulnerability/december-2025-security-releases">https://nodejs.org/en/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)<br><a href="https://cveawg.mitre.org/api/cve/CVE-2025-55132">https://cveawg.mitre.org/api/cve/CVE-2025-55132</a> (날짜 미표기) |</p>
+<h2>(2.2) 항목별 설명</h2>
+<h3>Node.js 보안 릴리스(Active release lines)</h3>
+<p>Node.js는 다수 취약점 패치를 포함한 보안 릴리스를 공개했습니다. 런타임을 보안 릴리스 버전으로 업데이트합니다. [Source] <a href="https://nodejs.org/en/blog/vulnerability/december-2025-security-releases">https://nodejs.org/en/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)</p>
+<h3>영향 여부 자가진단(빠른 확인)</h3>
+<p>아래 명령으로 런타임 버전과 실행 옵션(권한 모델 사용 여부)을 먼저 확인합니다.</p>
+<pre><code class="hljs language-bash">node -v
+ps aux | grep -E <span class="hljs-string">&quot;node .*--permission|node .*--allow-fs-&quot;</span> | grep -v grep || <span class="hljs-literal">true</span>
+</code></pre><p>영향 가능성이 있으면 보안 릴리스 버전으로 업데이트합니다.</p>
+<h3>CVE-2025-55131: <code>vm</code>+<code>timeout</code>에서 메모리 노출 가능</h3>
+<p><code>vm</code> 모듈에서 <code>timeout</code>로 실행을 끊는 흐름이 있으면, 버퍼 초기화가 기대대로 동작하지 않아 이전 메모리 잔여가 노출될 수 있습니다. <code>vm</code>으로 “유저 코드”를 실행하는 구조를 별도 프로세스/컨테이너로 분리하고 런타임을 업데이트합니다. [Source] <a href="https://nodejs.org/en/blog/vulnerability/december-2025-security-releases">https://nodejs.org/en/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)
+[Source] <a href="https://cveawg.mitre.org/api/cve/CVE-2025-55131">https://cveawg.mitre.org/api/cve/CVE-2025-55131</a> (날짜 미표기)</p>
+<h3>CVE-2025-55130: permission model 파일시스템 권한 우회(symlink)</h3>
+<p><code>--allow-fs-read</code>/<code>--allow-fs-write</code>는 입력 경로와 symlink 체인 조합으로 우회될 수 있어 “옵션만으로” 보안 경계를 만들면 위험합니다. 허용 경로는 realpath(심볼릭 링크를 해소한 실제 경로) 기준 allowlist로 검증하고 런타임을 업데이트합니다. [Source] <a href="https://nodejs.org/en/blog/vulnerability/december-2025-security-releases">https://nodejs.org/en/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)
+[Source] <a href="https://cveawg.mitre.org/api/cve/CVE-2025-55130">https://cveawg.mitre.org/api/cve/CVE-2025-55130</a> (날짜 미표기)</p>
+<h3>CVE-2026-21636: <code>--permission</code>에서 UDS로 네트워크 제한 우회</h3>
+<p>네트워크 권한을 제한했다고 해도 UDS(Unix Domain Socket, 로컬 소켓) 연결은 다른 경로로 열릴 수 있습니다. UDS 경로는 입력에서 직접 받지 않도록 하고 allowlist+정규화로 통제하며 필요하면 OS 격리를 적용합니다. [Source] <a href="https://nodejs.org/en/blog/vulnerability/december-2025-security-releases">https://nodejs.org/en/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)
+[Source] <a href="https://cveawg.mitre.org/api/cve/CVE-2026-21636">https://cveawg.mitre.org/api/cve/CVE-2026-21636</a> (날짜 미표기)</p>
+<h3>CVE-2025-55132: <code>fs.futimes()</code>로 메타데이터(타임스탬프) 변경 가능</h3>
+<p>읽기 권한만 가정한 환경에서도 파일 타임스탬프가 변경될 수 있어, 타임라인 기반 감시/감사 로직이 깨질 수 있습니다. <code>fs.futimes()</code> 사용 여부를 점검하고 보안 의미로 파일 타임스탬프를 신뢰하지 않도록 설계를 바꿉니다. [Source] <a href="https://nodejs.org/en/blog/vulnerability/december-2025-security-releases">https://nodejs.org/en/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)
+[Source] <a href="https://cveawg.mitre.org/api/cve/CVE-2025-55132">https://cveawg.mitre.org/api/cve/CVE-2025-55132</a> (날짜 미표기)</p>
+<h2>(2.3) 이번 달 취약 개발 패턴 Top 5</h2>
+<h3>1) “permission 모델을 켰으니 안전”이라는 가정</h3>
+<p>공격자는 symlink/UDS 같은 우회 경로로 “권한 옵션의 의도”와 다른 접근을 만들려고 합니다. 허용 경로/소켓 경로를 allowlist로 고정하고 런타임을 업데이트합니다.</p>
+<p>안 좋은 예:</p>
+<pre><code class="hljs language-js"><span class="hljs-comment">// permission model을 켠 상태에서 입력을 그대로 신뢰</span>
+fs.<span class="hljs-title function_">readFileSync</span>(userInput.<span class="hljs-property">path</span>, <span class="hljs-string">&quot;utf8&quot;</span>)
+</code></pre><p>안전한 대안:</p>
+<pre><code class="hljs language-js"><span class="hljs-keyword">import</span> path <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;node:path&quot;</span>
+
+<span class="hljs-keyword">const</span> <span class="hljs-variable constant_">ROOT</span> = <span class="hljs-string">&quot;/srv/app/data&quot;</span>
+<span class="hljs-keyword">const</span> p = path.<span class="hljs-title function_">resolve</span>(<span class="hljs-variable constant_">ROOT</span>, userInput.<span class="hljs-property">path</span>)
+<span class="hljs-keyword">if</span> (!p.<span class="hljs-title function_">startsWith</span>(<span class="hljs-variable constant_">ROOT</span> + path.<span class="hljs-property">sep</span>)) <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Error</span>(<span class="hljs-string">&quot;blocked&quot;</span>)
+fs.<span class="hljs-title function_">readFileSync</span>(p, <span class="hljs-string">&quot;utf8&quot;</span>)
+</code></pre><p>팀 규칙으로 고정합니다.
+[Source] <a href="https://nodejs.org/en/blog/vulnerability/december-2025-security-releases">https://nodejs.org/en/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)</p>
+<h3>2) symlink/realpath를 고려하지 않은 “경로 검증”</h3>
+<p>공격자는 “문자열 기반 경로 체크”를 우회해 허용 디렉터리 밖 파일에 접근하려고 합니다. realpath 기준 allowlist 검증을 적용합니다.</p>
+<p>안 좋은 예:</p>
+<pre><code class="hljs language-js"><span class="hljs-keyword">if</span> (!userInput.<span class="hljs-property">path</span>.<span class="hljs-title function_">startsWith</span>(<span class="hljs-string">&quot;/srv/app/data/&quot;</span>)) <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Error</span>(<span class="hljs-string">&quot;blocked&quot;</span>)
+fs.<span class="hljs-title function_">readFileSync</span>(userInput.<span class="hljs-property">path</span>, <span class="hljs-string">&quot;utf8&quot;</span>)
+</code></pre><p>안전한 대안:</p>
+<pre><code class="hljs language-js"><span class="hljs-keyword">const</span> real = fs.<span class="hljs-title function_">realpathSync</span>(userInput.<span class="hljs-property">path</span>)
+<span class="hljs-keyword">if</span> (!real.<span class="hljs-title function_">startsWith</span>(<span class="hljs-string">&quot;/srv/app/data/&quot;</span>)) <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Error</span>(<span class="hljs-string">&quot;blocked&quot;</span>)
+fs.<span class="hljs-title function_">readFileSync</span>(real, <span class="hljs-string">&quot;utf8&quot;</span>)
+</code></pre><p>팀 규칙으로 고정합니다.
+[Source] <a href="https://nodejs.org/en/blog/vulnerability/december-2025-security-releases">https://nodejs.org/en/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)</p>
+<h3>3) <code>vm</code>에서 유저 코드를 돌리고 timeout으로 끊기</h3>
+<p>공격자는 타이밍 경합으로 버퍼 초기화/정리 타이밍을 흔들어 정보 노출이나 비정상 동작을 유도합니다. 유저 코드는 별도 프로세스/컨테이너로 분리하고 IPC로만 통신합니다.</p>
+<p>안 좋은 예:</p>
+<pre><code class="hljs language-js">vm.<span class="hljs-title function_">runInNewContext</span>(untrustedCode, sandbox, { <span class="hljs-attr">timeout</span>: <span class="hljs-number">50</span> })
+</code></pre><p>안전한 대안:</p>
+<pre><code class="hljs language-js"><span class="hljs-comment">// untrusted code는 별도 프로세스/컨테이너에서 실행하고</span>
+<span class="hljs-comment">// 결과만 IPC로 받습니다.</span>
+</code></pre><p>팀 규칙으로 고정합니다.
+[Source] <a href="https://nodejs.org/en/blog/vulnerability/december-2025-security-releases">https://nodejs.org/en/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)</p>
+<h3>4) UDS 경로를 입력으로 받아 내부 소켓에 연결</h3>
+<p>공격자는 네트워크 권한 경계를 우회하기 위해 로컬 소켓(UDS) 경로를 입력으로 주입하려고 합니다. UDS 경로는 allowlist로 고정하고 입력에서 직접 받지 않도록 설계를 바꿉니다.</p>
+<p>안 좋은 예:</p>
+<pre><code class="hljs language-js">net.<span class="hljs-title function_">connect</span>(userInput.<span class="hljs-property">socketPath</span>)
+</code></pre><p>안전한 대안:</p>
+<pre><code class="hljs language-js"><span class="hljs-keyword">const</span> <span class="hljs-variable constant_">ALLOWED_UDS</span> = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Set</span>([<span class="hljs-string">&quot;/run/app.sock&quot;</span>])
+<span class="hljs-keyword">if</span> (!<span class="hljs-variable constant_">ALLOWED_UDS</span>.<span class="hljs-title function_">has</span>(userInput.<span class="hljs-property">socketPath</span>)) <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Error</span>(<span class="hljs-string">&quot;blocked&quot;</span>)
+net.<span class="hljs-title function_">connect</span>(userInput.<span class="hljs-property">socketPath</span>)
+</code></pre><p>팀 규칙으로 고정합니다.
+[Source] <a href="https://nodejs.org/en/blog/vulnerability/december-2025-security-releases">https://nodejs.org/en/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)</p>
+<h3>5) 파일 타임스탬프를 보안 신호로 신뢰</h3>
+<p>공격자는 로그/감사 흐름을 흐리게 만들기 위해 메타데이터(타임스탬프) 조작 가능성을 악용합니다. 타임스탬프를 보안 판단에 직접 쓰지 않고, 별도 감사 이벤트/해시 기반으로 설계를 바꿉니다.</p>
+<p>안 좋은 예:</p>
+<pre><code class="hljs language-js"><span class="hljs-keyword">if</span> (stat.<span class="hljs-property">mtimeMs</span> &lt; lastSeen) <span class="hljs-title function_">deny</span>() <span class="hljs-comment">// 타임스탬프를 보안 판단으로 사용</span>
+</code></pre><p>안전한 대안:</p>
+<pre><code class="hljs language-js"><span class="hljs-comment">// 파일 내용 해시/서명 검증 + 별도 감사 이벤트 기록으로 전환</span>
+</code></pre><p>팀 규칙으로 고정합니다.
+[Source] <a href="https://nodejs.org/en/blog/vulnerability/december-2025-security-releases">https://nodejs.org/en/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)</p>
+<p>팀이 오늘 적용할 규칙/코드 조치를 팀 규칙과 PR 체크리스트에 반영합니다.</p>
+<h2>(2.4) 운영 참고(선택)</h2>
+
+</section>
+<section class="view-java" data-view-section="java">
+<h1>(3) Java</h1>
+<h2>(3.1) CVE/이슈 표</h2>
+<p>| CVE | 영향 버전 | 공격 영향(C/I/A) | 악용 여부(in-the-wild) | 권장 조치(업데이트/완화책) | Source URL |
+|---|---|---|---|---|---|---|
+| CVE-2025-68493 (S2-069) | Apache Struts 영향 버전(공지 참조) | C/I/A | 확인 불가 | Struts를 패치 버전으로 업데이트하고 XML 파서에서 DTD/외부 엔티티를 비활성화합니다. | <a href="https://cwiki.apache.org/confluence/display/WW/S2-069">https://cwiki.apache.org/confluence/display/WW/S2-069</a> (2026-01-11)<br><a href="https://cveawg.mitre.org/api/cve/CVE-2025-68493">https://cveawg.mitre.org/api/cve/CVE-2025-68493</a> (날짜 미표기) |
+| CVE-2025-10492 | JasperReports 관련 컴포넌트(공지 참조) | C/I/A | 확인 불가 | JasperReports 관련 컴포넌트를 업데이트하고 외부 템플릿/직렬화 입력 경로를 차단합니다. | <a href="https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability">https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability</a> (2026-01-12)<br><a href="https://cveawg.mitre.org/api/cve/CVE-2025-10492">https://cveawg.mitre.org/api/cve/CVE-2025-10492</a> (날짜 미표기) |
+| CVE-2026-22718 | Spring CLI VSCode Extension &lt;= 0.9.0 (EOL) | C/I | 확인 불가 | 해당 확장을 제거하고 워크스페이스 신뢰를 기본 거부로 설정합니다. | <a href="https://spring.io/security/cve-2026-22718">https://spring.io/security/cve-2026-22718</a> (2026-01-16)<br><a href="https://github.com/advisories/GHSA-h34g-p94m-h76q">https://github.com/advisories/GHSA-h34g-p94m-h76q</a> (날짜 미표기)<br><a href="https://cveawg.mitre.org/api/cve/CVE-2026-22718">https://cveawg.mitre.org/api/cve/CVE-2026-22718</a> (날짜 미표기) |</p>
+<h2>(3.2) 항목별 설명</h2>
+<h3>CVE-2025-68493 (S2-069): Struts XXE 계열 입력 처리</h3>
+<p>XML 파서 기본값/구성요소 조합이 남아 있으면 XXE 계열 입력이 다시 공격 표면이 됩니다. Struts를 패치 버전으로 올리고 XML 파서에서 DTD/외부 엔티티를 비활성화합니다. [Source] <a href="https://cwiki.apache.org/confluence/display/WW/S2-069">https://cwiki.apache.org/confluence/display/WW/S2-069</a> (2026-01-11)
+[Source] <a href="https://cveawg.mitre.org/api/cve/CVE-2025-68493">https://cveawg.mitre.org/api/cve/CVE-2025-68493</a> (날짜 미표기)</p>
+<h3>CVE-2025-10492: JasperReports 역직렬화/RCE 리스크</h3>
+<p>리포트/템플릿 파이프라인이 “업로드/외부 파일”을 그대로 받아 처리하면 RCE로 연결됩니다. 템플릿 업로드를 차단하고 불가피하면 격리된 실행 환경에서만 처리하며 컴포넌트를 업데이트합니다. [Source] <a href="https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability">https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability</a> (2026-01-12)
+[Source] <a href="https://cveawg.mitre.org/api/cve/CVE-2025-10492">https://cveawg.mitre.org/api/cve/CVE-2025-10492</a> (날짜 미표기)</p>
+<h3>CVE-2026-22718: 개발 도구(확장) 명령 주입</h3>
+<p>EOL 된 개발 도구는 “패치 없음”이 기본이어서, 취약점이 확인되면 제거가 사실상 유일한 대응입니다. 조직 표준 확장 목록에서 제거하고 신뢰되지 않은 워크스페이스 기본 거부를 적용합니다. [Source] <a href="https://spring.io/security/cve-2026-22718">https://spring.io/security/cve-2026-22718</a> (2026-01-16)
+[Source] <a href="https://github.com/advisories/GHSA-h34g-p94m-h76q">https://github.com/advisories/GHSA-h34g-p94m-h76q</a> (날짜 미표기)
+[Source] <a href="https://cveawg.mitre.org/api/cve/CVE-2026-22718">https://cveawg.mitre.org/api/cve/CVE-2026-22718</a> (날짜 미표기)</p>
+<h3>영향 여부 자가진단(빠른 확인)</h3>
+<p>아래 명령으로 의존성(Struts/JasperReports)과 개발 도구(취약 확장) 설치 여부를 먼저 확인합니다.</p>
+<pre><code class="hljs language-bash">mvn -q -DskipTests dependency:tree | grep -Ei <span class="hljs-string">&quot;struts2|jasperreports&quot;</span> || <span class="hljs-literal">true</span>
+code --list-extensions | grep -Ei <span class="hljs-string">&quot;spring|cli&quot;</span> || <span class="hljs-literal">true</span>
+</code></pre><p>영향 가능성이 있으면 버전을 올리거나(라이브러리) 제거합니다(개발 도구).</p>
+<h2>(3.3) 이번 달 취약 개발 패턴 Top 5</h2>
+<h3>1) 외부 입력(XML)을 파서 기본값으로 처리</h3>
+<p>공격자는 XXE/SSRF/정보 노출을 노리고 “파서 기본값”을 파고듭니다. 외부 엔티티/DTD를 비활성화하고 허용 스키마만 처리합니다.</p>
+<p>안 좋은 예:</p>
+<pre><code class="hljs language-java"><span class="hljs-type">Document</span> <span class="hljs-variable">doc</span> <span class="hljs-operator">=</span> DocumentBuilderFactory.newInstance()
+  .newDocumentBuilder()
+  .parse(inputStream);
+</code></pre><p>안전한 대안:</p>
+<pre><code class="hljs language-java"><span class="hljs-type">DocumentBuilderFactory</span> <span class="hljs-variable">f</span> <span class="hljs-operator">=</span> DocumentBuilderFactory.newInstance();
+f.setFeature(<span class="hljs-string">&quot;http://apache.org/xml/features/disallow-doctype-decl&quot;</span>, <span class="hljs-literal">true</span>);
+f.setFeature(<span class="hljs-string">&quot;http://xml.org/sax/features/external-general-entities&quot;</span>, <span class="hljs-literal">false</span>);
+f.setFeature(<span class="hljs-string">&quot;http://xml.org/sax/features/external-parameter-entities&quot;</span>, <span class="hljs-literal">false</span>);
+</code></pre><p>팀 규칙으로 고정합니다.
+[Source] <a href="https://cwiki.apache.org/confluence/display/WW/S2-069">https://cwiki.apache.org/confluence/display/WW/S2-069</a> (2026-01-11)</p>
+<h3>2) Java 역직렬화를 입력 포맷으로 허용</h3>
+<p>공격자는 gadget chain(역직렬화로 이어지는 호출 연쇄)을 이용해 역직렬화 시점에 코드 실행을 노립니다. 외부 입력은 JSON/Protobuf로 전환하고 필요 시 allowlist 필터를 강제합니다.</p>
+<p>안 좋은 예:</p>
+<pre><code class="hljs language-java"><span class="hljs-type">Object</span> <span class="hljs-variable">obj</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ObjectInputStream</span>(request.getInputStream()).readObject();
+</code></pre><p>안전한 대안:</p>
+<pre><code class="hljs language-java"><span class="hljs-comment">// 외부 입력은 JSON/Protobuf로 받고 명시적 DTO로 파싱합니다.</span>
+</code></pre><p>팀 규칙으로 고정합니다.
+[Source] <a href="https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability">https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability</a> (2026-01-12)</p>
+<h3>3) 리포트/템플릿 파이프라인에서 신뢰 경계를 지우는 패턴</h3>
+<p>공격자는 “템플릿=코드”가 되는 지점을 노립니다. 템플릿 업로드를 금지하거나 격리된 렌더러에서만 처리합니다.</p>
+<p>안 좋은 예:</p>
+<pre><code class="hljs language-java">compileAndRender(userUploadedTemplate);
+</code></pre><p>안전한 대안:</p>
+<pre><code class="hljs language-java"><span class="hljs-comment">// 템플릿은 저장소에서만 로드하고 서명/해시로 무결성을 검증합니다.</span>
+</code></pre><p>팀 규칙으로 고정합니다.
+[Source] <a href="https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability">https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability</a> (2026-01-12)</p>
+<h3>4) 개발툴/확장이 실행하는 명령을 프로젝트 입력이 좌우</h3>
+<p>공격자는 레포/워크스페이스 설정을 통해 개발자 PC에서 명령 실행을 유도합니다. 취약 확장을 제거하고 워크스페이스 신뢰를 기본 거부로 둡니다.</p>
+<p>안 좋은 예:</p>
+<pre><code class="hljs language-text">workspace 설정값 -&gt; shell command 문자열로 결합 -&gt; 실행
+</code></pre><p>안전한 대안:</p>
+<pre><code class="hljs language-text">확장 설치 allowlist + 신뢰되지 않은 워크스페이스 기본 거부 + EOL 확장 제거
+</code></pre><p>팀 규칙으로 고정합니다.
+[Source] <a href="https://spring.io/security/cve-2026-22718">https://spring.io/security/cve-2026-22718</a> (2026-01-16)</p>
+<h3>5) XML/직렬화 입력 경로를 로그/모니터링에서 빼버림</h3>
+<p>공격자는 탐지되지 않는 입력 경로로 반복 시도해 성공 확률을 올립니다. 파서 진입을 보안 이벤트로 분리해 메타데이터를 남깁니다.</p>
+<p>안 좋은 예:</p>
+<pre><code class="hljs language-text">/upload, /report 렌더 API는 요청 메타데이터를 거의 기록하지 않음
+</code></pre><p>안전한 대안:</p>
+<pre><code class="hljs language-text">요청 크기/파일 타입/해시/렌더 결과 코드 등 최소 메타데이터를 보안 이벤트로 기록
+</code></pre><p>팀 규칙으로 고정합니다.
+[Source] <a href="https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability">https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability</a> (2026-01-12)</p>
+<p>팀이 오늘 적용할 규칙/코드 조치를 팀 규칙과 PR 체크리스트에 반영합니다.</p>
+<h2>(3.4) 운영 참고(선택)</h2>
+
+</section>
+<section class="view-rest" data-view-section="rest">
+<h1>(4) 공통 트렌드/권장사항</h1>
+<ul>
+<li>권한/격리 기능을 “보안 경계”로 단정하면 우회가 나옵니다. 런타임 업데이트와 함께 OS/컨테이너 격리를 기본으로 적용합니다. [Source] <a href="https://nodejs.org/en/blog/vulnerability/december-2025-security-releases">https://nodejs.org/en/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)</li>
+<li>XML/직렬화/템플릿은 입력이 곧 코드가 되는 지점이 생깁니다. 외부 입력 템플릿을 차단하고 불가피하면 격리된 렌더러에서만 처리합니다. [Source] <a href="https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability">https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability</a> (2026-01-12)</li>
+<li>개발 도구(EOL 확장)는 “패치 없음”이므로 취약점 확인 시 제거가 정답입니다. 조직 표준 확장 allowlist를 운영하고 취약 확장을 제거합니다. [Source] <a href="https://spring.io/security/cve-2026-22718">https://spring.io/security/cve-2026-22718</a> (2026-01-16)</li>
+</ul>
+<h1>(5) 이번 달 개발자 체크리스트</h1>
+<ol>
+<li>Node.js permission model은 보안 경계로 쓰지 않고 realpath allowlist+OS 격리를 기본으로 둡니다. [Source] <a href="https://nodejs.org/en/blog/vulnerability/december-2025-security-releases">https://nodejs.org/en/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)</li>
+<li>파일 경로는 문자열 검증이 아니라 정규화+realpath 기준으로만 검증합니다. [Source] <a href="https://nodejs.org/en/blog/vulnerability/december-2025-security-releases">https://nodejs.org/en/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)</li>
+<li><code>vm</code>으로 유저 코드를 실행하지 않고 불가피하면 별도 프로세스/컨테이너로 격리합니다. [Source] <a href="https://nodejs.org/en/blog/vulnerability/december-2025-security-releases">https://nodejs.org/en/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)</li>
+<li>UDS(로컬 소켓) 경로는 입력에서 직접 받지 않고 allowlist로 고정합니다. [Source] <a href="https://nodejs.org/en/blog/vulnerability/december-2025-security-releases">https://nodejs.org/en/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)</li>
+<li>EOL 개발 도구/확장은 즉시 제거하고 조직 표준 allowlist로만 설치합니다. [Source] <a href="https://spring.io/security/cve-2026-22718">https://spring.io/security/cve-2026-22718</a> (2026-01-16)</li>
+<li>Node.js 런타임을 보안 릴리스 버전으로 업데이트합니다. [Source] <a href="https://nodejs.org/en/blog/vulnerability/december-2025-security-releases">https://nodejs.org/en/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)</li>
+<li><code>fs.futimes()</code> 사용 여부를 점검하고 보안 의미로 파일 타임스탬프를 신뢰하지 않도록 설계를 바꿉니다. [Source] <a href="https://nodejs.org/en/blog/vulnerability/december-2025-security-releases">https://nodejs.org/en/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)</li>
+<li>Struts 사용 시 S2-069 패치 버전으로 업그레이드하고 XML 파서에서 DTD/외부 엔티티를 비활성화합니다. [Source] <a href="https://cwiki.apache.org/confluence/display/WW/S2-069">https://cwiki.apache.org/confluence/display/WW/S2-069</a> (2026-01-11)</li>
+<li>JasperReports 사용 시 외부 템플릿 업로드/로딩 경로를 차단하고 컴포넌트를 업데이트합니다. [Source] <a href="https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability">https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability</a> (2026-01-12)</li>
+<li>워크스페이스 신뢰를 기본 거부로 두고 신뢰된 레포에서만 확장을 실행합니다. [Source] <a href="https://spring.io/security/cve-2026-22718">https://spring.io/security/cve-2026-22718</a> (2026-01-16)</li>
+</ol>
+<!--CARD
+{"id":"checklist-1","kind":"checklist","header":"체크리스트","title":"이번 달 개발자 체크리스트(10)","bodyMd":"1. Node.js permission model은 보안 경계로 쓰지 않고 realpath allowlist+OS 격리를 기본으로 둡니다.\n2. 파일 경로는 문자열 검증이 아니라 정규화+realpath 기준으로만 검증합니다.\n3. `vm`으로 유저 코드를 실행하지 않고 불가피하면 별도 프로세스/컨테이너로 격리합니다.\n4. UDS(로컬 소켓) 경로는 입력에서 직접 받지 않고 allowlist로 고정합니다.\n5. EOL 개발 도구/확장은 즉시 제거하고 조직 표준 allowlist로만 설치합니다.\n6. Node.js 런타임을 보안 릴리스 버전으로 업데이트합니다.\n7. `fs.futimes()` 사용 여부를 점검하고 보안 의미로 파일 타임스탬프를 신뢰하지 않도록 설계를 바꿉니다.\n8. Struts 사용 시 S2-069 패치 버전으로 업그레이드하고 XML 파서에서 DTD/외부 엔티티를 비활성화합니다.\n9. JasperReports 사용 시 외부 템플릿 업로드/로딩 경로를 차단하고 컴포넌트를 업데이트합니다.\n10. 워크스페이스 신뢰를 기본 거부로 두고 신뢰된 레포에서만 확장을 실행합니다.","actionMd":"이번 카드의 항목을 완료 처리합니다.","source":"https://nodejs.org/en/blog/vulnerability/december-2025-security-releases"}
+-->
+
+<h1>(6) 패턴→팀 규칙(5)</h1>
+<ol>
+<li>Node.js permission model은 보안 경계로 쓰지 않고 realpath allowlist+OS 격리를 기본으로 둡니다.</li>
+<li>파일 경로는 문자열 검증이 아니라 정규화+realpath 기준으로만 검증합니다.</li>
+<li><code>vm</code>으로 유저 코드를 실행하지 않고 불가피하면 별도 프로세스/컨테이너로 격리합니다.</li>
+<li>UDS(로컬 소켓) 경로는 입력에서 직접 받지 않고 allowlist로 고정합니다.</li>
+<li>EOL 개발 도구/확장은 즉시 제거하고 조직 표준 allowlist로만 설치합니다.</li>
+</ol>
+<!--CARD
+{"id":"rules-1","kind":"rules","header":"팀 규칙","title":"패턴→팀 규칙(5)","bodyMd":"1. Node.js permission model은 보안 경계로 쓰지 않고 realpath allowlist+OS 격리를 기본으로 둡니다.\n2. 파일 경로는 문자열 검증이 아니라 정규화+realpath 기준으로만 검증합니다.\n3. `vm`으로 유저 코드를 실행하지 않고 불가피하면 별도 프로세스/컨테이너로 격리합니다.\n4. UDS(로컬 소켓) 경로는 입력에서 직접 받지 않고 allowlist로 고정합니다.\n5. EOL 개발 도구/확장은 즉시 제거하고 조직 표준 allowlist로만 설치합니다.","actionMd":"팀 규칙을 PR 템플릿과 린트 규칙에 반영합니다.","source":"https://spring.io/security/cve-2026-22718"}
+-->
+
+<h1>(7) 참고자료</h1>
+<ul>
+<li><a href="https://nodejs.org/en/blog/vulnerability/december-2025-security-releases">https://nodejs.org/en/blog/vulnerability/december-2025-security-releases</a></li>
+<li><a href="https://cveawg.mitre.org/api/cve/CVE-2025-55131">https://cveawg.mitre.org/api/cve/CVE-2025-55131</a></li>
+<li><a href="https://cveawg.mitre.org/api/cve/CVE-2025-55130">https://cveawg.mitre.org/api/cve/CVE-2025-55130</a></li>
+<li><a href="https://cveawg.mitre.org/api/cve/CVE-2026-21636">https://cveawg.mitre.org/api/cve/CVE-2026-21636</a></li>
+<li><a href="https://cveawg.mitre.org/api/cve/CVE-2025-55132">https://cveawg.mitre.org/api/cve/CVE-2025-55132</a></li>
+<li><a href="https://cwiki.apache.org/confluence/display/WW/S2-069">https://cwiki.apache.org/confluence/display/WW/S2-069</a></li>
+<li><a href="https://cveawg.mitre.org/api/cve/CVE-2025-68493">https://cveawg.mitre.org/api/cve/CVE-2025-68493</a></li>
+<li><a href="https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability">https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability</a></li>
+<li><a href="https://cveawg.mitre.org/api/cve/CVE-2025-10492">https://cveawg.mitre.org/api/cve/CVE-2025-10492</a></li>
+<li><a href="https://spring.io/security/cve-2026-22718">https://spring.io/security/cve-2026-22718</a></li>
+<li><a href="https://github.com/advisories/GHSA-h34g-p94m-h76q">https://github.com/advisories/GHSA-h34g-p94m-h76q</a></li>
+<li><a href="https://cveawg.mitre.org/api/cve/CVE-2026-22718">https://cveawg.mitre.org/api/cve/CVE-2026-22718</a></li>
+</ul>
+
+</section>
+      </article>
+    </main>
+    <script>
+      (function () {
+        const KEY = "devsecnews:view";
+        const buttons = Array.from(document.querySelectorAll("[data-view-btn]"));
+
+        function setView(v, persist) {
+          if (!["summary","all","node","java"].includes(v)) v = "all";
+          document.body.dataset.view = v;
+          for (const b of buttons) b.setAttribute("aria-pressed", String(b.dataset.viewBtn === v));
+          if (persist) {
+            try { localStorage.setItem(KEY, v); } catch {}
+          }
+          // Keep URL navigable/bookmarkable without reloading.
+          try { history.replaceState(null, "", v === "all" ? "#all" : ("#" + v)); } catch {}
+          // If speaking, restart to read the newly visible section only.
+          if (speaking) startTts();
+        }
+
+        // Code block: add copy buttons
+        (function initCopyButtons() {
+          const blocks = Array.from(document.querySelectorAll("pre"));
+          for (const pre of blocks) {
+            const code = pre.querySelector("code");
+            if (!code) continue;
+            // Wrap to position button
+            if (!pre.parentElement || pre.parentElement.classList.contains("codeblock")) continue;
+            const wrap = document.createElement("div");
+            wrap.className = "codeblock";
+            pre.parentElement.insertBefore(wrap, pre);
+            wrap.appendChild(pre);
+
+            // Tag codeblock based on preceding label text (Korean)
+            // Typical Markdown structure is: <p>안 좋은 예:</p><pre>...</pre>
+            // or: <p>안전한 대안:</p><pre>...</pre>
+            const prev = wrap.previousElementSibling;
+            const prevText = (prev && (prev.innerText || prev.textContent) ? (prev.innerText || prev.textContent) : "").trim();
+            if (prevText.startsWith("안 좋은 예")) wrap.classList.add("bad");
+            if (prevText.startsWith("안전한 대안")) wrap.classList.add("good");
+
+            const btn = document.createElement("button");
+            btn.type = "button";
+            btn.className = "copyBtn";
+            btn.textContent = "복사";
+            btn.setAttribute("aria-label", "코드 복사");
+            wrap.appendChild(btn);
+
+            btn.addEventListener("click", async () => {
+              const text = (code.innerText || code.textContent || "").trimEnd();
+              if (!text) return;
+              try {
+                await navigator.clipboard.writeText(text);
+                const old = btn.textContent;
+                btn.textContent = "복사됨";
+                setTimeout(() => (btn.textContent = old), 900);
+              } catch {
+                // Fallback
+                try {
+                  const ta = document.createElement("textarea");
+                  ta.value = text;
+                  ta.style.position = "fixed";
+                  ta.style.left = "-9999px";
+                  document.body.appendChild(ta);
+                  ta.focus();
+                  ta.select();
+                  document.execCommand("copy");
+                  document.body.removeChild(ta);
+                  const old = btn.textContent;
+                  btn.textContent = "복사됨";
+                  setTimeout(() => (btn.textContent = old), 900);
+                } catch {
+                  btn.setAttribute("aria-disabled", "true");
+                }
+              }
+            });
+          }
+        })();
+
+        // Checklist → details jump (by Source URL)
+        (function initChecklistJump() {
+          const summary = document.querySelector(".view-summary");
+          if (!summary) return;
+
+          // Find the checklist section by heading text.
+          const h = Array.from(summary.querySelectorAll("h1,h2,h3")).find((x) =>
+            (x.innerText || "").includes("(5) 이번 달 개발자 체크리스트")
+          );
+          if (!h) return;
+
+          const ol = h.nextElementSibling && h.nextElementSibling.tagName === "OL"
+            ? h.nextElementSibling
+            : summary.querySelector("ol");
+          if (!ol) return;
+
+          // Add a tiny hint once.
+          if (!summary.querySelector(".jumpHint")) {
+            const hint = document.createElement("div");
+            hint.className = "jumpHint";
+            hint.textContent = "체크리스트 항목을 클릭하면 본문으로 이동합니다.";
+            ol.parentElement.insertBefore(hint, ol.nextSibling);
+          }
+
+          const items = Array.from(ol.querySelectorAll("li"));
+          for (const li of items) {
+            li.style.cursor = "pointer";
+            li.addEventListener("click", () => {
+              // Use the first external source URL inside the checklist item.
+              const a = li.querySelector('a[href^="http"]');
+              if (!a) return;
+              const href = a.getAttribute("href");
+              if (!href) return;
+
+              // Show full doc so target is visible, then scroll.
+              setView("all", true);
+
+              // Find same href elsewhere (skip the one inside the checklist item).
+              const links = Array.from(document.querySelectorAll('a[href="' + href.replace(/"/g, '\"') + '"]'));
+              let target = null;
+              for (const l of links) {
+                if (li.contains(l)) continue;
+                target = l;
+                break;
+              }
+              if (!target) return;
+
+              // Scroll to nearest heading for context.
+              const heading = target.closest("section")?.querySelector("h1,h2,h3") || target.closest("h1,h2,h3");
+              (heading || target).scrollIntoView({ behavior: "smooth", block: "start" });
+            });
+          }
+        })();
+
+        // TTS (Web Speech API)
+        const synth = window.speechSynthesis;
+        const playBtn = document.getElementById("tts-play");
+        const pauseBtn = document.getElementById("tts-pause");
+        const stopBtn = document.getElementById("tts-stop");
+        const rateSel = document.getElementById("tts-rate");
+        const voiceSel = document.getElementById("tts-voice");
+        const skipRefsChk = document.getElementById("tts-skip-refs");
+        let queue = [];
+        let speaking = false;
+
+        function getActiveView() {
+          return document.body.dataset.view || "all";
+        }
+
+        function getSectionsForView(view) {
+          if (view === "summary") return [document.querySelector(".view-summary")];
+          if (view === "node") return [document.querySelector(".view-node")];
+          if (view === "java") return [document.querySelector(".view-java")];
+          // all
+          return [
+            document.querySelector(".view-summary"),
+            document.querySelector(".view-node"),
+            document.querySelector(".view-java"),
+            document.querySelector(".view-rest"),
+          ];
+        }
+
+        function extractReadableLines(root, opts) {
+          const lines = [];
+          if (!root) return lines;
+
+          const stopAtRefs = !!opts.stopAtRefs;
+          const nodes = root.querySelectorAll("h1,h2,h3,p,li");
+          for (const el of nodes) {
+            // Skip code and tables.
+            if (el.closest("pre, code, table")) continue;
+            const t = (el.innerText || "").trim();
+            if (!t) continue;
+            if (stopAtRefs && t.includes("(7) 참고자료")) break;
+            lines.push(t);
+          }
+          return lines;
+        }
+
+        function buildTextForCurrentView() {
+          const view = getActiveView();
+          const sections = getSectionsForView(view);
+          const stopAtRefs = !!(skipRefsChk && skipRefsChk.checked);
+          const lines = [];
+          for (const s of sections) {
+            lines.push(...extractReadableLines(s, { stopAtRefs }));
+          }
+          return lines.join("\n");
+        }
+
+        function chunkText(text) {
+          const cleaned = text
+            .replace(/\s+\n/g, "\n")
+            .replace(/\n{3,}/g, "\n\n")
+            .trim();
+          if (!cleaned) return [];
+
+          // Split by paragraphs then by sentence-ish punctuation to keep utterances short.
+          const paras = cleaned.split(/\n\n+/);
+          const chunks = [];
+          for (const p of paras) {
+            const sents = p.split(/(?<=[\.\!\?]|다\.|다\?|다\!)\s+/);
+            let buf = "";
+            for (const s of sents) {
+              const next = (buf ? buf + " " : "") + s.trim();
+              if (next.length > 240 && buf) {
+                chunks.push(buf);
+                buf = s.trim();
+              } else {
+                buf = next;
+              }
+            }
+            if (buf) chunks.push(buf);
+          }
+          return chunks;
+        }
+
+        function populateVoices() {
+          if (!voiceSel) return;
+          const voices = synth.getVoices ? synth.getVoices() : [];
+          // Clear, keep auto.
+          const keep0 = voiceSel.options[0];
+          voiceSel.innerHTML = "";
+          voiceSel.appendChild(keep0);
+
+          // Prefer Korean first.
+          const ko = voices.filter(v => (v.lang || "").toLowerCase().startsWith("ko"));
+          const rest = voices.filter(v => !(v.lang || "").toLowerCase().startsWith("ko"));
+          const ordered = [...ko, ...rest];
+          for (const v of ordered) {
+            const opt = document.createElement("option");
+            opt.value = v.name;
+            opt.textContent = v.name + " (" + v.lang + ")";
+            voiceSel.appendChild(opt);
+          }
+        }
+
+        function pickVoice() {
+          const voices = synth.getVoices ? synth.getVoices() : [];
+          const selected = voiceSel && voiceSel.value ? voices.find(v => v.name === voiceSel.value) : null;
+          if (selected) return selected;
+          // Auto: pick Korean if available.
+          const ko = voices.find(v => (v.lang || "").toLowerCase().startsWith("ko"));
+          return ko || voices[0] || null;
+        }
+
+        function setButtonsState() {
+          if (!playBtn || !pauseBtn || !stopBtn) return;
+          pauseBtn.disabled = !speaking || synth.paused;
+          stopBtn.disabled = !speaking;
+          playBtn.textContent = synth.speaking && synth.paused ? "재개" : "읽기";
+        }
+
+        function stopTts() {
+          try { synth.cancel(); } catch {}
+          queue = [];
+          speaking = false;
+          setButtonsState();
+        }
+
+        function speakNext() {
+          if (!queue.length) {
+            speaking = false;
+            setButtonsState();
+            return;
+          }
+          const text = queue.shift();
+          const u = new SpeechSynthesisUtterance(text);
+          const v = pickVoice();
+          if (v) u.voice = v;
+          u.lang = (v && v.lang) ? v.lang : "ko-KR";
+          u.rate = rateSel ? Number(rateSel.value || "1") : 1;
+          u.onend = () => speakNext();
+          u.onerror = () => speakNext();
+          speaking = true;
+          setButtonsState();
+          synth.speak(u);
+        }
+
+        function startTts() {
+          // Resume if paused
+          if (synth.speaking && synth.paused) {
+            synth.resume();
+            speaking = true;
+            setButtonsState();
+            return;
+          }
+          stopTts();
+          const text = buildTextForCurrentView();
+          queue = chunkText(text);
+          if (!queue.length) return;
+          speakNext();
+        }
+
+        if (synth && playBtn) {
+          populateVoices();
+          if (typeof speechSynthesis !== "undefined" && speechSynthesis.onvoiceschanged !== undefined) {
+            speechSynthesis.onvoiceschanged = () => populateVoices();
+          }
+          playBtn.addEventListener("click", startTts);
+          pauseBtn && pauseBtn.addEventListener("click", () => {
+            try { synth.pause(); } catch {}
+            setButtonsState();
+          });
+          stopBtn && stopBtn.addEventListener("click", stopTts);
+          voiceSel && voiceSel.addEventListener("change", () => {
+            // If currently speaking, restart with new voice.
+            if (speaking) startTts();
+          });
+          rateSel && rateSel.addEventListener("change", () => {
+            if (speaking) startTts();
+          });
+          skipRefsChk && skipRefsChk.addEventListener("change", () => {
+            if (speaking) startTts();
+          });
+        } else {
+          // No TTS support: hide controls
+          const tts = document.querySelector(".tts");
+          if (tts) tts.style.display = "none";
+        }
+
+        // setView is defined above to allow reuse by other UI features.
+
+        for (const b of buttons) {
+          b.addEventListener("click", () => setView(b.dataset.viewBtn, true));
+        }
+
+        const hash = (location.hash || "").replace("#", "");
+        if (["summary","all","node","java"].includes(hash)) {
+          setView(hash, false);
+          return;
+        }
+        try {
+          const saved = localStorage.getItem(KEY);
+          if (saved) setView(saved, false);
+        } catch {}
+      })();
+    </script>
+  </body>
+</html>
