@@ -493,12 +493,23 @@ ${htmlRest}
             if (srcIdx !== -1) t = t.slice(0, srcIdx).trim();
 
             // Drop standalone source lines or URL-only lines.
-            if (/^\[Source\]\s*/.test(t)) continue;
-            if (/^https?:\/\/\S+$/i.test(t)) continue;
+            // NOTE: This script is embedded into an HTML template string, so avoid regex literals
+            // containing backslash escapes unless they are double-escaped.
+            if (t.startsWith("[Source]")) continue;
+            if ((t.startsWith("http://") || t.startsWith("https://")) && !t.includes(" ")) continue;
 
-            // If URL skipping is enabled, strip URLs embedded in text.
+            // If URL skipping is enabled, strip URL-like tokens embedded in text.
             if (skipUrls) {
-              t = t.replace(/https?:\/\/\S+/gi, "").trim();
+              const normalized = t.replaceAll("\n", " ").replaceAll("\t", " ");
+              const parts = normalized.split(" ");
+              const out = [];
+              for (const raw of parts) {
+                const tok = raw.trim();
+                if (!tok) continue;
+                if (tok.startsWith("http://") || tok.startsWith("https://")) continue;
+                out.push(tok);
+              }
+              t = out.join(" ").trim();
             }
 
             // Minor cleanup for TTS: remove inline code backticks.
