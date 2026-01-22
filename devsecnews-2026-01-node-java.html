@@ -1610,12 +1610,50 @@ code.hljs {
 <section class="view-node" data-view-section="node">
 <h1>(2) Node.js</h1>
 <h2>(2.1) CVE/이슈 표</h2>
-<p>| CVE | 영향 버전 | 공격 영향(C/I/A) | 악용 여부(in-the-wild) | 권장 조치(업데이트/완화책) | Source URL |
-|---|---|---|---|---|---|---|
-| CVE-2025-55131 | Node.js v20/v22/v24/v25 (Active release lines) | C | 확인 불가 | Node.js를 보안 릴리스 버전으로 업데이트하고 <code>vm</code>+<code>timeout</code> 조합을 격리/제거합니다. | <a href="https://nodejs.org/en/blog/vulnerability/december-2025-security-releases">https://nodejs.org/en/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)<br><a href="https://cveawg.mitre.org/api/cve/CVE-2025-55131">https://cveawg.mitre.org/api/cve/CVE-2025-55131</a> (날짜 미표기) |
-| CVE-2025-55130 | Node.js permission model 사용 시(v20/v22/v24/v25) | C/I | 확인 불가 | Node.js를 업데이트하고 허용 경로를 realpath 기준 allowlist로 검증하며 symlink 체인을 차단합니다. | <a href="https://nodejs.org/en/blog/vulnerability/december-2025-security-releases">https://nodejs.org/en/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)<br><a href="https://cveawg.mitre.org/api/cve/CVE-2025-55130">https://cveawg.mitre.org/api/cve/CVE-2025-55130</a> (날짜 미표기) |
-| CVE-2026-21636 | Node.js v25 <code>--permission</code> 사용 시 | C/I | 확인 불가 | <code>--permission</code>을 보안 경계로 쓰지 않고 UDS 경로 allowlist 및 OS 격리로 보완합니다. | <a href="https://nodejs.org/en/blog/vulnerability/december-2025-security-releases">https://nodejs.org/en/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)<br><a href="https://cveawg.mitre.org/api/cve/CVE-2026-21636">https://cveawg.mitre.org/api/cve/CVE-2026-21636</a> (날짜 미표기) |
-| CVE-2025-55132 | Node.js v20/v22/v24/v25 (permission model 사용 시) | I | 확인 불가 | <code>fs.futimes()</code> 사용 여부를 점검하고 보안 의미로 타임스탬프를 신뢰하지 않도록 설계를 바꿉니다. | <a href="https://nodejs.org/en/blog/vulnerability/december-2025-security-releases">https://nodejs.org/en/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)<br><a href="https://cveawg.mitre.org/api/cve/CVE-2025-55132">https://cveawg.mitre.org/api/cve/CVE-2025-55132</a> (날짜 미표기) |</p>
+<table>
+<thead>
+<tr>
+<th>CVE</th>
+<th>영향 버전</th>
+<th>공격 영향(C/I/A)</th>
+<th>악용 여부(in-the-wild)</th>
+<th>권장 조치(업데이트/완화책)</th>
+<th>Source URL</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>CVE-2025-55131</td>
+<td>Node.js v20/v22/v24/v25 (Active release lines)</td>
+<td>C</td>
+<td>확인 불가</td>
+<td>Node.js를 보안 릴리스 버전으로 업데이트하고 <code>vm</code>+<code>timeout</code> 조합을 격리/제거합니다.</td>
+<td><a href="https://nodejs.org/en/blog/vulnerability/december-2025-security-releases">https://nodejs.org/en/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)<br><a href="https://cveawg.mitre.org/api/cve/CVE-2025-55131">https://cveawg.mitre.org/api/cve/CVE-2025-55131</a> (날짜 미표기)</td>
+</tr>
+<tr>
+<td>CVE-2025-55130</td>
+<td>Node.js permission model 사용 시(v20/v22/v24/v25)</td>
+<td>C/I</td>
+<td>확인 불가</td>
+<td>Node.js를 업데이트하고 허용 경로를 realpath 기준 allowlist로 검증하며 symlink 체인을 차단합니다.</td>
+<td><a href="https://nodejs.org/en/blog/vulnerability/december-2025-security-releases">https://nodejs.org/en/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)<br><a href="https://cveawg.mitre.org/api/cve/CVE-2025-55130">https://cveawg.mitre.org/api/cve/CVE-2025-55130</a> (날짜 미표기)</td>
+</tr>
+<tr>
+<td>CVE-2026-21636</td>
+<td>Node.js v25 <code>--permission</code> 사용 시</td>
+<td>C/I</td>
+<td>확인 불가</td>
+<td><code>--permission</code>을 보안 경계로 쓰지 않고 UDS 경로 allowlist 및 OS 격리로 보완합니다.</td>
+<td><a href="https://nodejs.org/en/blog/vulnerability/december-2025-security-releases">https://nodejs.org/en/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)<br><a href="https://cveawg.mitre.org/api/cve/CVE-2026-21636">https://cveawg.mitre.org/api/cve/CVE-2026-21636</a> (날짜 미표기)</td>
+</tr>
+<tr>
+<td>CVE-2025-55132</td>
+<td>Node.js v20/v22/v24/v25 (permission model 사용 시)</td>
+<td>I</td>
+<td>확인 불가</td>
+<td><code>fs.futimes()</code> 사용 여부를 점검하고 보안 의미로 타임스탬프를 신뢰하지 않도록 설계를 바꿉니다.</td>
+<td><a href="https://nodejs.org/en/blog/vulnerability/december-2025-security-releases">https://nodejs.org/en/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)<br><a href="https://cveawg.mitre.org/api/cve/CVE-2025-55132">https://cveawg.mitre.org/api/cve/CVE-2025-55132</a> (날짜 미표기)</td>
+</tr>
+</tbody></table>
 <h2>(2.2) 항목별 설명</h2>
 <h3>Node.js 보안 릴리스(Active release lines)</h3>
 <p>Node.js는 다수 취약점 패치를 포함한 보안 릴리스를 공개했습니다. 런타임을 보안 릴리스 버전으로 업데이트합니다. [Source] <a href="https://nodejs.org/en/blog/vulnerability/december-2025-security-releases">https://nodejs.org/en/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)</p>
@@ -1696,11 +1734,42 @@ net.<span class="hljs-title function_">connect</span>(userInput.<span class="hlj
 <section class="view-java" data-view-section="java">
 <h1>(3) Java</h1>
 <h2>(3.1) CVE/이슈 표</h2>
-<p>| CVE | 영향 버전 | 공격 영향(C/I/A) | 악용 여부(in-the-wild) | 권장 조치(업데이트/완화책) | Source URL |
-|---|---|---|---|---|---|---|
-| CVE-2025-68493 (S2-069) | Apache Struts 영향 버전(공지 참조) | C/I/A | 확인 불가 | Struts를 패치 버전으로 업데이트하고 XML 파서에서 DTD/외부 엔티티를 비활성화합니다. | <a href="https://cwiki.apache.org/confluence/display/WW/S2-069">https://cwiki.apache.org/confluence/display/WW/S2-069</a> (2026-01-11)<br><a href="https://cveawg.mitre.org/api/cve/CVE-2025-68493">https://cveawg.mitre.org/api/cve/CVE-2025-68493</a> (날짜 미표기) |
-| CVE-2025-10492 | JasperReports 관련 컴포넌트(공지 참조) | C/I/A | 확인 불가 | JasperReports 관련 컴포넌트를 업데이트하고 외부 템플릿/직렬화 입력 경로를 차단합니다. | <a href="https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability">https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability</a> (2026-01-12)<br><a href="https://cveawg.mitre.org/api/cve/CVE-2025-10492">https://cveawg.mitre.org/api/cve/CVE-2025-10492</a> (날짜 미표기) |
-| CVE-2026-22718 | Spring CLI VSCode Extension &lt;= 0.9.0 (EOL) | C/I | 확인 불가 | 해당 확장을 제거하고 워크스페이스 신뢰를 기본 거부로 설정합니다. | <a href="https://spring.io/security/cve-2026-22718">https://spring.io/security/cve-2026-22718</a> (2026-01-16)<br><a href="https://github.com/advisories/GHSA-h34g-p94m-h76q">https://github.com/advisories/GHSA-h34g-p94m-h76q</a> (날짜 미표기)<br><a href="https://cveawg.mitre.org/api/cve/CVE-2026-22718">https://cveawg.mitre.org/api/cve/CVE-2026-22718</a> (날짜 미표기) |</p>
+<table>
+<thead>
+<tr>
+<th>CVE</th>
+<th>영향 버전</th>
+<th>공격 영향(C/I/A)</th>
+<th>악용 여부(in-the-wild)</th>
+<th>권장 조치(업데이트/완화책)</th>
+<th>Source URL</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>CVE-2025-68493 (S2-069)</td>
+<td>Apache Struts 영향 버전(공지 참조)</td>
+<td>C/I/A</td>
+<td>확인 불가</td>
+<td>Struts를 패치 버전으로 업데이트하고 XML 파서에서 DTD/외부 엔티티를 비활성화합니다.</td>
+<td><a href="https://cwiki.apache.org/confluence/display/WW/S2-069">https://cwiki.apache.org/confluence/display/WW/S2-069</a> (2026-01-11)<br><a href="https://cveawg.mitre.org/api/cve/CVE-2025-68493">https://cveawg.mitre.org/api/cve/CVE-2025-68493</a> (날짜 미표기)</td>
+</tr>
+<tr>
+<td>CVE-2025-10492</td>
+<td>JasperReports 관련 컴포넌트(공지 참조)</td>
+<td>C/I/A</td>
+<td>확인 불가</td>
+<td>JasperReports 관련 컴포넌트를 업데이트하고 외부 템플릿/직렬화 입력 경로를 차단합니다.</td>
+<td><a href="https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability">https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability</a> (2026-01-12)<br><a href="https://cveawg.mitre.org/api/cve/CVE-2025-10492">https://cveawg.mitre.org/api/cve/CVE-2025-10492</a> (날짜 미표기)</td>
+</tr>
+<tr>
+<td>CVE-2026-22718</td>
+<td>Spring CLI VSCode Extension &lt;= 0.9.0 (EOL)</td>
+<td>C/I</td>
+<td>확인 불가</td>
+<td>해당 확장을 제거하고 워크스페이스 신뢰를 기본 거부로 설정합니다.</td>
+<td><a href="https://spring.io/security/cve-2026-22718">https://spring.io/security/cve-2026-22718</a> (2026-01-16)<br><a href="https://github.com/advisories/GHSA-h34g-p94m-h76q">https://github.com/advisories/GHSA-h34g-p94m-h76q</a> (날짜 미표기)<br><a href="https://cveawg.mitre.org/api/cve/CVE-2026-22718">https://cveawg.mitre.org/api/cve/CVE-2026-22718</a> (날짜 미표기)</td>
+</tr>
+</tbody></table>
 <h2>(3.2) 항목별 설명</h2>
 <h3>CVE-2025-68493 (S2-069): Struts XXE 계열 입력 처리</h3>
 <p>XML 파서 기본값/구성요소 조합이 남아 있으면 XXE 계열 입력이 다시 공격 표면이 됩니다. Struts를 패치 버전으로 올리고 XML 파서에서 DTD/외부 엔티티를 비활성화합니다. [Source] <a href="https://cwiki.apache.org/confluence/display/WW/S2-069">https://cwiki.apache.org/confluence/display/WW/S2-069</a> (2026-01-11)

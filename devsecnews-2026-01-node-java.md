@@ -25,7 +25,7 @@
 ## (2.1) CVE/이슈 표
 
 | CVE | 영향 버전 | 공격 영향(C/I/A) | 악용 여부(in-the-wild) | 권장 조치(업데이트/완화책) | Source URL |
-|---|---|---|---|---|---|---|
+|---|---|---|---|---|---|
 | CVE-2025-55131 | Node.js v20/v22/v24/v25 (Active release lines) | C | 확인 불가 | Node.js를 보안 릴리스 버전으로 업데이트하고 `vm`+`timeout` 조합을 격리/제거합니다. | https://nodejs.org/en/blog/vulnerability/december-2025-security-releases (2026-01-13)<br>https://cveawg.mitre.org/api/cve/CVE-2025-55131 (날짜 미표기) |
 | CVE-2025-55130 | Node.js permission model 사용 시(v20/v22/v24/v25) | C/I | 확인 불가 | Node.js를 업데이트하고 허용 경로를 realpath 기준 allowlist로 검증하며 symlink 체인을 차단합니다. | https://nodejs.org/en/blog/vulnerability/december-2025-security-releases (2026-01-13)<br>https://cveawg.mitre.org/api/cve/CVE-2025-55130 (날짜 미표기) |
 | CVE-2026-21636 | Node.js v25 `--permission` 사용 시 | C/I | 확인 불가 | `--permission`을 보안 경계로 쓰지 않고 UDS 경로 allowlist 및 OS 격리로 보완합니다. | https://nodejs.org/en/blog/vulnerability/december-2025-security-releases (2026-01-13)<br>https://cveawg.mitre.org/api/cve/CVE-2026-21636 (날짜 미표기) |
@@ -186,7 +186,7 @@ if (stat.mtimeMs < lastSeen) deny() // 타임스탬프를 보안 판단으로 �
 ## (3.1) CVE/이슈 표
 
 | CVE | 영향 버전 | 공격 영향(C/I/A) | 악용 여부(in-the-wild) | 권장 조치(업데이트/완화책) | Source URL |
-|---|---|---|---|---|---|---|
+|---|---|---|---|---|---|
 | CVE-2025-68493 (S2-069) | Apache Struts 영향 버전(공지 참조) | C/I/A | 확인 불가 | Struts를 패치 버전으로 업데이트하고 XML 파서에서 DTD/외부 엔티티를 비활성화합니다. | https://cwiki.apache.org/confluence/display/WW/S2-069 (2026-01-11)<br>https://cveawg.mitre.org/api/cve/CVE-2025-68493 (날짜 미표기) |
 | CVE-2025-10492 | JasperReports 관련 컴포넌트(공지 참조) | C/I/A | 확인 불가 | JasperReports 관련 컴포넌트를 업데이트하고 외부 템플릿/직렬화 입력 경로를 차단합니다. | https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability (2026-01-12)<br>https://cveawg.mitre.org/api/cve/CVE-2025-10492 (날짜 미표기) |
 | CVE-2026-22718 | Spring CLI VSCode Extension <= 0.9.0 (EOL) | C/I | 확인 불가 | 해당 확장을 제거하고 워크스페이스 신뢰를 기본 거부로 설정합니다. | https://spring.io/security/cve-2026-22718 (2026-01-16)<br>https://github.com/advisories/GHSA-h34g-p94m-h76q (날짜 미표기)<br>https://cveawg.mitre.org/api/cve/CVE-2026-22718 (날짜 미표기) |
