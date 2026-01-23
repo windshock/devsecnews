@@ -1,12 +1,18 @@
 import fs from "node:fs";
-import path from "node:path";
+import { parseArgs, getMonth, defaultInput } from "./cli.mjs";
 
 function usageAndExit() {
-  console.error("Usage:\n  node scripts/split-md.mjs <input.md>");
+  console.error(
+    "Usage:\n  node scripts/split-md.mjs <input.md>\n  node scripts/split-md.mjs --month YYYY-MM"
+  );
   process.exit(2);
 }
 
-const input = process.argv[2];
+const { flags, positionals } = parseArgs(process.argv.slice(2));
+if (flags.help) usageAndExit();
+
+const month = getMonth(flags);
+const input = flags.input ?? positionals[0] ?? defaultInput(month);
 if (!input) usageAndExit();
 if (!fs.existsSync(input)) {
   console.error(`Input file not found: ${input}`);
@@ -19,10 +25,14 @@ const md = fs.readFileSync(input, "utf8");
 const idxNode = md.indexOf("# (2) Node.js");
 const idxJava = md.indexOf("# (3) Java");
 const idxCommon = md.indexOf("# (4) 공통 트렌드/권장사항");
-const idxRefs = md.indexOf("# (7) 참고자료");
+const idxRefs6 = md.indexOf("# (6) 참고자료");
+const idxRefs7 = md.indexOf("# (7) 참고자료");
+const idxRefs = idxRefs6 !== -1 ? idxRefs6 : idxRefs7;
 
 if (idxNode === -1 || idxJava === -1 || idxRefs === -1) {
-  console.error("Expected headings not found: # (2) Node.js, # (3) Java, # (7) 참고자료");
+  console.error(
+    "Expected headings not found: # (2) Node.js, # (3) Java, # (6) 참고자료 or # (7) 참고자료"
+  );
   process.exit(1);
 }
 
@@ -34,11 +44,11 @@ const javaSection = idxCommon !== -1 ? md.slice(idxJava, idxCommon) : md.slice(i
 const nodeDoc = header + nodeSection;
 const javaDoc = header + javaSection;
 
-writeWithRefs("devsecnews-2026-01-node.md", nodeDoc);
-writeWithRefs("devsecnews-2026-01-java.md", javaDoc);
+writeWithRefs(`devsecnews-${month}-node.md`, nodeDoc);
+writeWithRefs(`devsecnews-${month}-java.md`, javaDoc);
 
-console.log("wrote: devsecnews-2026-01-node.md");
-console.log("wrote: devsecnews-2026-01-java.md");
+console.log(`wrote: devsecnews-${month}-node.md`);
+console.log(`wrote: devsecnews-${month}-java.md`);
 
 function writeWithRefs(outFile, contentWithoutRefs) {
   const urls = extractUrls(contentWithoutRefs);
@@ -49,7 +59,9 @@ function writeWithRefs(outFile, contentWithoutRefs) {
 }
 
 function stripExistingRefs(s) {
-  const i = s.indexOf("# (7) 참고자료");
+  const i6 = s.indexOf("# (6) 참고자료");
+  const i7 = s.indexOf("# (7) 참고자료");
+  const i = i6 !== -1 ? i6 : i7;
   if (i === -1) return s;
   return s.slice(0, i);
 }
@@ -74,4 +86,3 @@ function formatRefs(urls) {
   for (const u of urls) lines.push(`- ${u}`);
   return lines.join("\n");
 }
-

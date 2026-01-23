@@ -4,17 +4,23 @@ import process from "node:process";
 import hljs from "highlight.js";
 import { marked } from "marked";
 import { markedHighlight } from "marked-highlight";
+import { parseArgs, getMonth, defaultInput } from "./cli.mjs";
 
 function usageAndExit() {
   console.error(
-    "Usage:\n  node scripts/md2html.mjs <input.md> [output.html]\n\nExamples:\n  node scripts/md2html.mjs devsecnews-2026-01-node-java.md\n  node scripts/md2html.mjs in.md out.html"
+    "Usage:\n  node scripts/md2html.mjs <input.md> [output.html]\n  node scripts/md2html.mjs --month YYYY-MM\n\nExamples:\n  node scripts/md2html.mjs devsecnews-2026-01-node-java.md\n  node scripts/md2html.mjs in.md out.html\n  node scripts/md2html.mjs --month 2026-01"
   );
   process.exit(2);
 }
 
-const input = process.argv[2] ?? "devsecnews-2026-01-node-java.md";
+const { flags, positionals } = parseArgs(process.argv.slice(2));
+if (flags.help) usageAndExit();
+
+const month = getMonth(flags);
+const input = flags.input ?? positionals[0] ?? defaultInput(month);
 const output =
-  process.argv[3] ??
+  flags.output ??
+  positionals[1] ??
   path.basename(input, path.extname(input)) + ".html";
 
 if (!input.endsWith(".md")) usageAndExit();

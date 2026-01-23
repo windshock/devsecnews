@@ -2,22 +2,27 @@ import fs from "node:fs";
 import path from "node:path";
 import process from "node:process";
 import { pathToFileURL } from "node:url";
+import { parseArgs, getMonth, defaultCardsHtml } from "./cli.mjs";
 
 function usageAndExit() {
   console.error(
-    "Usage:\n  node scripts/cards2png.mjs <cards.html> [outDir]\n\nExample:\n  node scripts/cards2png.mjs cards/devsecnews-2026-01-node-java/cards.html"
+    "Usage:\n  node scripts/cards2png.mjs <cards.html> [outDir]\n  node scripts/cards2png.mjs --month YYYY-MM\n\nExample:\n  node scripts/cards2png.mjs cards/devsecnews-2026-01-node-java/cards.html\n  node scripts/cards2png.mjs --month 2026-01"
   );
   process.exit(2);
 }
 
-const inputHtml = process.argv[2];
+const { flags, positionals } = parseArgs(process.argv.slice(2));
+if (flags.help) usageAndExit();
+
+const month = getMonth(flags);
+const inputHtml = flags.input ?? positionals[0] ?? defaultCardsHtml(month);
 if (!inputHtml) usageAndExit();
 if (!fs.existsSync(inputHtml)) {
   console.error(`Input file not found: ${inputHtml}`);
   process.exit(1);
 }
 
-const outDir = process.argv[3] ?? path.dirname(inputHtml);
+const outDir = flags.outDir ?? positionals[1] ?? path.dirname(inputHtml);
 fs.mkdirSync(outDir, { recursive: true });
 
 let chromium;
@@ -60,4 +65,3 @@ for (let i = 0; i < cards.length; i++) {
 }
 
 await browser.close();
-

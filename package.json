@@ -3,14 +3,15 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build:html": "node scripts/md2html.mjs devsecnews-2026-01-node-java.md",
-    "build:split": "node scripts/split-md.mjs devsecnews-2026-01-node-java.md",
-    "build:html:all": "npm run build:split && node scripts/md2html.mjs devsecnews-2026-01-node-java.md && node scripts/md2html.mjs devsecnews-2026-01-node.md && node scripts/md2html.mjs devsecnews-2026-01-java.md",
+    "build:html": "node scripts/md2html.mjs",
+    "build:split": "node scripts/split-md.mjs",
+    "build:html:all": "node scripts/build-all.mjs",
     "build:html:file": "node scripts/md2html.mjs",
-    "build:cards:html": "node scripts/md2cards.mjs devsecnews-2026-01-node-java.md",
-    "build:cards:png": "node scripts/cards2png.mjs cards/devsecnews-2026-01-node-java/cards.html",
-    "build:cards": "npm run build:cards:html && npm run build:cards:png && npm run build:html",
-    "deploy": "npm run build:cards && mkdir -p docs/cards && cp devsecnews-2026-01-node-java.html docs/ && cp -R cards/devsecnews-2026-01-node-java docs/cards/"
+    "build:cards:html": "node scripts/md2cards.mjs",
+    "build:cards:png": "node scripts/cards2png.mjs",
+    "build:cards": "node scripts/build-cards.mjs",
+    "deploy": "node scripts/deploy.mjs",
+    "verify": "node scripts/verify.mjs"
   },
   "devDependencies": {
     "@playwright/test": "^1.57.0",

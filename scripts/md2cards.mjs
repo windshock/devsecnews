@@ -2,15 +2,20 @@ import fs from "node:fs";
 import path from "node:path";
 import process from "node:process";
 import { marked } from "marked";
+import { parseArgs, getMonth, defaultInput } from "./cli.mjs";
 
 function usageAndExit() {
   console.error(
-    "Usage:\n  node scripts/md2cards.mjs <input.md> [outDir]\n\nExamples:\n  node scripts/md2cards.mjs devsecnews-2026-01-node-java.md\n  node scripts/md2cards.mjs in.md cards/out"
+    "Usage:\n  node scripts/md2cards.mjs <input.md> [outDir]\n  node scripts/md2cards.mjs --month YYYY-MM\n\nExamples:\n  node scripts/md2cards.mjs devsecnews-2026-01-node-java.md\n  node scripts/md2cards.mjs in.md cards/out\n  node scripts/md2cards.mjs --month 2026-01"
   );
   process.exit(2);
 }
 
-const input = process.argv[2] ?? "devsecnews-2026-01-node-java.md";
+const { flags, positionals } = parseArgs(process.argv.slice(2));
+if (flags.help) usageAndExit();
+
+const month = getMonth(flags);
+const input = flags.input ?? positionals[0] ?? defaultInput(month);
 if (!input.endsWith(".md")) usageAndExit();
 if (!fs.existsSync(input)) {
   console.error(`Input file not found: ${input}`);
@@ -18,7 +23,8 @@ if (!fs.existsSync(input)) {
 }
 
 const baseName = path.basename(input, path.extname(input));
-const outDir = process.argv[3] ?? path.join("cards", baseName);
+const outDir =
+  flags.outDir ?? positionals[1] ?? path.join("cards", baseName);
 fs.mkdirSync(outDir, { recursive: true });
 
 const md = fs.readFileSync(input, "utf8");
@@ -699,4 +705,3 @@ function escapeHtml(s) {
 function escapeRegExp(s) {
   return String(s).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
-
