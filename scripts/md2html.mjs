@@ -843,9 +843,20 @@ ${htmlRest}
           const voices = synth.getVoices ? synth.getVoices() : [];
           if (!voices.length) return null;
           
-          // Force Yuna if available (per requirement).
+          const ua = (navigator.userAgent || "").toLowerCase();
+          const isSafari = ua.includes("safari") && !ua.includes("chrome") && !ua.includes("chromium");
+
+          // Prefer Yuna (name match) on all browsers if available.
           const yuna = voices.find(v => String(v.name || "").toLowerCase().includes("yuna"));
           if (yuna) return yuna;
+
+          // Safari: prefer system default Korean voice if available.
+          if (isSafari) {
+            const koVoices = voices.filter(v => (v.lang || "").toLowerCase().startsWith("ko"));
+            const defKo = koVoices.find(v => v.default);
+            return defKo || koVoices[0] || voices[0] || null;
+          }
+
           // Fallback: any Korean voice, then first available.
           const ko = voices.find(v => (v.lang || "").toLowerCase().startsWith("ko"));
           return ko || voices[0] || null;
