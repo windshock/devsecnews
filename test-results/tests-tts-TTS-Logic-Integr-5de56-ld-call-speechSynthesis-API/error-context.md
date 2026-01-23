@@ -1,0 +1,566 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - group "보기 선택" [ref=e4]:
+      - button "요약" [ref=e5] [cursor=pointer]
+      - button "Node.js" [ref=e6] [cursor=pointer]
+      - button "Java" [ref=e7] [cursor=pointer]
+      - button "전체" [pressed] [ref=e8] [cursor=pointer]
+    - generic [ref=e9]:
+      - generic [ref=e10]: 상단 탭으로 필요한 부분만 봅니다.
+      - generic "읽어주기(TTS)" [ref=e11]:
+        - button "읽기" [ref=e12] [cursor=pointer]
+        - button "일시정지" [disabled] [ref=e13]
+        - button "중지" [disabled] [ref=e14]
+        - combobox "읽기 속도" [ref=e15]:
+          - option "0.9x"
+          - option "1.0x" [selected]
+          - option "1.1x"
+          - option "1.2x"
+        - combobox "목소리 선택" [ref=e16]:
+          - option "(목소리 자동)" [selected]
+          - option "Google 한국어 (ko-KR)"
+          - option "Alice (en-US)"
+        - generic [ref=e17] [cursor=pointer]:
+          - checkbox "URL 제외" [checked] [ref=e18]
+          - text: URL 제외
+        - generic [ref=e19] [cursor=pointer]:
+          - checkbox "참고자료 제외" [checked] [ref=e20]
+          - text: 참고자료 제외
+  - main [ref=e21]:
+    - article [ref=e22]:
+      - generic [ref=e23]:
+        - heading "DevSecNews 2026-01 — Node.js/Java 보안 요약(개발자용)" [level=1] [ref=e24]
+        - heading "(1) Summary" [level=1] [ref=e25]
+        - list [ref=e26]:
+          - listitem [ref=e27]:
+            - text: Node.js는 권한 경계(권한 모델/경로/소켓) 관련 취약점을 묶어서 패치했습니다. 런타임을 보안 릴리스 버전으로 업데이트합니다. [Source]
+            - link "https://nodejs.org/en/blog/vulnerability/december-2025-security-releases" [ref=e28] [cursor=pointer]:
+              - /url: https://nodejs.org/en/blog/vulnerability/december-2025-security-releases
+            - text: (2026-01-13)
+          - listitem [ref=e29]:
+            - text: Java는 외부 입력이 XML/템플릿/직렬화로 흘러가는 경로가 핵심 위험 지점입니다. 외부 입력 기반 템플릿·직렬화 경로를 차단하거나 격리합니다. [Source]
+            - link "https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability" [ref=e30] [cursor=pointer]:
+              - /url: https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability
+            - text: (2026-01-12)
+          - listitem [ref=e31]:
+            - text: Struts(XXE, S2-069)는 XML 파서 기본값이 그대로면 다시 공격면이 됩니다. Struts를 패치 버전으로 올리고 XML 파서 보안 설정을 강제합니다. [Source]
+            - link "https://cwiki.apache.org/confluence/display/WW/S2-069" [ref=e32] [cursor=pointer]:
+              - /url: https://cwiki.apache.org/confluence/display/WW/S2-069
+            - text: (2026-01-11)
+          - listitem [ref=e33]:
+            - text: 개발자 도구(Spring CLI VSCode extension)는 명령 주입이 확인됐고, EOL이면 제거가 우선입니다. 조직 표준 확장 목록에서 해당 확장을 제거하고 워크스페이스 신뢰를 기본 거부로 둡니다. [Source]
+            - link "https://spring.io/security/cve-2026-22718" [ref=e34] [cursor=pointer]:
+              - /url: https://spring.io/security/cve-2026-22718
+            - text: (2026-01-16)
+      - generic [ref=e35]:
+        - heading "(2) Node.js" [level=1] [ref=e36]
+        - heading "(2.1) CVE/이슈 표" [level=2] [ref=e37]
+        - table [ref=e38]:
+          - rowgroup [ref=e39]:
+            - row "CVE 영향 버전 공격 영향(C/I/A) 악용 여부(in-the-wild) 권장 조치(업데이트/완화책) Source URL" [ref=e40]:
+              - columnheader "CVE" [ref=e41]
+              - columnheader "영향 버전" [ref=e42]
+              - columnheader "공격 영향(C/I/A)" [ref=e43]
+              - columnheader "악용 여부(in-the-wild)" [ref=e44]
+              - columnheader "권장 조치(업데이트/완화책)" [ref=e45]
+              - columnheader "Source URL" [ref=e46]
+          - rowgroup [ref=e47]:
+            - row "CVE-2025-55131 Node.js v20/v22/v24/v25 (Active release lines) C 확인 불가 Node.js를 보안 릴리스 버전으로 업데이트하고 vm+timeout 조합을 격리/제거합니다. https://nodejs.org/en/blog/vulnerability/december-2025-security-releases (2026-01-13) https://cveawg.mitre.org/api/cve/CVE-2025-55131 (날짜 미표기)" [ref=e48]:
+              - cell "CVE-2025-55131" [ref=e49]
+              - cell "Node.js v20/v22/v24/v25 (Active release lines)" [ref=e50]
+              - cell "C" [ref=e51]
+              - cell "확인 불가" [ref=e52]
+              - cell "Node.js를 보안 릴리스 버전으로 업데이트하고 vm+timeout 조합을 격리/제거합니다." [ref=e53]:
+                - text: Node.js를 보안 릴리스 버전으로 업데이트하고
+                - code [ref=e54]: vm
+                - text: +
+                - code [ref=e55]: timeout
+                - text: 조합을 격리/제거합니다.
+              - cell "https://nodejs.org/en/blog/vulnerability/december-2025-security-releases (2026-01-13) https://cveawg.mitre.org/api/cve/CVE-2025-55131 (날짜 미표기)" [ref=e56]:
+                - link "https://nodejs.org/en/blog/vulnerability/december-2025-security-releases" [ref=e57] [cursor=pointer]:
+                  - /url: https://nodejs.org/en/blog/vulnerability/december-2025-security-releases
+                - text: (2026-01-13)
+                - link "https://cveawg.mitre.org/api/cve/CVE-2025-55131" [ref=e58] [cursor=pointer]:
+                  - /url: https://cveawg.mitre.org/api/cve/CVE-2025-55131
+                - text: (날짜 미표기)
+            - row "CVE-2025-55130 Node.js permission model 사용 시(v20/v22/v24/v25) C/I 확인 불가 Node.js를 업데이트하고 허용 경로를 realpath 기준 allowlist로 검증하며 symlink 체인을 차단합니다. https://nodejs.org/en/blog/vulnerability/december-2025-security-releases (2026-01-13) https://cveawg.mitre.org/api/cve/CVE-2025-55130 (날짜 미표기)" [ref=e59]:
+              - cell "CVE-2025-55130" [ref=e60]
+              - cell "Node.js permission model 사용 시(v20/v22/v24/v25)" [ref=e61]
+              - cell "C/I" [ref=e62]
+              - cell "확인 불가" [ref=e63]
+              - cell "Node.js를 업데이트하고 허용 경로를 realpath 기준 allowlist로 검증하며 symlink 체인을 차단합니다." [ref=e64]
+              - cell "https://nodejs.org/en/blog/vulnerability/december-2025-security-releases (2026-01-13) https://cveawg.mitre.org/api/cve/CVE-2025-55130 (날짜 미표기)" [ref=e65]:
+                - link "https://nodejs.org/en/blog/vulnerability/december-2025-security-releases" [ref=e66] [cursor=pointer]:
+                  - /url: https://nodejs.org/en/blog/vulnerability/december-2025-security-releases
+                - text: (2026-01-13)
+                - link "https://cveawg.mitre.org/api/cve/CVE-2025-55130" [ref=e67] [cursor=pointer]:
+                  - /url: https://cveawg.mitre.org/api/cve/CVE-2025-55130
+                - text: (날짜 미표기)
+            - row "CVE-2026-21636 Node.js v25 --permission 사용 시 C/I 확인 불가 --permission을 보안 경계로 쓰지 않고 UDS 경로 allowlist 및 OS 격리로 보완합니다. https://nodejs.org/en/blog/vulnerability/december-2025-security-releases (2026-01-13) https://cveawg.mitre.org/api/cve/CVE-2026-21636 (날짜 미표기)" [ref=e68]:
+              - cell "CVE-2026-21636" [ref=e69]
+              - cell "Node.js v25 --permission 사용 시" [ref=e70]:
+                - text: Node.js v25
+                - code [ref=e71]: "--permission"
+                - text: 사용 시
+              - cell "C/I" [ref=e72]
+              - cell "확인 불가" [ref=e73]
+              - cell "--permission을 보안 경계로 쓰지 않고 UDS 경로 allowlist 및 OS 격리로 보완합니다." [ref=e74]:
+                - code [ref=e75]: "--permission"
+                - text: 을 보안 경계로 쓰지 않고 UDS 경로 allowlist 및 OS 격리로 보완합니다.
+              - cell "https://nodejs.org/en/blog/vulnerability/december-2025-security-releases (2026-01-13) https://cveawg.mitre.org/api/cve/CVE-2026-21636 (날짜 미표기)" [ref=e76]:
+                - link "https://nodejs.org/en/blog/vulnerability/december-2025-security-releases" [ref=e77] [cursor=pointer]:
+                  - /url: https://nodejs.org/en/blog/vulnerability/december-2025-security-releases
+                - text: (2026-01-13)
+                - link "https://cveawg.mitre.org/api/cve/CVE-2026-21636" [ref=e78] [cursor=pointer]:
+                  - /url: https://cveawg.mitre.org/api/cve/CVE-2026-21636
+                - text: (날짜 미표기)
+            - row "CVE-2025-55132 Node.js v20/v22/v24/v25 (permission model 사용 시) I 확인 불가 fs.futimes() 사용 여부를 점검하고 보안 의미로 타임스탬프를 신뢰하지 않도록 설계를 바꿉니다. https://nodejs.org/en/blog/vulnerability/december-2025-security-releases (2026-01-13) https://cveawg.mitre.org/api/cve/CVE-2025-55132 (날짜 미표기)" [ref=e79]:
+              - cell "CVE-2025-55132" [ref=e80]
+              - cell "Node.js v20/v22/v24/v25 (permission model 사용 시)" [ref=e81]
+              - cell "I" [ref=e82]
+              - cell "확인 불가" [ref=e83]
+              - cell "fs.futimes() 사용 여부를 점검하고 보안 의미로 타임스탬프를 신뢰하지 않도록 설계를 바꿉니다." [ref=e84]:
+                - code [ref=e85]: fs.futimes()
+                - text: 사용 여부를 점검하고 보안 의미로 타임스탬프를 신뢰하지 않도록 설계를 바꿉니다.
+              - cell "https://nodejs.org/en/blog/vulnerability/december-2025-security-releases (2026-01-13) https://cveawg.mitre.org/api/cve/CVE-2025-55132 (날짜 미표기)" [ref=e86]:
+                - link "https://nodejs.org/en/blog/vulnerability/december-2025-security-releases" [ref=e87] [cursor=pointer]:
+                  - /url: https://nodejs.org/en/blog/vulnerability/december-2025-security-releases
+                - text: (2026-01-13)
+                - link "https://cveawg.mitre.org/api/cve/CVE-2025-55132" [ref=e88] [cursor=pointer]:
+                  - /url: https://cveawg.mitre.org/api/cve/CVE-2025-55132
+                - text: (날짜 미표기)
+        - heading "(2.2) 항목별 설명" [level=2] [ref=e89]
+        - heading "Node.js 보안 릴리스(Active release lines)" [level=3] [ref=e90]
+        - paragraph [ref=e91]:
+          - text: Node.js는 다수 취약점 패치를 포함한 보안 릴리스를 공개했습니다. 런타임을 보안 릴리스 버전으로 업데이트합니다. [Source]
+          - link "https://nodejs.org/en/blog/vulnerability/december-2025-security-releases" [ref=e92] [cursor=pointer]:
+            - /url: https://nodejs.org/en/blog/vulnerability/december-2025-security-releases
+          - text: (2026-01-13)
+        - heading "영향 여부 자가진단(빠른 확인)" [level=3] [ref=e93]
+        - paragraph [ref=e94]: 아래 명령으로 런타임 버전과 실행 옵션(권한 모델 사용 여부)을 먼저 확인합니다.
+        - generic [ref=e95]:
+          - code [ref=e97]: node -v ps aux | grep -E "node .*--permission|node .*--allow-fs-" | grep -v grep || true
+          - button "코드 복사" [ref=e98] [cursor=pointer]: 복사
+        - paragraph [ref=e99]: 영향 가능성이 있으면 보안 릴리스 버전으로 업데이트합니다.
+        - 'heading "CVE-2025-55131: vm+timeout에서 메모리 노출 가능" [level=3] [ref=e100]':
+          - text: "CVE-2025-55131:"
+          - code [ref=e101]: vm
+          - text: +
+          - code [ref=e102]: timeout
+          - text: 에서 메모리 노출 가능
+        - paragraph [ref=e103]:
+          - code [ref=e104]: vm
+          - text: 모듈에서
+          - code [ref=e105]: timeout
+          - text: 로 실행을 끊는 흐름이 있으면, 버퍼 초기화가 기대대로 동작하지 않아 이전 메모리 잔여가 노출될 수 있습니다.
+          - code [ref=e106]: vm
+          - text: 으로 “유저 코드”를 실행하는 구조를 별도 프로세스/컨테이너로 분리하고 런타임을 업데이트합니다. [Source]
+          - link "https://nodejs.org/en/blog/vulnerability/december-2025-security-releases" [ref=e107] [cursor=pointer]:
+            - /url: https://nodejs.org/en/blog/vulnerability/december-2025-security-releases
+          - text: (2026-01-13) [Source]
+          - link "https://cveawg.mitre.org/api/cve/CVE-2025-55131" [ref=e108] [cursor=pointer]:
+            - /url: https://cveawg.mitre.org/api/cve/CVE-2025-55131
+          - text: (날짜 미표기)
+        - 'heading "CVE-2025-55130: permission model 파일시스템 권한 우회(symlink)" [level=3] [ref=e109]'
+        - paragraph [ref=e110]:
+          - code [ref=e111]: "--allow-fs-read"
+          - text: /
+          - code [ref=e112]: "--allow-fs-write"
+          - text: 는 입력 경로와 symlink 체인 조합으로 우회될 수 있어 “옵션만으로” 보안 경계를 만들면 위험합니다. 허용 경로는 realpath(심볼릭 링크를 해소한 실제 경로) 기준 allowlist로 검증하고 런타임을 업데이트합니다. [Source]
+          - link "https://nodejs.org/en/blog/vulnerability/december-2025-security-releases" [ref=e113] [cursor=pointer]:
+            - /url: https://nodejs.org/en/blog/vulnerability/december-2025-security-releases
+          - text: (2026-01-13) [Source]
+          - link "https://cveawg.mitre.org/api/cve/CVE-2025-55130" [ref=e114] [cursor=pointer]:
+            - /url: https://cveawg.mitre.org/api/cve/CVE-2025-55130
+          - text: (날짜 미표기)
+        - 'heading "CVE-2026-21636: --permission에서 UDS로 네트워크 제한 우회" [level=3] [ref=e115]':
+          - text: "CVE-2026-21636:"
+          - code [ref=e116]: "--permission"
+          - text: 에서 UDS로 네트워크 제한 우회
+        - paragraph [ref=e117]:
+          - text: 네트워크 권한을 제한했다고 해도 UDS(Unix Domain Socket, 로컬 소켓) 연결은 다른 경로로 열릴 수 있습니다. UDS 경로는 입력에서 직접 받지 않도록 하고 allowlist+정규화로 통제하며 필요하면 OS 격리를 적용합니다. [Source]
+          - link "https://nodejs.org/en/blog/vulnerability/december-2025-security-releases" [ref=e118] [cursor=pointer]:
+            - /url: https://nodejs.org/en/blog/vulnerability/december-2025-security-releases
+          - text: (2026-01-13) [Source]
+          - link "https://cveawg.mitre.org/api/cve/CVE-2026-21636" [ref=e119] [cursor=pointer]:
+            - /url: https://cveawg.mitre.org/api/cve/CVE-2026-21636
+          - text: (날짜 미표기)
+        - 'heading "CVE-2025-55132: fs.futimes()로 메타데이터(타임스탬프) 변경 가능" [level=3] [ref=e120]':
+          - text: "CVE-2025-55132:"
+          - code [ref=e121]: fs.futimes()
+          - text: 로 메타데이터(타임스탬프) 변경 가능
+        - paragraph [ref=e122]:
+          - text: 읽기 권한만 가정한 환경에서도 파일 타임스탬프가 변경될 수 있어, 타임라인 기반 감시/감사 로직이 깨질 수 있습니다.
+          - code [ref=e123]: fs.futimes()
+          - text: 사용 여부를 점검하고 보안 의미로 파일 타임스탬프를 신뢰하지 않도록 설계를 바꿉니다. [Source]
+          - link "https://nodejs.org/en/blog/vulnerability/december-2025-security-releases" [ref=e124] [cursor=pointer]:
+            - /url: https://nodejs.org/en/blog/vulnerability/december-2025-security-releases
+          - text: (2026-01-13) [Source]
+          - link "https://cveawg.mitre.org/api/cve/CVE-2025-55132" [ref=e125] [cursor=pointer]:
+            - /url: https://cveawg.mitre.org/api/cve/CVE-2025-55132
+          - text: (날짜 미표기)
+        - heading "(2.3) 이번 달 취약 개발 패턴 Top 5" [level=2] [ref=e126]
+        - heading "1) “permission 모델을 켰으니 안전”이라는 가정" [level=3] [ref=e127]
+        - paragraph [ref=e128]: 공격자는 symlink/UDS 같은 우회 경로로 “권한 옵션의 의도”와 다른 접근을 만들려고 합니다. 허용 경로/소켓 경로를 allowlist로 고정하고 런타임을 업데이트합니다.
+        - paragraph [ref=e129]: "안 좋은 예:"
+        - generic [ref=e130]:
+          - code [ref=e132]: // permission model을 켠 상태에서 입력을 그대로 신뢰 fs.readFileSync(userInput.path, "utf8")
+          - button "코드 복사" [ref=e133] [cursor=pointer]: 복사
+        - paragraph [ref=e134]: "안전한 대안:"
+        - generic [ref=e135]:
+          - code [ref=e137]: import path from "node:path" const ROOT = "/srv/app/data" const p = path.resolve(ROOT, userInput.path) if (!p.startsWith(ROOT + path.sep)) throw new Error("blocked") fs.readFileSync(p, "utf8")
+          - button "코드 복사" [ref=e138] [cursor=pointer]: 복사
+        - paragraph [ref=e139]:
+          - text: 팀 규칙으로 고정합니다. [Source]
+          - link "https://nodejs.org/en/blog/vulnerability/december-2025-security-releases" [ref=e140] [cursor=pointer]:
+            - /url: https://nodejs.org/en/blog/vulnerability/december-2025-security-releases
+          - text: (2026-01-13)
+        - heading "2) symlink/realpath를 고려하지 않은 “경로 검증”" [level=3] [ref=e141]
+        - paragraph [ref=e142]: 공격자는 “문자열 기반 경로 체크”를 우회해 허용 디렉터리 밖 파일에 접근하려고 합니다. realpath 기준 allowlist 검증을 적용합니다.
+        - paragraph [ref=e143]: "안 좋은 예:"
+        - generic [ref=e144]:
+          - code [ref=e146]: if (!userInput.path.startsWith("/srv/app/data/")) throw new Error("blocked") fs.readFileSync(userInput.path, "utf8")
+          - button "코드 복사" [ref=e147] [cursor=pointer]: 복사
+        - paragraph [ref=e148]: "안전한 대안:"
+        - generic [ref=e149]:
+          - code [ref=e151]: const real = fs.realpathSync(userInput.path) if (!real.startsWith("/srv/app/data/")) throw new Error("blocked") fs.readFileSync(real, "utf8")
+          - button "코드 복사" [ref=e152] [cursor=pointer]: 복사
+        - paragraph [ref=e153]:
+          - text: 팀 규칙으로 고정합니다. [Source]
+          - link "https://nodejs.org/en/blog/vulnerability/december-2025-security-releases" [ref=e154] [cursor=pointer]:
+            - /url: https://nodejs.org/en/blog/vulnerability/december-2025-security-releases
+          - text: (2026-01-13)
+        - heading "3) vm에서 유저 코드를 돌리고 timeout으로 끊기" [level=3] [ref=e155]:
+          - text: 3)
+          - code [ref=e156]: vm
+          - text: 에서 유저 코드를 돌리고 timeout으로 끊기
+        - paragraph [ref=e157]: 공격자는 타이밍 경합으로 버퍼 초기화/정리 타이밍을 흔들어 정보 노출이나 비정상 동작을 유도합니다. 유저 코드는 별도 프로세스/컨테이너로 분리하고 IPC로만 통신합니다.
+        - paragraph [ref=e158]: "안 좋은 예:"
+        - generic [ref=e159]:
+          - code [ref=e161]: "vm.runInNewContext(untrustedCode, sandbox, { timeout: 50 })"
+          - button "코드 복사" [ref=e162] [cursor=pointer]: 복사
+        - paragraph [ref=e163]: "안전한 대안:"
+        - generic [ref=e164]:
+          - code [ref=e166]: // untrusted code는 별도 프로세스/컨테이너에서 실행하고 // 결과만 IPC로 받습니다.
+          - button "코드 복사" [ref=e167] [cursor=pointer]: 복사
+        - paragraph [ref=e168]:
+          - text: 팀 규칙으로 고정합니다. [Source]
+          - link "https://nodejs.org/en/blog/vulnerability/december-2025-security-releases" [ref=e169] [cursor=pointer]:
+            - /url: https://nodejs.org/en/blog/vulnerability/december-2025-security-releases
+          - text: (2026-01-13)
+        - heading "4) UDS 경로를 입력으로 받아 내부 소켓에 연결" [level=3] [ref=e170]
+        - paragraph [ref=e171]: 공격자는 네트워크 권한 경계를 우회하기 위해 로컬 소켓(UDS) 경로를 입력으로 주입하려고 합니다. UDS 경로는 allowlist로 고정하고 입력에서 직접 받지 않도록 설계를 바꿉니다.
+        - paragraph [ref=e172]: "안 좋은 예:"
+        - generic [ref=e173]:
+          - code [ref=e175]: net.connect(userInput.socketPath)
+          - button "코드 복사" [ref=e176] [cursor=pointer]: 복사
+        - paragraph [ref=e177]: "안전한 대안:"
+        - generic [ref=e178]:
+          - code [ref=e180]: const ALLOWED_UDS = new Set(["/run/app.sock"]) if (!ALLOWED_UDS.has(userInput.socketPath)) throw new Error("blocked") net.connect(userInput.socketPath)
+          - button "코드 복사" [ref=e181] [cursor=pointer]: 복사
+        - paragraph [ref=e182]:
+          - text: 팀 규칙으로 고정합니다. [Source]
+          - link "https://nodejs.org/en/blog/vulnerability/december-2025-security-releases" [ref=e183] [cursor=pointer]:
+            - /url: https://nodejs.org/en/blog/vulnerability/december-2025-security-releases
+          - text: (2026-01-13)
+        - heading "5) 파일 타임스탬프를 보안 신호로 신뢰" [level=3] [ref=e184]
+        - paragraph [ref=e185]: 공격자는 로그/감사 흐름을 흐리게 만들기 위해 메타데이터(타임스탬프) 조작 가능성을 악용합니다. 타임스탬프를 보안 판단에 직접 쓰지 않고, 별도 감사 이벤트/해시 기반으로 설계를 바꿉니다.
+        - paragraph [ref=e186]: "안 좋은 예:"
+        - generic [ref=e187]:
+          - code [ref=e189]: if (stat.mtimeMs < lastSeen) deny() // 타임스탬프를 보안 판단으로 사용
+          - button "코드 복사" [ref=e190] [cursor=pointer]: 복사
+        - paragraph [ref=e191]: "안전한 대안:"
+        - generic [ref=e192]:
+          - code [ref=e194]: // 파일 내용 해시/서명 검증 + 별도 감사 이벤트 기록으로 전환
+          - button "코드 복사" [ref=e195] [cursor=pointer]: 복사
+        - paragraph [ref=e196]:
+          - text: 팀 규칙으로 고정합니다. [Source]
+          - link "https://nodejs.org/en/blog/vulnerability/december-2025-security-releases" [ref=e197] [cursor=pointer]:
+            - /url: https://nodejs.org/en/blog/vulnerability/december-2025-security-releases
+          - text: (2026-01-13)
+        - paragraph [ref=e198]: 팀이 오늘 적용할 규칙/코드 조치를 PR 체크리스트에 반영합니다.
+        - heading "(2.4) 운영 참고(선택)" [level=2] [ref=e199]
+      - generic [ref=e200]:
+        - heading "(3) Java" [level=1] [ref=e201]
+        - heading "(3.1) CVE/이슈 표" [level=2] [ref=e202]
+        - table [ref=e203]:
+          - rowgroup [ref=e204]:
+            - row "CVE 영향 버전 공격 영향(C/I/A) 악용 여부(in-the-wild) 권장 조치(업데이트/완화책) Source URL" [ref=e205]:
+              - columnheader "CVE" [ref=e206]
+              - columnheader "영향 버전" [ref=e207]
+              - columnheader "공격 영향(C/I/A)" [ref=e208]
+              - columnheader "악용 여부(in-the-wild)" [ref=e209]
+              - columnheader "권장 조치(업데이트/완화책)" [ref=e210]
+              - columnheader "Source URL" [ref=e211]
+          - rowgroup [ref=e212]:
+            - row "CVE-2025-68493 (S2-069) Apache Struts 영향 버전(공지 참조) C/I/A 확인 불가 Struts를 패치 버전으로 업데이트하고 XML 파서에서 DTD/외부 엔티티를 비활성화합니다. https://cwiki.apache.org/confluence/display/WW/S2-069 (2026-01-11) https://cveawg.mitre.org/api/cve/CVE-2025-68493 (날짜 미표기)" [ref=e213]:
+              - cell "CVE-2025-68493 (S2-069)" [ref=e214]
+              - cell "Apache Struts 영향 버전(공지 참조)" [ref=e215]
+              - cell "C/I/A" [ref=e216]
+              - cell "확인 불가" [ref=e217]
+              - cell "Struts를 패치 버전으로 업데이트하고 XML 파서에서 DTD/외부 엔티티를 비활성화합니다." [ref=e218]
+              - cell "https://cwiki.apache.org/confluence/display/WW/S2-069 (2026-01-11) https://cveawg.mitre.org/api/cve/CVE-2025-68493 (날짜 미표기)" [ref=e219]:
+                - link "https://cwiki.apache.org/confluence/display/WW/S2-069" [ref=e220] [cursor=pointer]:
+                  - /url: https://cwiki.apache.org/confluence/display/WW/S2-069
+                - text: (2026-01-11)
+                - link "https://cveawg.mitre.org/api/cve/CVE-2025-68493" [ref=e221] [cursor=pointer]:
+                  - /url: https://cveawg.mitre.org/api/cve/CVE-2025-68493
+                - text: (날짜 미표기)
+            - row "CVE-2025-10492 JasperReports 관련 컴포넌트(공지 참조) C/I/A 확인 불가 JasperReports 관련 컴포넌트를 업데이트하고 외부 템플릿/직렬화 입력 경로를 차단합니다. https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability (2026-01-12) https://cveawg.mitre.org/api/cve/CVE-2025-10492 (날짜 미표기)" [ref=e222]:
+              - cell "CVE-2025-10492" [ref=e223]
+              - cell "JasperReports 관련 컴포넌트(공지 참조)" [ref=e224]
+              - cell "C/I/A" [ref=e225]
+              - cell "확인 불가" [ref=e226]
+              - cell "JasperReports 관련 컴포넌트를 업데이트하고 외부 템플릿/직렬화 입력 경로를 차단합니다." [ref=e227]
+              - cell "https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability (2026-01-12) https://cveawg.mitre.org/api/cve/CVE-2025-10492 (날짜 미표기)" [ref=e228]:
+                - link "https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability" [ref=e229] [cursor=pointer]:
+                  - /url: https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability
+                - text: (2026-01-12)
+                - link "https://cveawg.mitre.org/api/cve/CVE-2025-10492" [ref=e230] [cursor=pointer]:
+                  - /url: https://cveawg.mitre.org/api/cve/CVE-2025-10492
+                - text: (날짜 미표기)
+            - row "CVE-2026-22718 Spring CLI VSCode Extension <= 0.9.0 (EOL) C/I 확인 불가 해당 확장을 제거하고 워크스페이스 신뢰를 기본 거부로 설정합니다. https://spring.io/security/cve-2026-22718 (2026-01-16) https://github.com/advisories/GHSA-h34g-p94m-h76q (날짜 미표기) https://cveawg.mitre.org/api/cve/CVE-2026-22718 (날짜 미표기)" [ref=e231]:
+              - cell "CVE-2026-22718" [ref=e232]
+              - cell "Spring CLI VSCode Extension <= 0.9.0 (EOL)" [ref=e233]
+              - cell "C/I" [ref=e234]
+              - cell "확인 불가" [ref=e235]
+              - cell "해당 확장을 제거하고 워크스페이스 신뢰를 기본 거부로 설정합니다." [ref=e236]
+              - cell "https://spring.io/security/cve-2026-22718 (2026-01-16) https://github.com/advisories/GHSA-h34g-p94m-h76q (날짜 미표기) https://cveawg.mitre.org/api/cve/CVE-2026-22718 (날짜 미표기)" [ref=e237]:
+                - link "https://spring.io/security/cve-2026-22718" [ref=e238] [cursor=pointer]:
+                  - /url: https://spring.io/security/cve-2026-22718
+                - text: (2026-01-16)
+                - link "https://github.com/advisories/GHSA-h34g-p94m-h76q" [ref=e239] [cursor=pointer]:
+                  - /url: https://github.com/advisories/GHSA-h34g-p94m-h76q
+                - text: (날짜 미표기)
+                - link "https://cveawg.mitre.org/api/cve/CVE-2026-22718" [ref=e240] [cursor=pointer]:
+                  - /url: https://cveawg.mitre.org/api/cve/CVE-2026-22718
+                - text: (날짜 미표기)
+        - heading "(3.2) 항목별 설명" [level=2] [ref=e241]
+        - 'heading "CVE-2025-68493 (S2-069): Struts XXE 계열 입력 처리" [level=3] [ref=e242]'
+        - paragraph [ref=e243]:
+          - text: XML 파서 기본값/구성요소 조합이 남아 있으면 XXE 계열 입력이 다시 공격 표면이 됩니다. Struts를 패치 버전으로 올리고 XML 파서에서 DTD/외부 엔티티를 비활성화합니다. [Source]
+          - link "https://cwiki.apache.org/confluence/display/WW/S2-069" [ref=e244] [cursor=pointer]:
+            - /url: https://cwiki.apache.org/confluence/display/WW/S2-069
+          - text: (2026-01-11) [Source]
+          - link "https://cveawg.mitre.org/api/cve/CVE-2025-68493" [ref=e245] [cursor=pointer]:
+            - /url: https://cveawg.mitre.org/api/cve/CVE-2025-68493
+          - text: (날짜 미표기)
+        - 'heading "CVE-2025-10492: JasperReports 역직렬화/RCE 리스크" [level=3] [ref=e246]'
+        - paragraph [ref=e247]:
+          - text: 리포트/템플릿 파이프라인이 “업로드/외부 파일”을 그대로 받아 처리하면 RCE로 연결됩니다. 템플릿 업로드를 차단하고 불가피하면 격리된 실행 환경에서만 처리하며 컴포넌트를 업데이트합니다. [Source]
+          - link "https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability" [ref=e248] [cursor=pointer]:
+            - /url: https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability
+          - text: (2026-01-12) [Source]
+          - link "https://cveawg.mitre.org/api/cve/CVE-2025-10492" [ref=e249] [cursor=pointer]:
+            - /url: https://cveawg.mitre.org/api/cve/CVE-2025-10492
+          - text: (날짜 미표기)
+        - 'heading "CVE-2026-22718: 개발 도구(확장) 명령 주입" [level=3] [ref=e250]'
+        - paragraph [ref=e251]:
+          - text: EOL 된 개발 도구는 “패치 없음”이 기본이어서, 취약점이 확인되면 제거가 사실상 유일한 대응입니다. 조직 표준 확장 목록에서 제거하고 신뢰되지 않은 워크스페이스 기본 거부를 적용합니다. [Source]
+          - link "https://spring.io/security/cve-2026-22718" [ref=e252] [cursor=pointer]:
+            - /url: https://spring.io/security/cve-2026-22718
+          - text: (2026-01-16) [Source]
+          - link "https://github.com/advisories/GHSA-h34g-p94m-h76q" [ref=e253] [cursor=pointer]:
+            - /url: https://github.com/advisories/GHSA-h34g-p94m-h76q
+          - text: (날짜 미표기) [Source]
+          - link "https://cveawg.mitre.org/api/cve/CVE-2026-22718" [ref=e254] [cursor=pointer]:
+            - /url: https://cveawg.mitre.org/api/cve/CVE-2026-22718
+          - text: (날짜 미표기)
+        - heading "영향 여부 자가진단(빠른 확인)" [level=3] [ref=e255]
+        - paragraph [ref=e256]: 아래 명령으로 의존성(Struts/JasperReports)과 개발 도구(취약 확장) 설치 여부를 먼저 확인합니다.
+        - generic [ref=e257]:
+          - code [ref=e259]: mvn -q -DskipTests dependency:tree | grep -Ei "struts2|jasperreports" || true code --list-extensions | grep -Ei "spring|cli" || true
+          - button "코드 복사" [ref=e260] [cursor=pointer]: 복사
+        - paragraph [ref=e261]: 영향 가능성이 있으면 버전을 올리거나(라이브러리) 제거합니다(개발 도구).
+        - heading "(3.3) 이번 달 취약 개발 패턴 Top 5" [level=2] [ref=e262]
+        - heading "1) 외부 입력(XML)을 파서 기본값으로 처리" [level=3] [ref=e263]
+        - paragraph [ref=e264]: 공격자는 XXE/SSRF/정보 노출을 노리고 “파서 기본값”을 파고듭니다. 외부 엔티티/DTD를 비활성화하고 허용 스키마만 처리합니다.
+        - paragraph [ref=e265]: "안 좋은 예:"
+        - generic [ref=e266]:
+          - code [ref=e268]: Document doc = DocumentBuilderFactory.newInstance() .newDocumentBuilder() .parse(inputStream);
+          - button "코드 복사" [ref=e269] [cursor=pointer]: 복사
+        - paragraph [ref=e270]: "안전한 대안:"
+        - generic [ref=e271]:
+          - code [ref=e273]: DocumentBuilderFactory f = DocumentBuilderFactory.newInstance(); f.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true); f.setFeature("http://xml.org/sax/features/external-general-entities", false); f.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+          - button "코드 복사" [ref=e274] [cursor=pointer]: 복사
+        - paragraph [ref=e275]:
+          - text: 팀 규칙으로 고정합니다. [Source]
+          - link "https://cwiki.apache.org/confluence/display/WW/S2-069" [ref=e276] [cursor=pointer]:
+            - /url: https://cwiki.apache.org/confluence/display/WW/S2-069
+          - text: (2026-01-11)
+        - heading "2) Java 역직렬화를 입력 포맷으로 허용" [level=3] [ref=e277]
+        - paragraph [ref=e278]: 공격자는 gadget chain(역직렬화로 이어지는 호출 연쇄)을 이용해 역직렬화 시점에 코드 실행을 노립니다. 외부 입력은 JSON/Protobuf로 전환하고 필요 시 allowlist 필터를 강제합니다.
+        - paragraph [ref=e279]: "안 좋은 예:"
+        - generic [ref=e280]:
+          - code [ref=e282]: Object obj = new ObjectInputStream(request.getInputStream()).readObject();
+          - button "코드 복사" [ref=e283] [cursor=pointer]: 복사
+        - paragraph [ref=e284]: "안전한 대안:"
+        - generic [ref=e285]:
+          - code [ref=e287]: // 외부 입력은 JSON/Protobuf로 받고 명시적 DTO로 파싱합니다.
+          - button "코드 복사" [ref=e288] [cursor=pointer]: 복사
+        - paragraph [ref=e289]:
+          - text: 팀 규칙으로 고정합니다. [Source]
+          - link "https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability" [ref=e290] [cursor=pointer]:
+            - /url: https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability
+          - text: (2026-01-12)
+        - heading "3) 리포트/템플릿 파이프라인에서 신뢰 경계를 지우는 패턴" [level=3] [ref=e291]
+        - paragraph [ref=e292]: 공격자는 “템플릿=코드”가 되는 지점을 노립니다. 템플릿 업로드를 금지하거나 격리된 렌더러에서만 처리합니다.
+        - paragraph [ref=e293]: "안 좋은 예:"
+        - generic [ref=e294]:
+          - code [ref=e296]: compileAndRender(userUploadedTemplate);
+          - button "코드 복사" [ref=e297] [cursor=pointer]: 복사
+        - paragraph [ref=e298]: "안전한 대안:"
+        - generic [ref=e299]:
+          - code [ref=e301]: // 템플릿은 저장소에서만 로드하고 서명/해시로 무결성을 검증합니다.
+          - button "코드 복사" [ref=e302] [cursor=pointer]: 복사
+        - paragraph [ref=e303]:
+          - text: 팀 규칙으로 고정합니다. [Source]
+          - link "https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability" [ref=e304] [cursor=pointer]:
+            - /url: https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability
+          - text: (2026-01-12)
+        - heading "4) 개발툴/확장이 실행하는 명령을 프로젝트 입력이 좌우" [level=3] [ref=e305]
+        - paragraph [ref=e306]: 공격자는 레포/워크스페이스 설정을 통해 개발자 PC에서 명령 실행을 유도합니다. 취약 확장을 제거하고 워크스페이스 신뢰를 기본 거부로 둡니다.
+        - paragraph [ref=e307]: "안 좋은 예:"
+        - generic [ref=e308]:
+          - code [ref=e310]: workspace 설정값 -> shell command 문자열로 결합 -> 실행
+          - button "코드 복사" [ref=e311] [cursor=pointer]: 복사
+        - paragraph [ref=e312]: "안전한 대안:"
+        - generic [ref=e313]:
+          - code [ref=e315]: 확장 설치 allowlist + 신뢰되지 않은 워크스페이스 기본 거부 + EOL 확장 제거
+          - button "코드 복사" [ref=e316] [cursor=pointer]: 복사
+        - paragraph [ref=e317]:
+          - text: 팀 규칙으로 고정합니다. [Source]
+          - link "https://spring.io/security/cve-2026-22718" [ref=e318] [cursor=pointer]:
+            - /url: https://spring.io/security/cve-2026-22718
+          - text: (2026-01-16)
+        - heading "5) XML/직렬화 입력 경로를 로그/모니터링에서 빼버림" [level=3] [ref=e319]
+        - paragraph [ref=e320]: 공격자는 탐지되지 않는 입력 경로로 반복 시도해 성공 확률을 올립니다. 파서 진입을 보안 이벤트로 분리해 메타데이터를 남깁니다.
+        - paragraph [ref=e321]: "안 좋은 예:"
+        - generic [ref=e322]:
+          - code [ref=e324]: /upload, /report 렌더 API는 요청 메타데이터를 거의 기록하지 않음
+          - button "코드 복사" [ref=e325] [cursor=pointer]: 복사
+        - paragraph [ref=e326]: "안전한 대안:"
+        - generic [ref=e327]:
+          - code [ref=e329]: 요청 크기/파일 타입/해시/렌더 결과 코드 등 최소 메타데이터를 보안 이벤트로 기록
+          - button "코드 복사" [ref=e330] [cursor=pointer]: 복사
+        - paragraph [ref=e331]:
+          - text: 팀 규칙으로 고정합니다. [Source]
+          - link "https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability" [ref=e332] [cursor=pointer]:
+            - /url: https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability
+          - text: (2026-01-12)
+        - paragraph [ref=e333]: 팀이 오늘 적용할 규칙/코드 조치를 PR 체크리스트에 반영합니다.
+        - heading "(3.4) 운영 참고(선택)" [level=2] [ref=e334]
+      - generic [ref=e335]:
+        - heading "(4) 공통 트렌드/권장사항" [level=1] [ref=e336]
+        - list [ref=e337]:
+          - listitem [ref=e338]:
+            - text: 권한/격리 기능을 “보안 경계”로 단정하면 우회가 나옵니다. 런타임 업데이트와 함께 OS/컨테이너 격리를 기본으로 적용합니다. [Source]
+            - link "https://nodejs.org/en/blog/vulnerability/december-2025-security-releases" [ref=e339] [cursor=pointer]:
+              - /url: https://nodejs.org/en/blog/vulnerability/december-2025-security-releases
+            - text: (2026-01-13)
+          - listitem [ref=e340]:
+            - text: XML/직렬화/템플릿은 입력이 곧 코드가 되는 지점이 생깁니다. 외부 입력 템플릿을 차단하고 불가피하면 격리된 렌더러에서만 처리합니다. [Source]
+            - link "https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability" [ref=e341] [cursor=pointer]:
+              - /url: https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability
+            - text: (2026-01-12)
+          - listitem [ref=e342]:
+            - text: 개발 도구(EOL 확장)는 “패치 없음”이므로 취약점 확인 시 제거가 정답입니다. 조직 표준 확장 allowlist를 운영하고 취약 확장을 제거합니다. [Source]
+            - link "https://spring.io/security/cve-2026-22718" [ref=e343] [cursor=pointer]:
+              - /url: https://spring.io/security/cve-2026-22718
+            - text: (2026-01-16)
+        - heading "(5) 이번 달 개발자 체크리스트" [level=1] [ref=e344]
+        - list [ref=e345]:
+          - listitem [ref=e346]:
+            - text: Node.js permission model은 보안 경계로 쓰지 않고 realpath allowlist+OS 격리를 기본으로 둡니다. [Source]
+            - link "https://nodejs.org/en/blog/vulnerability/december-2025-security-releases" [ref=e347] [cursor=pointer]:
+              - /url: https://nodejs.org/en/blog/vulnerability/december-2025-security-releases
+            - text: (2026-01-13)
+          - listitem [ref=e348]:
+            - text: 파일 경로는 문자열 검증이 아니라 정규화+realpath 기준으로만 검증합니다. [Source]
+            - link "https://nodejs.org/en/blog/vulnerability/december-2025-security-releases" [ref=e349] [cursor=pointer]:
+              - /url: https://nodejs.org/en/blog/vulnerability/december-2025-security-releases
+            - text: (2026-01-13)
+          - listitem [ref=e350]:
+            - code [ref=e351]: vm
+            - text: 으로 유저 코드를 실행하지 않고 불가피하면 별도 프로세스/컨테이너로 격리합니다. [Source]
+            - link "https://nodejs.org/en/blog/vulnerability/december-2025-security-releases" [ref=e352] [cursor=pointer]:
+              - /url: https://nodejs.org/en/blog/vulnerability/december-2025-security-releases
+            - text: (2026-01-13)
+          - listitem [ref=e353]:
+            - text: UDS(로컬 소켓) 경로는 입력에서 직접 받지 않고 allowlist로 고정합니다. [Source]
+            - link "https://nodejs.org/en/blog/vulnerability/december-2025-security-releases" [ref=e354] [cursor=pointer]:
+              - /url: https://nodejs.org/en/blog/vulnerability/december-2025-security-releases
+            - text: (2026-01-13)
+          - listitem [ref=e355]:
+            - text: EOL 개발 도구/확장은 즉시 제거하고 조직 표준 allowlist로만 설치합니다. [Source]
+            - link "https://spring.io/security/cve-2026-22718" [ref=e356] [cursor=pointer]:
+              - /url: https://spring.io/security/cve-2026-22718
+            - text: (2026-01-16)
+          - listitem [ref=e357]:
+            - text: Node.js 런타임을 보안 릴리스 버전으로 업데이트합니다. [Source]
+            - link "https://nodejs.org/en/blog/vulnerability/december-2025-security-releases" [ref=e358] [cursor=pointer]:
+              - /url: https://nodejs.org/en/blog/vulnerability/december-2025-security-releases
+            - text: (2026-01-13)
+          - listitem [ref=e359]:
+            - code [ref=e360]: fs.futimes()
+            - text: 사용 여부를 점검하고 보안 의미로 파일 타임스탬프를 신뢰하지 않도록 설계를 바꿉니다. [Source]
+            - link "https://nodejs.org/en/blog/vulnerability/december-2025-security-releases" [ref=e361] [cursor=pointer]:
+              - /url: https://nodejs.org/en/blog/vulnerability/december-2025-security-releases
+            - text: (2026-01-13)
+          - listitem [ref=e362]:
+            - text: Struts 사용 시 S2-069 패치 버전으로 업그레이드하고 XML 파서에서 DTD/외부 엔티티를 비활성화합니다. [Source]
+            - link "https://cwiki.apache.org/confluence/display/WW/S2-069" [ref=e363] [cursor=pointer]:
+              - /url: https://cwiki.apache.org/confluence/display/WW/S2-069
+            - text: (2026-01-11)
+          - listitem [ref=e364]:
+            - text: JasperReports 사용 시 외부 템플릿 업로드/로딩 경로를 차단하고 컴포넌트를 업데이트합니다. [Source]
+            - link "https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability" [ref=e365] [cursor=pointer]:
+              - /url: https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability
+            - text: (2026-01-12)
+          - listitem [ref=e366]:
+            - text: 워크스페이스 신뢰를 기본 거부로 두고 신뢰된 레포에서만 확장을 실행합니다. [Source]
+            - link "https://spring.io/security/cve-2026-22718" [ref=e367] [cursor=pointer]:
+              - /url: https://spring.io/security/cve-2026-22718
+            - text: (2026-01-16)
+        - heading "(6) 참고자료" [level=1] [ref=e368]
+        - list [ref=e369]:
+          - listitem [ref=e370]:
+            - link "https://nodejs.org/en/blog/vulnerability/december-2025-security-releases" [ref=e371] [cursor=pointer]:
+              - /url: https://nodejs.org/en/blog/vulnerability/december-2025-security-releases
+          - listitem [ref=e372]:
+            - link "https://cveawg.mitre.org/api/cve/CVE-2025-55131" [ref=e373] [cursor=pointer]:
+              - /url: https://cveawg.mitre.org/api/cve/CVE-2025-55131
+          - listitem [ref=e374]:
+            - link "https://cveawg.mitre.org/api/cve/CVE-2025-55130" [ref=e375] [cursor=pointer]:
+              - /url: https://cveawg.mitre.org/api/cve/CVE-2025-55130
+          - listitem [ref=e376]:
+            - link "https://cveawg.mitre.org/api/cve/CVE-2026-21636" [ref=e377] [cursor=pointer]:
+              - /url: https://cveawg.mitre.org/api/cve/CVE-2026-21636
+          - listitem [ref=e378]:
+            - link "https://cveawg.mitre.org/api/cve/CVE-2025-55132" [ref=e379] [cursor=pointer]:
+              - /url: https://cveawg.mitre.org/api/cve/CVE-2025-55132
+          - listitem [ref=e380]:
+            - link "https://cwiki.apache.org/confluence/display/WW/S2-069" [ref=e381] [cursor=pointer]:
+              - /url: https://cwiki.apache.org/confluence/display/WW/S2-069
+          - listitem [ref=e382]:
+            - link "https://cveawg.mitre.org/api/cve/CVE-2025-68493" [ref=e383] [cursor=pointer]:
+              - /url: https://cveawg.mitre.org/api/cve/CVE-2025-68493
+          - listitem [ref=e384]:
+            - link "https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability" [ref=e385] [cursor=pointer]:
+              - /url: https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability
+          - listitem [ref=e386]:
+            - link "https://cveawg.mitre.org/api/cve/CVE-2025-10492" [ref=e387] [cursor=pointer]:
+              - /url: https://cveawg.mitre.org/api/cve/CVE-2025-10492
+          - listitem [ref=e388]:
+            - link "https://spring.io/security/cve-2026-22718" [ref=e389] [cursor=pointer]:
+              - /url: https://spring.io/security/cve-2026-22718
+          - listitem [ref=e390]:
+            - link "https://github.com/advisories/GHSA-h34g-p94m-h76q" [ref=e391] [cursor=pointer]:
+              - /url: https://github.com/advisories/GHSA-h34g-p94m-h76q
+          - listitem [ref=e392]:
+            - link "https://cveawg.mitre.org/api/cve/CVE-2026-22718" [ref=e393] [cursor=pointer]:
+              - /url: https://cveawg.mitre.org/api/cve/CVE-2026-22718
+```

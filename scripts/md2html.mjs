@@ -53,24 +53,56 @@ const hljsCss = readOptionalTextFile(
 );
 
 const css = `
-  :root { color-scheme: light; }
+  :root {
+    --bg-body: #ffffff;
+    --text-body: #1f2328;
+    --text-muted: #656d76;
+    --bg-topbar: rgba(255,255,255,0.92);
+    --border-color: #d0d7de;
+    --bg-code: #f6f8fa;
+    --code-border: rgba(31,35,40,0.12);
+    --btn-hover: rgba(31,35,40,0.08); 
+    --btn-active: rgba(31,35,40,0.12);
+    --highlight-bg: rgba(9,105,218,0.12);
+    --highlight-text: #0969da;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg-body: #0d1117;
+      --text-body: #c9d1d9;
+      --text-muted: #8b949e;
+      --bg-topbar: rgba(13,17,23,0.92);
+      --border-color: #30363d;
+      --bg-code: #161b22;
+      --code-border: #30363d;
+      --btn-hover: rgba(177,186,196,0.12);
+      --btn-active: rgba(177,186,196,0.2);
+      --highlight-bg: rgba(56,139,253,0.15);
+      --highlight-text: #4493f8;
+      color-scheme: dark;
+    }
+  }
+
   body {
     margin: 0;
-    background: #ffffff;
-    color: #1f2328;
+    background: var(--bg-body);
+    color: var(--text-body);
     font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
     line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
   }
   main { max-width: 980px; margin: 0 auto; padding: 28px 18px; }
-  .markdown-body { box-sizing: border-box; min-width: 200px; }
-  .markdown-body table { display: table; width: 100%; }
+  .markdown-body { box-sizing: border-box; min-width: 200px; color: var(--text-body); }
+  .markdown-body table { display: table; width: 100%; border-collapse: collapse; }
+  
   /* Code blocks */
   .markdown-body pre {
     padding: 12px;
     border-radius: 10px;
     overflow: auto;
-    background: #f6f8fa;
-    border: 1px solid rgba(31,35,40,0.12);
+    background: var(--bg-code);
+    border: 1px solid var(--code-border);
   }
   /* Code blocks: bad vs good contrast (driven by JS classes on .codeblock) */
   .codeblock.bad pre {
@@ -84,15 +116,16 @@ const css = `
   .markdown-body code, .markdown-body pre code {
     font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
     font-size: 0.92em;
+    background: transparent;
   }
-  a { word-break: break-all; }
+  a { word-break: break-all; color: var(--highlight-text); }
   .topbar {
     position: sticky;
     top: 0;
     z-index: 20;
-    background: rgba(255,255,255,0.92);
+    background: var(--bg-topbar);
     backdrop-filter: blur(8px);
-    border-bottom: 1px solid rgba(31,35,40,0.12);
+    border-bottom: 1px solid var(--border-color);
   }
   .topbar-inner {
     max-width: 980px;
@@ -105,10 +138,10 @@ const css = `
   }
   .segmented {
     display: inline-flex;
-    border: 1px solid rgba(31,35,40,0.18);
+    border: 1px solid var(--border-color);
     border-radius: 999px;
     overflow: hidden;
-    background: #fff;
+    background: var(--bg-body);
   }
   .segmented button {
     appearance: none;
@@ -117,16 +150,16 @@ const css = `
     padding: 8px 12px;
     font-size: 13px;
     cursor: pointer;
-    color: #1f2328;
+    color: var(--text-body);
   }
   .segmented button[aria-pressed="true"] {
-    background: rgba(9,105,218,0.12);
-    color: #0969da;
+    background: var(--highlight-bg);
+    color: var(--highlight-text);
     font-weight: 600;
   }
   .hint {
     font-size: 12px;
-    color: rgba(31,35,40,0.65);
+    color: var(--text-muted);
     white-space: nowrap;
   }
   .topbar-right {
@@ -138,21 +171,29 @@ const css = `
   }
   .tts {
     display: inline-flex;
-    gap: 6px;
+    gap: 8px;
     align-items: center;
     flex-wrap: wrap;
   }
   .tts button, .tts select, .tts label {
-    font-size: 12px;
+    font-size: 13px;
+    color: var(--text-body);
   }
   .tts button {
     appearance: none;
-    border: 1px solid rgba(31,35,40,0.18);
+    border: 1px solid var(--border-color);
     border-radius: 8px;
-    background: #fff;
-    padding: 6px 10px;
+    background: var(--bg-body);
+    padding: 6px 12px;
     cursor: pointer;
     white-space: nowrap;
+    transition: background 0.2s;
+  }
+  .tts button:hover:not([disabled]) {
+    background: var(--btn-hover);
+  }
+  .tts button:active:not([disabled]) {
+    background: var(--btn-active);
   }
   .tts button[disabled] {
     opacity: 0.55;
@@ -160,58 +201,61 @@ const css = `
   }
   .tts select {
     appearance: none;
-    border: 1px solid rgba(31,35,40,0.18);
+    border: 1px solid var(--border-color);
     border-radius: 8px;
-    background: #fff;
-    padding: 6px 8px;
+    background: var(--bg-body);
+    padding: 6px 24px 6px 10px; /* space for arrow if custom */
     max-width: 220px;
   }
   .tts .chk {
     display: inline-flex;
     gap: 6px;
     align-items: center;
-    border: 1px solid rgba(31,35,40,0.18);
+    border: 1px solid var(--border-color);
     border-radius: 8px;
-    background: #fff;
-    padding: 6px 8px;
+    background: var(--bg-body);
+    padding: 6px 10px;
     white-space: nowrap;
+    cursor: pointer;
+    user-select: none;
   }
   /* Code copy button */
   .codeblock {
     position: relative;
+    margin-bottom: 16px;
   }
   .copyBtn {
     position: absolute;
     top: 8px;
     right: 8px;
     appearance: none;
-    border: 1px solid rgba(31,35,40,0.18);
-    border-radius: 10px;
-    background: rgba(255,255,255,0.96);
-    backdrop-filter: blur(6px);
-    padding: 6px 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background: var(--bg-body);
+    opacity: 0.8;
+    padding: 4px 8px;
     font-size: 12px;
     cursor: pointer;
-    color: rgba(31,35,40,0.9);
-    box-shadow: 0 2px 10px rgba(31,35,40,0.08);
+    color: var(--text-body);
   }
-  .codeblock.bad .copyBtn { border-color: rgba(207,34,46,0.28); }
-  .codeblock.good .copyBtn { border-color: rgba(26,127,55,0.28); }
   .copyBtn:active { transform: translateY(1px); }
   .copyBtn[aria-disabled="true"] {
     opacity: 0.6;
     cursor: not-allowed;
   }
-  /* Subtle: show button more clearly on hover for desktop */
   @media (hover: hover) {
-    .codeblock .copyBtn { opacity: 0.78; }
+    .codeblock .copyBtn { opacity: 0; transition: opacity 0.2s; }
     .codeblock:hover .copyBtn { opacity: 1; }
   }
   /* Jump affordance */
   .jumpHint {
-    font-size: 12px;
-    color: rgba(31,35,40,0.6);
+    font-size: 13px;
+    color: var(--text-muted);
     margin-top: 6px;
+    padding: 4px 8px;
+    background: var(--btn-hover);
+    border-radius: 6px;
+    display: inline-block;
   }
   .view-summary { display: none; }
   .view-node { display: none; }
@@ -220,24 +264,42 @@ const css = `
 
   /* Responsive (mobile-first adjustments) */
   @media (max-width: 720px) {
-    main { padding: 16px 12px; }
-    .markdown-body { font-size: 15px; line-height: 1.7; }
-    .markdown-body h1 { font-size: 1.5em; }
-    .markdown-body h2 { font-size: 1.25em; }
-    .markdown-body h3 { font-size: 1.1em; }
-
-    /* Tables: horizontal scroll instead of layout break */
-    .markdown-body table { display: block; width: 100%; overflow-x: auto; white-space: nowrap; -webkit-overflow-scrolling: touch; }
-
-    /* Code: keep readable and avoid copy button overlap */
-    .markdown-body pre { font-size: 12px; }
-    .copyBtn { top: 6px; right: 6px; padding: 5px 8px; }
-
-    /* Topbar: allow wrap and reduce clutter */
-    .topbar-inner { gap: 8px; align-items: flex-start; }
-    .topbar-right { justify-content: flex-start; }
-    .segmented button { padding: 7px 10px; font-size: 12px; }
+    main { padding: 16px 16px; }
+    .markdown-body { font-size: 16px; line-height: 1.6; }
+    .markdown-body h1 { font-size: 1.6em; }
+    
+    /* Topbar: Stack vertically for better touch targets */
+    .topbar-inner { 
+      flex-direction: column; 
+      align-items: stretch;
+      gap: 12px; 
+      padding: 12px 16px;
+    }
+    .segmented { display: flex; width: 100%; }
+    .segmented button { flex: 1; text-align: center; padding: 10px 4px; font-size: 14px; }
+    
+    .topbar-right { justify-content: space-between; gap: 12px; width: 100%; }
     .hint { display: none; }
+    .tts { width: 100%; justify-content: space-between; gap: 8px; }
+    
+    /* Play controls bigger */
+    #tts-play, #tts-pause, #tts-stop {
+      flex: 1; 
+      text-align: center; 
+      padding: 10px 8px;
+      font-size: 14px;
+    }
+    /* Options row */
+    .tts select, .tts .chk {
+      font-size: 13px; 
+      padding: 8px 6px;
+      max-width: none;
+      flex: 1;
+    }
+    
+    /* Tables: horizontal scroll */
+    .markdown-body table { display: block; width: 100%; overflow-x: auto; white-space: nowrap; -webkit-overflow-scrolling: touch; }
+    .copyBtn { top: 6px; right: 6px; opacity: 1; padding: 6px 10px; }
   }
 
   body[data-view="all"] .view-summary { display: block; }
@@ -500,7 +562,7 @@ ${htmlRest}
 
             // If URL skipping is enabled, strip URL-like tokens embedded in text.
             if (skipUrls) {
-              const normalized = t.replaceAll("\n", " ").replaceAll("\t", " ");
+              const normalized = t.replaceAll("\\n", " ").replaceAll("\\t", " ");
               const parts = normalized.split(" ");
               const out = [];
               for (const raw of parts) {
@@ -604,11 +666,19 @@ ${htmlRest}
 
         function pickVoice() {
           const voices = synth.getVoices ? synth.getVoices() : [];
+          if (!voices.length) return null;
+          
           const selected = voiceSel && voiceSel.value ? voices.find(v => v.name === voiceSel.value) : null;
           if (selected) return selected;
-          // Auto: pick Korean if available.
-          const ko = voices.find(v => (v.lang || "").toLowerCase().startsWith("ko"));
-          return ko || voices[0] || null;
+          
+          // Auto-select logic (Prioritize Korean High Quality)
+          const ko = voices.filter(v => (v.lang || "").toLowerCase().startsWith("ko"));
+          // Try to find "Google", "Siri", or "Premium" in name for better quality
+          const best = ko.find(v => v.name.includes("Google")) || 
+                       ko.find(v => v.name.includes("Siri")) || 
+                       ko.find(v => v.name.includes("Premium")) || 
+                       ko[0];
+          return best || voices[0] || null;
         }
 
         function setButtonsState() {

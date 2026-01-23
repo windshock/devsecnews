@@ -12,6 +12,7 @@
     "build:cards": "npm run build:cards:html && npm run build:cards:png && npm run build:html"
   },
   "devDependencies": {
+    "@playwright/test": "^1.57.0",
     "github-markdown-css": "^5.8.1",
     "highlight.js": "^11.10.0",
     "marked": "^12.0.2",

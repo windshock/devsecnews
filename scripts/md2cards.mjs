@@ -51,47 +51,47 @@ if (metaCards.length) {
     });
   }
 } else {
-// Summary: 1 bullet per card.
-for (let i = 0; i < summaryItems.length; i++) {
-  const { body, source } = splitSource(summaryItems[i]);
-  const { summary, action } = splitActionSentence(body);
-  cards.push({
-    kind: "summary",
-    header: "요약",
-    title: `Summary ${i + 1}/${summaryItems.length}`,
-    bodyMd: summary,
-    actionMd: action,
-    source,
-  });
-}
+  // Summary: 1 bullet per card.
+  for (let i = 0; i < summaryItems.length; i++) {
+    const { body, source } = splitSource(summaryItems[i]);
+    const { summary, action } = splitActionSentence(body);
+    cards.push({
+      kind: "summary",
+      header: "요약",
+      title: `Summary ${i + 1}/${summaryItems.length}`,
+      bodyMd: summary,
+      actionMd: action,
+      source,
+    });
+  }
 
-// Checklist: group 4 per card (10 items -> 3 cards).
-const perChecklistCard = 10;
-for (let i = 0; i < checklistItems.length; i += perChecklistCard) {
-  const chunk = checklistItems.slice(i, i + perChecklistCard);
-  const bodies = chunk.map((t) => splitSource(t).body.trim());
-  const sources = chunk.map((t) => splitSource(t).source).filter(Boolean);
-  cards.push({
-    kind: "checklist",
-    header: "체크리스트",
-    title: "이번 달 개발자 체크리스트(10)",
-    bodyMd: bodies.map((b, j) => `${i + j + 1}. ${b}`).join("\n"),
-    actionMd: "이번 카드의 항목을 완료 처리합니다.",
-    source: sources.length ? sources[0] : "",
-  });
-}
+  // Checklist: group 4 per card (10 items -> 3 cards).
+  const perChecklistCard = 10;
+  for (let i = 0; i < checklistItems.length; i += perChecklistCard) {
+    const chunk = checklistItems.slice(i, i + perChecklistCard);
+    const bodies = chunk.map((t) => splitSource(t).body.trim());
+    const sources = chunk.map((t) => splitSource(t).source).filter(Boolean);
+    cards.push({
+      kind: "checklist",
+      header: "체크리스트",
+      title: "이번 달 개발자 체크리스트(10)",
+      bodyMd: bodies.map((b, j) => `${i + j + 1}. ${b}`).join("\n"),
+      actionMd: "이번 카드의 항목을 완료 처리합니다.",
+      source: sources.length ? sources[0] : "",
+    });
+  }
 
-// Team rules: all on one card (keep short).
-if (rulesItems.length) {
-  cards.push({
-    kind: "rules",
-    header: "팀 규칙",
-    title: "패턴→팀 규칙(5)",
-    bodyMd: rulesItems.map((t, i) => `${i + 1}. ${t.trim()}`).join("\n"),
-    actionMd: "팀 규칙을 PR 템플릿과 린트 규칙에 반영합니다.",
-    source: "",
-  });
-}
+  // Team rules: all on one card (keep short).
+  if (rulesItems.length) {
+    cards.push({
+      kind: "rules",
+      header: "팀 규칙",
+      title: "패턴→팀 규칙(5)",
+      bodyMd: rulesItems.map((t, i) => `${i + 1}. ${t.trim()}`).join("\n"),
+      actionMd: "팀 규칙을 PR 템플릿과 린트 규칙에 반영합니다.",
+      source: "",
+    });
+  }
 }
 
 const html = buildCardsHtml({
@@ -190,6 +190,11 @@ function buildCardsHtml({ title, cards, reportHref }) {
     background: #0b1220;
     color: #111827;
     font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  @keyframes slideUpFade {
+    from { opacity: 0; transform: translateY(20px) scale(0.98); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
   }
   .links {
     position: fixed;
@@ -259,11 +264,15 @@ function buildCardsHtml({ title, cards, reportHref }) {
     width: min(1080px, calc(100vw - 32px));
     height: min(1350px, calc(100vh - 32px));
     aspect-ratio: 1080 / 1350;
-    background: radial-gradient(1000px 800px at 10% 10%, rgba(9,105,218,0.14), transparent 60%),
-                radial-gradient(900px 700px at 90% 20%, rgba(34,197,94,0.10), transparent 55%),
+    background: radial-gradient(circle at 10% 10%, rgba(255, 255, 255, 0.03) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(255, 255, 255, 0.04) 0%, transparent 40%),
                 #ffffff;
     border-radius: 28px;
     border: 1px solid rgba(31,35,40,0.12);
+    /* Dynamic Theme Variables */
+    --theme-color: #0969da;
+    --theme-bg: rgba(9,105,218,0.10);
+    --theme-border: rgba(9,105,218,0.22);
     box-shadow: 0 18px 60px rgba(0,0,0,0.35);
     overflow: hidden;
     position: relative;
@@ -271,7 +280,27 @@ function buildCardsHtml({ title, cards, reportHref }) {
     flex-direction: column;
     display: none; /* single-card view */
   }
-  .card.active { display: block; }
+  .card.active {
+    display: flex;
+    animation: slideUpFade 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  
+  /* Theme overrides by card kind */
+  .card.checklist {
+    --theme-color: #8250df;
+    --theme-bg: rgba(130,80,223,0.10);
+    --theme-border: rgba(130,80,223,0.22);
+  }
+  .card.rules {
+    --theme-color: #bf8700;
+    --theme-bg: rgba(191,135,0,0.14);
+    --theme-border: rgba(191,135,0,0.3);
+  }
+  .card.warning {
+    --theme-color: #cf222e;
+    --theme-bg: rgba(207,34,46,0.10);
+    --theme-border: rgba(207,34,46,0.22);
+  }
 
   /* Desktop reading: use a shorter, wide card (16:9) in landscape */
   @media (min-width: 900px) and (orientation: landscape) {
@@ -319,9 +348,11 @@ function buildCardsHtml({ title, cards, reportHref }) {
     gap: 10px;
     padding: 10px 14px;
     border-radius: 999px;
-    background: rgba(9,105,218,0.10);
-    border: 1px solid rgba(9,105,218,0.22);
-    color: #0b3d91;
+    padding: 10px 14px;
+    border-radius: 999px;
+    background: var(--theme-bg);
+    border: 1px solid var(--theme-border);
+    color: var(--theme-color);
     font-weight: 700;
     font-size: 18px;
   }
@@ -421,14 +452,15 @@ function buildCardsHtml({ title, cards, reportHref }) {
   }
   .action {
     padding: 14px 14px;
+    padding: 14px 14px;
     border-radius: 16px;
-    border: 1px solid rgba(9,105,218,0.16);
-    background: rgba(9,105,218,0.07);
+    border: 1px solid var(--theme-border);
+    background: var(--theme-bg);
     font-size: 24px;
     line-height: 1.45;
     color: rgba(15,23,42,0.92);
   }
-  .action strong { color: #0b3d91; }
+  .action strong { color: var(--theme-color); }
   .source {
     font-size: 18px;
     color: rgba(31,35,40,0.75);
@@ -442,24 +474,68 @@ function buildCardsHtml({ title, cards, reportHref }) {
   }
   @media (max-width: 720px) {
     .stage { padding: 10px; }
-    .card { border-radius: 18px; }
-    .top { padding: 18px 18px 10px; }
-    .title { padding: 0 18px; font-size: 26px; }
-    .headline { padding: 0 18px; font-size: 28px; }
-    .body { padding: 14px 18px 0; font-size: 18px; }
-    .slots { padding: 12px 18px 0; gap: 10px; }
-    .slot { border-radius: 14px; padding: 10px 10px; }
-    .slot h4 { font-size: 12px; }
-    .slot .slotBody { font-size: 14px; }
-    .action { font-size: 14px; padding: 10px 10px; border-radius: 12px; }
-    .foot { padding: 14px 18px 18px; }
-    .badge { font-size: 13px; padding: 8px 10px; }
-    .meta { font-size: 12px; }
-    .source { font-size: 12px; }
-    .nav { top: 10px; right: 10px; padding: 6px 8px; }
-    .nav button { padding: 6px 8px; }
-    .links { top: 10px; left: 10px; padding: 6px 8px; }
-    .links a { padding: 6px 8px; }
+    /* Mobile: use available screen height, unset fixed aspect ratio to avoid tiny cards */
+    .card {
+      width: calc(100vw - 24px);
+      height: calc(100vh - 80px); /* Fill screen, leaving space for margins */
+      aspect-ratio: auto;
+      border-radius: 20px;
+      /* Flexbox properties ready for when it becomes active */
+      flex-direction: column;
+      overflow-y: auto;
+      overflow-x: hidden;
+      /* Ensure scrollbar is visible */
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255,255,255,0.3) rgba(255,255,255,0.05);
+    }
+    .card.active {
+      display: flex; /* Only show active card */
+    }
+    /* Allow inner content to expand so card can scroll it */
+    .mid {
+      overflow: visible;
+      flex: 0 0 auto;
+    }
+    .card::-webkit-scrollbar {
+      width: 6px;
+    }
+    .card::-webkit-scrollbar-thumb {
+      background: rgba(0,0,0,0.2); 
+      border-radius: 4px;
+    }
+    .card::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    /* Flex children */
+    .top, .title, .headline, .meta, .source { flex-shrink: 0; }
+    .body, .checkGrid, .slots { flex-shrink: 0; } /* Let them scroll with the card */
+    .foot { flex-shrink: 0; margin-top: auto; } /* Push to bottom if space permits */
+    /* Increase top padding to avoid overlap with fixed buttons (Nav/Links) */
+    .top { padding: 60px 20px 10px; }
+    .title { padding: 0 20px; font-size: 24px; }
+    .headline { padding: 0 20px; font-size: 26px; }
+    .body { padding: 10px 20px 0; font-size: 17px; }
+    
+    .slots { padding: 10px 20px 0; gap: 8px; }
+    .slot { border-radius: 12px; padding: 10px 12px; }
+    .slot h4 { font-size: 12px; margin-bottom: 4px; }
+    .slot .slotBody { font-size: 14px; line-height: 1.4; }
+    
+    .action { font-size: 13px; padding: 10px 12px; border-radius: 12px; margin-top: 4px; }
+    .foot { padding: 10px 20px 16px; }
+    
+    .badge { font-size: 12px; padding: 6px 10px; }
+    .meta { font-size: 12px; max-width: 60%; line-height: 1.2; }
+    .source { font-size: 11px; word-break: break-all; margin-top: 10px; }
+    
+    .nav { top: 10px; right: 10px; padding: 6px 10px; }
+    .nav button { padding: 4px 8px; font-size: 12px; }
+    .links { top: 10px; left: 10px; padding: 6px 10px; }
+    .links a { padding: 4px 8px; font-size: 12px; }
+    
+    /* Checklist sizing */
+    .checkGrid { padding: 10px 20px 0; }
+    .checkGrid li { font-size: 15px; margin: 0 0 8px; line-height: 1.35; }
   }
   `;
 
@@ -470,9 +546,9 @@ function buildCardsHtml({ title, cards, reportHref }) {
       const impactHtml = marked.parse(c.impactMd || "");
       const actionHtml = c.actionMd ? marked.parse(c.actionMd) : "";
       const srcHtml = c.source
-        ? `<div class="hr"></div><div class="source">[Source] ${escapeHtml(
-            c.source
-          )}</div>`
+        ? `<div class="hr"></div><div class="source">[Source] <a href="${escapeHtml(c.source)}" target="_blank" style="color: inherit;">${escapeHtml(
+          c.source
+        )}</a></div>`
         : "";
 
       const isSummary = c.kind === "summary";
@@ -488,19 +564,18 @@ function buildCardsHtml({ title, cards, reportHref }) {
       `;
 
       return `
-<section class="card" data-card-idx="${i + 1}">
+<section class="card ${escapeHtml(c.kind)}" data-card-idx="${i + 1}">
   <div class="top">
     <div class="badge">${escapeHtml(c.header)}</div>
     <div class="meta">${escapeHtml(title)}<br/>${escapeHtml(c.title)}</div>
   </div>
   <div class="mid">
-    ${
-      isSummary
-        ? `<div class="headline">${escapeHtml(c.title)}</div>${slotsHtml}`
-        : c.kind === "checklist"
-          ? `<div class="title">${escapeHtml(c.title)}</div><div class="checkGrid">${bodyHtml}</div>`
-        : `<div class="title">${escapeHtml(c.header)}</div><div class="body">${bodyHtml}</div>`
-    }
+    ${isSummary
+          ? `<div class="headline">${escapeHtml(c.title)}</div>${slotsHtml}`
+          : c.kind === "checklist"
+            ? `<div class="title">${escapeHtml(c.title)}</div><div class="checkGrid">${bodyHtml}</div>`
+            : `<div class="title">${escapeHtml(c.header)}</div><div class="body">${bodyHtml}</div>`
+        }
   </div>
   <div class="foot">
     ${c.actionMd ? `<div class="action"><strong>오늘 조치</strong><br/>${actionHtml}</div>` : ""}
@@ -561,6 +636,33 @@ ${cardsHtml}
           if (e.key === "ArrowUp") set(idx - 1, true);
           if (e.key === "ArrowDown") set(idx + 1, true);
         });
+
+        // Swipe (Mobile Touch)
+        let touchstartX = 0;
+        let touchstartY = 0;
+        const main = document.getElementById("stage");
+        if (main) {
+          main.addEventListener("touchstart", (e) => {
+            touchstartX = e.changedTouches[0].screenX;
+            touchstartY = e.changedTouches[0].screenY;
+          }, { passive: true });
+          main.addEventListener("touchend", (e) => {
+            const touchendX = e.changedTouches[0].screenX;
+            const touchendY = e.changedTouches[0].screenY;
+            handleSwipe(touchstartX, touchstartY, touchendX, touchendY);
+          }, { passive: true });
+        }
+
+        function handleSwipe(sx, sy, ex, ey) {
+          const dx = ex - sx;
+          const dy = ey - sy;
+          // Ignore vertical scrolls (if dy > dx)
+          if (Math.abs(dy) > Math.abs(dx)) return;
+          // Min swipe distance
+          if (Math.abs(dx) < 50) return;
+          if (dx < 0) set(idx + 1, true); // Swipe Left -> Next
+          if (dx > 0) set(idx - 1, true); // Swipe Right -> Prev
+        }
 
         // Init
         set(0, false);
