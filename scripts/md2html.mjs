@@ -443,6 +443,21 @@ const css = `
   @media (prefers-color-scheme: dark) {
     ${hljsCssDark}
   }
+  @media (prefers-color-scheme: dark) {
+    /* Force readable text inside light report panel on dark theme */
+    .markdown-body,
+    .markdown-body p,
+    .markdown-body li,
+    .markdown-body td,
+    .markdown-body th {
+      color: #0b1220;
+    }
+    .markdown-body code,
+    .markdown-body pre code {
+      color: #0b1220;
+    }
+    .markdown-body a { color: #0ea5e9; }
+  }
 `;
 
 const title = path.basename(input);
@@ -828,18 +843,12 @@ ${htmlRest}
           const voices = synth.getVoices ? synth.getVoices() : [];
           if (!voices.length) return null;
           
-          const selected = voiceSel && voiceSel.value ? voices.find(v => v.name === voiceSel.value) : null;
-          if (selected) return selected;
-          
-          // Auto-select logic (Prioritize Korean High Quality)
-          const ko = voices.filter(v => (v.lang || "").toLowerCase().startsWith("ko"));
-          // Try to find "Google", "Siri", "Yuna", or "Premium" in name for better quality
-          const best = ko.find(v => v.name.includes("Google")) || 
-                       ko.find(v => v.name.includes("Yuna")) || 
-                       ko.find(v => v.name.includes("Siri")) || 
-                       ko.find(v => v.name.includes("Premium")) || 
-                       ko[0];
-          return best || voices[0] || null;
+          // Force Yuna if available (per requirement).
+          const yuna = voices.find(v => String(v.name || "").toLowerCase().includes("yuna"));
+          if (yuna) return yuna;
+          // Fallback: any Korean voice, then first available.
+          const ko = voices.find(v => (v.lang || "").toLowerCase().startsWith("ko"));
+          return ko || voices[0] || null;
         }
 
         function setButtonsState() {
