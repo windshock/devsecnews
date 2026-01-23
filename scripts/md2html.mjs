@@ -48,8 +48,11 @@ const githubMarkdownCss = readOptionalTextFile(
   path.join("node_modules", "github-markdown-css", "github-markdown.css")
 );
 // GitHub-style code theme (light). This stays readable in most wiki/Teams embeds.
-const hljsCss = readOptionalTextFile(
+const hljsCssLight = readOptionalTextFile(
   path.join("node_modules", "highlight.js", "styles", "github.css")
+);
+const hljsCssDark = readOptionalTextFile(
+  path.join("node_modules", "highlight.js", "styles", "github-dark.css")
 );
 
 const css = `
@@ -311,7 +314,10 @@ const css = `
   body[data-view="node"] .view-node { display: block; }
   body[data-view="java"] .view-java { display: block; }
   ${githubMarkdownCss}
-  ${hljsCss}
+  ${hljsCssLight}
+  @media (prefers-color-scheme: dark) {
+    ${hljsCssDark}
+  }
 `;
 
 const title = path.basename(input);
@@ -673,8 +679,9 @@ ${htmlRest}
           
           // Auto-select logic (Prioritize Korean High Quality)
           const ko = voices.filter(v => (v.lang || "").toLowerCase().startsWith("ko"));
-          // Try to find "Google", "Siri", or "Premium" in name for better quality
+          // Try to find "Google", "Siri", "Yuna", or "Premium" in name for better quality
           const best = ko.find(v => v.name.includes("Google")) || 
+                       ko.find(v => v.name.includes("Yuna")) || 
                        ko.find(v => v.name.includes("Siri")) || 
                        ko.find(v => v.name.includes("Premium")) || 
                        ko[0];
