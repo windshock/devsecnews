@@ -5,48 +5,173 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>devsecnews-2026-01-node-java.md</title>
     <style>
-  :root {
-    --bg-body: #ffffff;
-    --text-body: #1f2328;
-    --text-muted: #656d76;
-    --bg-topbar: rgba(255,255,255,0.92);
-    --border-color: #d0d7de;
-    --bg-code: #f6f8fa;
-    --code-border: rgba(31,35,40,0.12);
-    --btn-hover: rgba(31,35,40,0.08); 
-    --btn-active: rgba(31,35,40,0.12);
-    --highlight-bg: rgba(9,105,218,0.12);
-    --highlight-text: #0969da;
-    color-scheme: light;
+  @keyframes slideUpFade {
+    from { opacity: 0; transform: translateY(20px) scale(0.98); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
   }
-  @media (prefers-color-scheme: dark) {
+  .report-wrap {
+    animation: slideUpFade 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  :root {
+    --bg-body: #0a0f17;
+    --text-body: #e6edf3;
+    --text-muted: #9aa4b2;
+    --bg-topbar: rgba(10,15,23,0.92);
+    --border-color: rgba(95,125,155,0.35);
+    --bg-code: #0f172a;
+    --code-border: rgba(148,163,184,0.25);
+    --btn-hover: rgba(148,163,184,0.14);
+    --btn-active: rgba(148,163,184,0.22);
+    --highlight-bg: rgba(34,211,238,0.14);
+    --highlight-text: #22d3ee;
+    --accent-pink: #f472b6;
+    --accent-green: #22c55e;
+    --panel-bg: rgba(15,23,42,0.78);
+    --panel-border: rgba(148,163,184,0.25);
+    --surface: rgba(2,6,23,0.6);
+    --surface-strong: rgba(2,6,23,0.85);
+    color-scheme: light dark;
+  }
+
+  @media (prefers-color-scheme: light) {
     :root {
-      --bg-body: #0d1117;
-      --text-body: #c9d1d9;
-      --text-muted: #8b949e;
-      --bg-topbar: rgba(13,17,23,0.92);
-      --border-color: #30363d;
-      --bg-code: #161b22;
-      --code-border: #30363d;
-      --btn-hover: rgba(177,186,196,0.12);
-      --btn-active: rgba(177,186,196,0.2);
-      --highlight-bg: rgba(56,139,253,0.15);
-      --highlight-text: #4493f8;
-      color-scheme: dark;
+      --bg-body: #f7f5ef;
+      --text-body: #0f172a;
+      --text-muted: #475569;
+      --bg-topbar: rgba(247,245,239,0.9);
+      --border-color: rgba(148,163,184,0.45);
+      --bg-code: #f1f5f9;
+      --code-border: rgba(15,23,42,0.12);
+      --btn-hover: rgba(15,23,42,0.06);
+      --btn-active: rgba(15,23,42,0.12);
+      --highlight-bg: rgba(14,165,233,0.12);
+      --highlight-text: #0ea5e9;
+      --accent-pink: #db2777;
+      --accent-green: #16a34a;
+      --panel-border: rgba(15,23,42,0.12);
+      --surface: rgba(255,255,255,0.8);
+      --surface-strong: rgba(255,255,255,0.95);
     }
+    body {
+      background:
+        radial-gradient(1000px 600px at 8% -10%, rgba(14,165,233,0.16), transparent 60%),
+        radial-gradient(900px 600px at 92% -5%, rgba(219,39,119,0.12), transparent 55%),
+        radial-gradient(600px 600px at 50% 120%, rgba(34,197,94,0.10), transparent 60%),
+        var(--bg-body);
+    }
+    }
+    body::before { opacity: 0.06; }
+    .markdown-body {
+      background: linear-gradient(180deg, #f8fafc 0%, #eef2f7 100%);
+      box-shadow: 0 12px 26px rgba(15,23,42,0.12);
+      border: 1px solid rgba(15,23,42,0.12);
+      border-top: 0;
+      border-radius: 0 0 20px 20px;
+    }
+    .hero {
+      background: rgba(255,255,255,0.9);
+      border: 1px solid rgba(14,165,233,0.2);
+      border-bottom: 0;
+      border-radius: 20px 20px 0 0;
+    }
+    .nav-pill {
+      background: rgba(255,255,255,0.92);
+      border: 1px solid rgba(15,23,42,0.12);
+    }
+    .nav-btn {
+      color: #0f172a;
+      border: 1px solid rgba(14,165,233,0.25);
+      background: rgba(255,255,255,0.95);
+      height: 30px;
+    }
+    .nav-center { color: #0ea5e9; }
+    .ansi-line { color: #0ea5e9; text-shadow: none; }
   }
 
   body {
     margin: 0;
-    background: var(--bg-body);
+    background:
+      radial-gradient(1200px 600px at 8% -10%, rgba(34,211,238,0.18), transparent 60%),
+      radial-gradient(900px 500px at 92% -5%, rgba(244,114,182,0.12), transparent 55%),
+      radial-gradient(600px 600px at 50% 120%, rgba(34,197,94,0.08), transparent 60%),
+      var(--bg-body);
     color: var(--text-body);
-    font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+    font-family: "IBM Plex Sans", "Pretendard", "Apple SD Gothic Neo", "Noto Sans KR", system-ui, sans-serif;
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
   }
-  main { max-width: 980px; margin: 0 auto; padding: 28px 18px; }
-  .markdown-body { box-sizing: border-box; min-width: 200px; color: var(--text-body); }
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+      repeating-linear-gradient(
+        to bottom,
+        rgba(255,255,255,0.04),
+        rgba(255,255,255,0.04) 1px,
+        transparent 1px,
+        transparent 3px
+      );
+    opacity: 0.12;
+    mix-blend-mode: soft-light;
+  }
+  main { max-width: 1080px; margin: 0 auto; padding: 72px 16px 60px; position: relative; }
+  .hero {
+    margin: 0;
+    padding: 8px 14px;
+    border-radius: 20px 20px 0 0;
+    border: 1px solid rgba(34,211,238,0.25);
+    border-bottom: 0;
+    background: rgba(2,6,23,0.85);
+    box-shadow: 0 10px 24px rgba(0,0,0,0.3);
+  }
+  .ansi-line {
+    font-family: "JetBrains Mono", "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    font-size: 12px;
+    color: #7dd3fc;
+    text-shadow: 0 0 10px rgba(34,211,238,0.35);
+    white-space: nowrap;
+    overflow: hidden;
+    line-height: 1;
+  }
+  .markdown-body {
+    box-sizing: border-box;
+    min-width: 200px;
+    color: #0b1220;
+    background: linear-gradient(180deg, #f8fafc 0%, #eef2f7 100%);
+    border: 1px solid rgba(15,23,42,0.12);
+    border-top: 0;
+    border-radius: 0 0 20px 20px;
+    padding: 18px;
+    box-shadow: 0 18px 40px rgba(2,6,23,0.18);
+  }
+  .markdown-body a { color: #0ea5e9; }
+  .markdown-body code, .markdown-body pre code { color: #0b1220; }
+  .markdown-body h1, .markdown-body h2, .markdown-body h3 {
+    font-family: "IBM Plex Sans", "Pretendard", "Noto Sans KR", system-ui, sans-serif;
+    letter-spacing: -0.01em;
+  }
   .markdown-body table { display: table; width: 100%; border-collapse: collapse; }
+  .markdown-body th, .markdown-body td {
+    border: 1px solid var(--border-color);
+    padding: 8px 10px;
+  }
+  .markdown-body th {
+    background: rgba(248,250,252,0.95);
+    color: #0b1220;
+  }
+  .markdown-body td {
+    background: rgba(248,250,252,0.9);
+    color: #0b1220;
+  }
+  .markdown-body blockquote {
+    border-left: 3px solid #94a3b8;
+    background: rgba(248,250,252,0.9);
+    padding: 10px 12px;
+    border-radius: 10px;
+    color: #0b1220;
+  }
   
   /* Code blocks */
   .markdown-body pre {
@@ -55,6 +180,7 @@
     overflow: auto;
     background: var(--bg-code);
     border: 1px solid var(--code-border);
+    box-shadow: inset 0 0 0 1px rgba(34,211,238,0.06);
   }
   /* Code blocks: bad vs good contrast (driven by JS classes on .codeblock) */
   .codeblock.bad pre {
@@ -72,105 +198,90 @@
   }
   a { word-break: break-all; color: var(--highlight-text); }
   .topbar {
-    position: sticky;
-    top: 0;
-    z-index: 20;
-    background: var(--bg-topbar);
-    backdrop-filter: blur(8px);
-    border-bottom: 1px solid var(--border-color);
+    position: fixed;
+    top: 14px;
+    left: 14px;
+    right: 14px;
+    z-index: 30;
+    background: transparent;
+  }
+  .ansi-topbar {
+    font-family: "JetBrains Mono", "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    font-size: 12px;
+    color: #7dd3fc;
+    letter-spacing: 0.4px;
   }
   .topbar-inner {
-    max-width: 980px;
+    max-width: 1080px;
     margin: 0 auto;
-    padding: 10px 18px;
     display: flex;
     gap: 10px;
     align-items: center;
     justify-content: space-between;
   }
-  .segmented {
+  .nav-pill {
     display: inline-flex;
-    border: 1px solid var(--border-color);
+    gap: 8px;
+    align-items: center;
+    background: rgba(10,15,23,0.92);
+    border: 1px solid rgba(148,163,184,0.25);
     border-radius: 999px;
-    overflow: hidden;
-    background: var(--bg-body);
+    padding: 8px 10px;
+    backdrop-filter: blur(10px);
   }
-  .segmented button {
+  .nav-btn {
     appearance: none;
-    border: 0;
-    background: transparent;
-    padding: 8px 12px;
-    font-size: 13px;
+    border: 1px solid rgba(34,211,238,0.3);
+    background: rgba(2,6,23,0.7);
+    color: #e2e8f0;
+    border-radius: 999px;
+    padding: 0 12px;
+    font-size: 12px;
     cursor: pointer;
-    color: var(--text-body);
-  }
-  .segmented button[aria-pressed="true"] {
-    background: var(--highlight-bg);
-    color: var(--highlight-text);
-    font-weight: 600;
+    white-space: nowrap;
+    height: 30px;
+    line-height: 30px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 64px;
   }
   .hint {
     font-size: 12px;
     color: var(--text-muted);
     white-space: nowrap;
   }
-  .topbar-right {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-    justify-content: flex-end;
-    flex-wrap: wrap;
+  .tocPanel {
+    position: fixed;
+    right: 16px;
+    top: 64px;
+    z-index: 30;
+    width: 260px;
+    max-height: calc(100vh - 96px);
+    overflow: auto;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    background: var(--surface);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    padding: 10px 12px;
+    display: none;
   }
-  .tts {
-    display: inline-flex;
-    gap: 8px;
-    align-items: center;
-    flex-wrap: wrap;
-  }
-  .tts button, .tts select, .tts label {
+  body[data-toc="open"] .tocPanel { display: block; }
+  .tocPanel h4 {
+    margin: 0 0 8px;
     font-size: 13px;
+    color: var(--text-muted);
+  }
+  .tocPanel a {
+    display: block;
     color: var(--text-body);
+    text-decoration: none;
+    font-size: 13px;
+    padding: 4px 2px;
   }
-  .tts button {
-    appearance: none;
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    background: var(--bg-body);
-    padding: 6px 12px;
-    cursor: pointer;
-    white-space: nowrap;
-    transition: background 0.2s;
-  }
-  .tts button:hover:not([disabled]) {
-    background: var(--btn-hover);
-  }
-  .tts button:active:not([disabled]) {
-    background: var(--btn-active);
-  }
-  .tts button[disabled] {
-    opacity: 0.55;
-    cursor: not-allowed;
-  }
-  .tts select {
-    appearance: none;
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    background: var(--bg-body);
-    padding: 6px 24px 6px 10px; /* space for arrow if custom */
-    max-width: 220px;
-  }
-  .tts .chk {
-    display: inline-flex;
-    gap: 6px;
-    align-items: center;
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    background: var(--bg-body);
-    padding: 6px 10px;
-    white-space: nowrap;
-    cursor: pointer;
-    user-select: none;
-  }
+  .tocPanel a:hover { color: var(--highlight-text); }
+  .tocPanel .toc-l2 { padding-left: 8px; }
+  .tocPanel .toc-l3 { padding-left: 16px; }
   /* Code copy button */
   .codeblock {
     position: relative;
@@ -183,7 +294,7 @@
     appearance: none;
     border: 1px solid var(--border-color);
     border-radius: 8px;
-    background: var(--bg-body);
+    background: var(--surface);
     opacity: 0.8;
     padding: 4px 8px;
     font-size: 12px;
@@ -205,7 +316,7 @@
     color: var(--text-muted);
     margin-top: 6px;
     padding: 4px 8px;
-    background: var(--btn-hover);
+    background: rgba(34,211,238,0.12);
     border-radius: 6px;
     display: inline-block;
   }
@@ -216,38 +327,28 @@
 
   /* Responsive (mobile-first adjustments) */
   @media (max-width: 720px) {
-    main { padding: 16px 16px; }
+    main { padding: 16px 16px 96px; }
+    .topbar {
+      position: fixed;
+      bottom: 10px;
+      left: 10px;
+      right: 10px;
+      top: auto;
+      background: transparent;
+      z-index: 30;
+    }
+    .topbar-inner { flex-wrap: wrap; }
     .markdown-body { font-size: 16px; line-height: 1.6; }
     .markdown-body h1 { font-size: 1.6em; }
     
-    /* Topbar: Stack vertically for better touch targets */
-    .topbar-inner { 
-      flex-direction: column; 
-      align-items: stretch;
-      gap: 12px; 
-      padding: 12px 16px;
+    .tocPanel {
+      right: 10px;
+      left: 10px;
+      width: auto;
+      top: 80px;
+      max-height: 55vh;
     }
-    .segmented { display: flex; width: 100%; }
-    .segmented button { flex: 1; text-align: center; padding: 10px 4px; font-size: 14px; }
     
-    .topbar-right { justify-content: space-between; gap: 12px; width: 100%; }
-    .hint { display: none; }
-    .tts { width: 100%; justify-content: space-between; gap: 8px; }
-    
-    /* Play controls bigger */
-    #tts-play, #tts-pause, #tts-stop {
-      flex: 1; 
-      text-align: center; 
-      padding: 10px 8px;
-      font-size: 14px;
-    }
-    /* Options row */
-    .tts select, .tts .chk {
-      font-size: 13px; 
-      padding: 8px 6px;
-      max-width: none;
-      flex: 1;
-    }
     
     /* Tables: horizontal scroll */
     .markdown-body table { display: block; width: 100%; overflow-x: auto; white-space: nowrap; -webkit-overflow-scrolling: touch; }
@@ -1609,54 +1710,155 @@ code.hljs {
   /* purposely ignored */
   
 }
+  @media (prefers-color-scheme: dark) {
+    pre code.hljs {
+  display: block;
+  overflow-x: auto;
+  padding: 1em
+}
+code.hljs {
+  padding: 3px 5px
+}
+/*!
+  Theme: GitHub Dark
+  Description: Dark theme as seen on github.com
+  Author: github.com
+  Maintainer: @Hirse
+  Updated: 2021-05-15
+
+  Outdated base version: https://github.com/primer/github-syntax-dark
+  Current colors taken from GitHub's CSS
+*/
+.hljs {
+  color: #c9d1d9;
+  background: #0d1117
+}
+.hljs-doctag,
+.hljs-keyword,
+.hljs-meta .hljs-keyword,
+.hljs-template-tag,
+.hljs-template-variable,
+.hljs-type,
+.hljs-variable.language_ {
+  /* prettylights-syntax-keyword */
+  color: #ff7b72
+}
+.hljs-title,
+.hljs-title.class_,
+.hljs-title.class_.inherited__,
+.hljs-title.function_ {
+  /* prettylights-syntax-entity */
+  color: #d2a8ff
+}
+.hljs-attr,
+.hljs-attribute,
+.hljs-literal,
+.hljs-meta,
+.hljs-number,
+.hljs-operator,
+.hljs-variable,
+.hljs-selector-attr,
+.hljs-selector-class,
+.hljs-selector-id {
+  /* prettylights-syntax-constant */
+  color: #79c0ff
+}
+.hljs-regexp,
+.hljs-string,
+.hljs-meta .hljs-string {
+  /* prettylights-syntax-string */
+  color: #a5d6ff
+}
+.hljs-built_in,
+.hljs-symbol {
+  /* prettylights-syntax-variable */
+  color: #ffa657
+}
+.hljs-comment,
+.hljs-code,
+.hljs-formula {
+  /* prettylights-syntax-comment */
+  color: #8b949e
+}
+.hljs-name,
+.hljs-quote,
+.hljs-selector-tag,
+.hljs-selector-pseudo {
+  /* prettylights-syntax-entity-tag */
+  color: #7ee787
+}
+.hljs-subst {
+  /* prettylights-syntax-storage-modifier-import */
+  color: #c9d1d9
+}
+.hljs-section {
+  /* prettylights-syntax-markup-heading */
+  color: #1f6feb;
+  font-weight: bold
+}
+.hljs-bullet {
+  /* prettylights-syntax-markup-list */
+  color: #f2cc60
+}
+.hljs-emphasis {
+  /* prettylights-syntax-markup-italic */
+  color: #c9d1d9;
+  font-style: italic
+}
+.hljs-strong {
+  /* prettylights-syntax-markup-bold */
+  color: #c9d1d9;
+  font-weight: bold
+}
+.hljs-addition {
+  /* prettylights-syntax-markup-inserted */
+  color: #aff5b4;
+  background-color: #033a16
+}
+.hljs-deletion {
+  /* prettylights-syntax-markup-deleted */
+  color: #ffdcd7;
+  background-color: #67060c
+}
+.hljs-char.escape_,
+.hljs-link,
+.hljs-params,
+.hljs-property,
+.hljs-punctuation,
+.hljs-tag {
+  /* purposely ignored */
+  
+}
+  }
 </style>
   </head>
   <body data-view="all">
-    <div class="topbar">
-      <div class="topbar-inner">
-        <div class="segmented" role="group" aria-label="보기 선택">
-          <button type="button" data-view-btn="summary" aria-pressed="false">요약</button>
-          <button type="button" data-view-btn="node" aria-pressed="false">Node.js</button>
-          <button type="button" data-view-btn="java" aria-pressed="false">Java</button>
-          <button type="button" data-view-btn="all" aria-pressed="true">전체</button>
+    <div class="topbar ansi-topbar">
+      <div class="topbar-inner" aria-label="상단 내비게이션">
+        <div class="nav-pill nav-left">
+          <button type="button" class="nav-btn" id="view-toggle" aria-label="보기 모드">보기: 전체</button>
         </div>
-        <div class="topbar-right">
-          <div class="hint">상단 탭으로 필요한 부분만 봅니다.</div>
-          <div class="tts" aria-label="읽어주기(TTS)">
-            <button type="button" id="tts-play">읽기</button>
-            <button type="button" id="tts-pause" disabled>일시정지</button>
-            <button type="button" id="tts-stop" disabled>중지</button>
-            <select id="tts-rate" aria-label="읽기 속도">
-              <option value="0.9">0.9x</option>
-              <option value="1" selected>1.0x</option>
-              <option value="1.1">1.1x</option>
-              <option value="1.2">1.2x</option>
-            </select>
-            <select id="tts-voice" aria-label="목소리 선택">
-              <option value="">(목소리 자동)</option>
-            </select>
-            <label class="chk">
-              <input type="checkbox" id="tts-skip-urls" checked />
-              URL 제외
-            </label>
-            <label class="chk">
-              <input type="checkbox" id="tts-skip-refs" checked />
-              참고자료 제외
-            </label>
-          </div>
+        <div class="nav-pill nav-right">
+          <button type="button" class="nav-btn" id="tts-toggle" aria-label="읽기">읽기</button>
+          <button type="button" class="nav-btn" id="toc-toggle" aria-label="목차">목차</button>
         </div>
       </div>
     </div>
+    <div class="tocPanel" id="toc-panel" aria-label="목차">
+      <h4>목차</h4>
+      <div id="toc-list"></div>
+    </div>
     <main>
-      <article class="markdown-body">
+      <div class="hero ansi-bar">
+        <div class="ansi-line">┌─ DEVSECNEWS ─ REPORT ───────────────────────────────────────┐</div>
+      </div>
+        <article class="markdown-body">
 <section class="view-summary" data-view-section="summary">
-<h1>DevSecNews 2026-01 — Node.js/Java 보안 요약(개발자용)</h1>
-<h1>(1) Summary</h1>
-<ul>
-<li>Node.js는 권한 경계(권한 모델/경로/소켓) 관련 취약점을 묶어서 패치했습니다. 런타임을 보안 릴리스 버전으로 업데이트합니다. [Source] <a href="https://nodejs.org/en/blog/vulnerability/december-2025-security-releases">https://nodejs.org/en/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)</li>
-<li>Java는 외부 입력이 XML/템플릿/직렬화로 흘러가는 경로가 핵심 위험 지점입니다. 외부 입력 기반 템플릿·직렬화 경로를 차단하거나 격리합니다. [Source] <a href="https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability">https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability</a> (2026-01-12)</li>
-<li>Struts(XXE, S2-069)는 XML 파서 기본값이 그대로면 다시 공격면이 됩니다. Struts를 패치 버전으로 올리고 XML 파서 보안 설정을 강제합니다. [Source] <a href="https://cwiki.apache.org/confluence/display/WW/S2-069">https://cwiki.apache.org/confluence/display/WW/S2-069</a> (2026-01-11)</li>
-<li>개발자 도구(Spring CLI VSCode extension)는 명령 주입이 확인됐고, EOL이면 제거가 우선입니다. 조직 표준 확장 목록에서 해당 확장을 제거하고 워크스페이스 신뢰를 기본 거부로 둡니다. [Source] <a href="https://spring.io/security/cve-2026-22718">https://spring.io/security/cve-2026-22718</a> (2026-01-16)</li>
+<h1 id="devsecnews-2026-01-nodejsjava-보안-요약개발자용">DevSecNews 2026-01 — Node.js/Java 보안 요약(개발자용)</h1><h1 id="1-summary">(1) Summary</h1><ul>
+<li>Node.js는 이번에 권한 모델, 파일 경로, 소켓 관련 취약점을 한꺼번에 패치했습니다. 바로 보안 릴리스 버전으로 올리세요. [Source] <a href="https://nodejs.org/en/blog/vulnerability/december-2025-security-releases">https://nodejs.org/en/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)</li>
+<li>Java는 외부 입력이 XML 파서나 템플릿 엔진으로 흘러들어가는 경로가 가장 위험합니다. 이쪽 경로를 아예 막거나 격리해야 안전합니다. [Source] <a href="https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability">https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability</a> (2026-01-12)</li>
+<li>Struts(XXE, S2-069)는 XML 파서 기본값을 그대로 두면 공격 통로가 열립니다. 패치 버전으로 올리고 파서 보안 설정을 강제하세요. [Source] <a href="https://cwiki.apache.org/confluence/display/WW/S2-069">https://cwiki.apache.org/confluence/display/WW/S2-069</a> (2026-01-11)</li>
+<li>개발자 도구(Spring CLI VSCode extension)에서 명령 주입이 발견됐습니다. 이미 EOL된 버전이라 패치가 없으니, 조직 표준 목록에서 빼고 바로 지워야 합니다. [Source] <a href="https://spring.io/security/cve-2026-22718">https://spring.io/security/cve-2026-22718</a> (2026-01-16)</li>
 </ul>
 <!--CARD
 {"id":"summary-1","kind":"summary","header":"요약","title":"Node.js 권한 경계 패치","bodyMd":"이번 달은 권한 경계를 흔드는 이슈가 한꺼번에 공개됐습니다. 파일 경로와 로컬 소켓까지 같이 봅니다.","whyMd":"옵션만 믿으면 symlink/UDS 같은 우회 경로로 보안 경계가 깨집니다.","impactMd":"허용 범위를 벗어난 파일 접근이나 내부 소켓 접근이 생깁니다.","actionMd":"런타임을 보안 릴리스 버전으로 업데이트합니다.","source":"https://nodejs.org/en/blog/vulnerability/december-2025-security-releases"}
@@ -1674,9 +1876,7 @@ code.hljs {
 
 </section>
 <section class="view-node" data-view-section="node">
-<h1>(2) Node.js</h1>
-<h2>(2.1) CVE/이슈 표</h2>
-<table>
+<h1 id="2-nodejs">(2) Node.js</h1><h2 id="21-cve이슈-표">(2.1) CVE/이슈 표</h2><table>
 <thead>
 <tr>
 <th>CVE</th>
@@ -1720,87 +1920,82 @@ code.hljs {
 <td><a href="https://nodejs.org/en/blog/vulnerability/december-2025-security-releases">https://nodejs.org/en/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)<br><a href="https://cveawg.mitre.org/api/cve/CVE-2025-55132">https://cveawg.mitre.org/api/cve/CVE-2025-55132</a> (날짜 미표기)</td>
 </tr>
 </tbody></table>
-<h2>(2.2) 항목별 설명</h2>
-<h3>Node.js 보안 릴리스(Active release lines)</h3>
-<p>Node.js는 다수 취약점 패치를 포함한 보안 릴리스를 공개했습니다. 런타임을 보안 릴리스 버전으로 업데이트합니다. [Source] <a href="https://nodejs.org/en/blog/vulnerability/december-2025-security-releases">https://nodejs.org/en/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)</p>
-<h3>영향 여부 자가진단(빠른 확인)</h3>
-<p>아래 명령으로 런타임 버전과 실행 옵션(권한 모델 사용 여부)을 먼저 확인합니다.</p>
-<pre><code class="hljs language-bash">node -v
+<h2 id="22-항목별-설명">(2.2) 항목별 설명</h2><h3 id="nodejs-보안-릴리스-active-release-lines">Node.js 보안 릴리스 (Active release lines)</h3><p>Node.js가 여러 취약점을 패치한 보안 릴리스를 내놨습니다. 런타임을 최신 보안 버전으로 업데이트하는 게 가장 확실한 방법입니다. [Source] <a href="https://nodejs.org/en/blog/vulnerability/december-2025-security-releases">https://nodejs.org/en/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)</p>
+<h3 id="영향-여부-자가진단-빠른-확인">영향 여부 자가진단 (빠른 확인)</h3><p>지금 쓰고 있는 런타임 버전과 권한 모델 옵션을 켜뒀는지 확인해 보세요.</p>
+<pre><code class="language-bash">node -v
 ps aux | grep -E <span class="hljs-string">&quot;node .*--permission|node .*--allow-fs-&quot;</span> | grep -v grep || <span class="hljs-literal">true</span>
-</code></pre><p>영향 가능성이 있으면 보안 릴리스 버전으로 업데이트합니다.</p>
-<h3>CVE-2025-55131: <code>vm</code>+<code>timeout</code>에서 메모리 노출 가능</h3>
-<p><code>vm</code> 모듈에서 <code>timeout</code>로 실행을 끊는 흐름이 있으면, 버퍼 초기화가 기대대로 동작하지 않아 이전 메모리 잔여가 노출될 수 있습니다. <code>vm</code>으로 “유저 코드”를 실행하는 구조를 별도 프로세스/컨테이너로 분리하고 런타임을 업데이트합니다. [Source] <a href="https://nodejs.org/en/blog/vulnerability/december-2025-security-releases">https://nodejs.org/en/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)
+</code></pre>
+<p>설정된 게 있다면 보안 릴리스 버전으로 업데이트해야 합니다.</p>
+<h3 id="cve-2025-55131-vmtimeout-쓰면-메모리-샐-수-있음">CVE-2025-55131: <code>vm</code>+<code>timeout</code> 쓰면 메모리 샐 수 있음</h3><p><code>vm</code> 모듈에서 <code>timeout</code>으로 실행을 강제로 끊으면, 버퍼 초기화가 제대로 안 돼서 이전 메모리에 있던 데이터가 노출될 수 있습니다. <code>vm</code>으로 유저 코드를 돌리는 건 위험하니 별도 프로세스나 컨테이너로 격리하세요. [Source] <a href="https://nodejs.org/en/blog/vulnerability/december-2025-security-releases">https://nodejs.org/en/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)
 [Source] <a href="https://cveawg.mitre.org/api/cve/CVE-2025-55131">https://cveawg.mitre.org/api/cve/CVE-2025-55131</a> (날짜 미표기)</p>
-<h3>CVE-2025-55130: permission model 파일시스템 권한 우회(symlink)</h3>
-<p><code>--allow-fs-read</code>/<code>--allow-fs-write</code>는 입력 경로와 symlink 체인 조합으로 우회될 수 있어 “옵션만으로” 보안 경계를 만들면 위험합니다. 허용 경로는 realpath(심볼릭 링크를 해소한 실제 경로) 기준 allowlist로 검증하고 런타임을 업데이트합니다. [Source] <a href="https://nodejs.org/en/blog/vulnerability/december-2025-security-releases">https://nodejs.org/en/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)
+<h3 id="cve-2025-55130-권한-모델-symlink로-우회-가능">CVE-2025-55130: 권한 모델, symlink로 우회 가능</h3><p><code>--allow-fs-read</code> 같은 옵션만 믿으면 안 됩니다. 입력 경로와 symlink 조합으로 권한 밖의 파일에 접근할 수 있거든요. 허용 경로는 반드시 심볼릭 링크를 푼 <code>realpath</code> 기준으로 검증해야 합니다. [Source] <a href="https://nodejs.org/en/blog/vulnerability/december-2025-security-releases">https://nodejs.org/en/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)
 [Source] <a href="https://cveawg.mitre.org/api/cve/CVE-2025-55130">https://cveawg.mitre.org/api/cve/CVE-2025-55130</a> (날짜 미표기)</p>
-<h3>CVE-2026-21636: <code>--permission</code>에서 UDS로 네트워크 제한 우회</h3>
-<p>네트워크 권한을 제한했다고 해도 UDS(Unix Domain Socket, 로컬 소켓) 연결은 다른 경로로 열릴 수 있습니다. UDS 경로는 입력에서 직접 받지 않도록 하고 allowlist+정규화로 통제하며 필요하면 OS 격리를 적용합니다. [Source] <a href="https://nodejs.org/en/blog/vulnerability/december-2025-security-releases">https://nodejs.org/en/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)
+<h3 id="cve-2026-21636-네트워크-막아도-uds로컬-소켓는-뚫림">CVE-2026-21636: 네트워크 막아도 UDS(로컬 소켓)는 뚫림</h3><p><code>--permission</code>으로 네트워크를 막아도 유닉스 도메인 소켓(UDS) 연결은 열릴 수 있습니다. UDS 경로는 사용자 입력으로 받지 말고, 화이트리스트로 고정해서 쓰세요. [Source] <a href="https://nodejs.org/en/blog/vulnerability/december-2025-security-releases">https://nodejs.org/en/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)
 [Source] <a href="https://cveawg.mitre.org/api/cve/CVE-2026-21636">https://cveawg.mitre.org/api/cve/CVE-2026-21636</a> (날짜 미표기)</p>
-<h3>CVE-2025-55132: <code>fs.futimes()</code>로 메타데이터(타임스탬프) 변경 가능</h3>
-<p>읽기 권한만 가정한 환경에서도 파일 타임스탬프가 변경될 수 있어, 타임라인 기반 감시/감사 로직이 깨질 수 있습니다. <code>fs.futimes()</code> 사용 여부를 점검하고 보안 의미로 파일 타임스탬프를 신뢰하지 않도록 설계를 바꿉니다. [Source] <a href="https://nodejs.org/en/blog/vulnerability/december-2025-security-releases">https://nodejs.org/en/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)
+<h3 id="cve-2025-55132-fsfutimes로-타임스탬프-조작">CVE-2025-55132: <code>fs.futimes()</code>로 타임스탬프 조작</h3><p>읽기 권한만 있어도 파일 타임스탬프를 바꿀 수 있다는 게 밝혀졌습니다. 이러면 감사 로그의 시점이 꼬일 수 있죠. 파일 타임스탬프를 보안 검증 수단으로 쓰고 있다면 설계를 바꿔야 합니다. [Source] <a href="https://nodejs.org/en/blog/vulnerability/december-2025-security-releases">https://nodejs.org/en/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)
 [Source] <a href="https://cveawg.mitre.org/api/cve/CVE-2025-55132">https://cveawg.mitre.org/api/cve/CVE-2025-55132</a> (날짜 미표기)</p>
-<h2>(2.3) 이번 달 취약 개발 패턴 Top 5</h2>
-<h3>1) “permission 모델을 켰으니 안전”이라는 가정</h3>
-<p>공격자는 symlink/UDS 같은 우회 경로로 “권한 옵션의 의도”와 다른 접근을 만들려고 합니다. 허용 경로/소켓 경로를 allowlist로 고정하고 런타임을 업데이트합니다.</p>
+<h2 id="23-이번-달-취약-개발-패턴-top-5">(2.3) 이번 달 취약 개발 패턴 Top 5</h2><h3 id="1-permission-모델을-켰으니-안전이라는-가정">1) “permission 모델을 켰으니 안전”이라는 가정</h3><p>공격자는 symlink/UDS 같은 우회 경로로 “권한 옵션의 의도”와 다른 접근을 만들려고 합니다. 허용 경로/소켓 경로를 allowlist로 고정하고 런타임을 업데이트합니다.</p>
 <p>안 좋은 예:</p>
-<pre><code class="hljs language-js"><span class="hljs-comment">// permission model을 켠 상태에서 입력을 그대로 신뢰</span>
+<pre><code class="language-js"><span class="hljs-comment">// permission model을 켠 상태에서 입력을 그대로 신뢰</span>
 fs.<span class="hljs-title function_">readFileSync</span>(userInput.<span class="hljs-property">path</span>, <span class="hljs-string">&quot;utf8&quot;</span>)
-</code></pre><p>안전한 대안:</p>
-<pre><code class="hljs language-js"><span class="hljs-keyword">import</span> path <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;node:path&quot;</span>
+</code></pre>
+<p>안전한 대안:</p>
+<pre><code class="language-js"><span class="hljs-keyword">import</span> path <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;node:path&quot;</span>
 
 <span class="hljs-keyword">const</span> <span class="hljs-variable constant_">ROOT</span> = <span class="hljs-string">&quot;/srv/app/data&quot;</span>
 <span class="hljs-keyword">const</span> p = path.<span class="hljs-title function_">resolve</span>(<span class="hljs-variable constant_">ROOT</span>, userInput.<span class="hljs-property">path</span>)
 <span class="hljs-keyword">if</span> (!p.<span class="hljs-title function_">startsWith</span>(<span class="hljs-variable constant_">ROOT</span> + path.<span class="hljs-property">sep</span>)) <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Error</span>(<span class="hljs-string">&quot;blocked&quot;</span>)
 fs.<span class="hljs-title function_">readFileSync</span>(p, <span class="hljs-string">&quot;utf8&quot;</span>)
-</code></pre><p>팀 규칙으로 고정합니다.
+</code></pre>
+<p>팀 규칙으로 고정합니다.
 [Source] <a href="https://nodejs.org/en/blog/vulnerability/december-2025-security-releases">https://nodejs.org/en/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)</p>
-<h3>2) symlink/realpath를 고려하지 않은 “경로 검증”</h3>
-<p>공격자는 “문자열 기반 경로 체크”를 우회해 허용 디렉터리 밖 파일에 접근하려고 합니다. realpath 기준 allowlist 검증을 적용합니다.</p>
+<h3 id="2-symlinkrealpath를-고려하지-않은-경로-검증">2) symlink/realpath를 고려하지 않은 “경로 검증”</h3><p>공격자는 “문자열 기반 경로 체크”를 우회해 허용 디렉터리 밖 파일에 접근하려고 합니다. realpath 기준 allowlist 검증을 적용합니다.</p>
 <p>안 좋은 예:</p>
-<pre><code class="hljs language-js"><span class="hljs-keyword">if</span> (!userInput.<span class="hljs-property">path</span>.<span class="hljs-title function_">startsWith</span>(<span class="hljs-string">&quot;/srv/app/data/&quot;</span>)) <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Error</span>(<span class="hljs-string">&quot;blocked&quot;</span>)
+<pre><code class="language-js"><span class="hljs-keyword">if</span> (!userInput.<span class="hljs-property">path</span>.<span class="hljs-title function_">startsWith</span>(<span class="hljs-string">&quot;/srv/app/data/&quot;</span>)) <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Error</span>(<span class="hljs-string">&quot;blocked&quot;</span>)
 fs.<span class="hljs-title function_">readFileSync</span>(userInput.<span class="hljs-property">path</span>, <span class="hljs-string">&quot;utf8&quot;</span>)
-</code></pre><p>안전한 대안:</p>
-<pre><code class="hljs language-js"><span class="hljs-keyword">const</span> real = fs.<span class="hljs-title function_">realpathSync</span>(userInput.<span class="hljs-property">path</span>)
+</code></pre>
+<p>안전한 대안:</p>
+<pre><code class="language-js"><span class="hljs-keyword">const</span> real = fs.<span class="hljs-title function_">realpathSync</span>(userInput.<span class="hljs-property">path</span>)
 <span class="hljs-keyword">if</span> (!real.<span class="hljs-title function_">startsWith</span>(<span class="hljs-string">&quot;/srv/app/data/&quot;</span>)) <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Error</span>(<span class="hljs-string">&quot;blocked&quot;</span>)
 fs.<span class="hljs-title function_">readFileSync</span>(real, <span class="hljs-string">&quot;utf8&quot;</span>)
-</code></pre><p>팀 규칙으로 고정합니다.
+</code></pre>
+<p>팀 규칙으로 고정합니다.
 [Source] <a href="https://nodejs.org/en/blog/vulnerability/december-2025-security-releases">https://nodejs.org/en/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)</p>
-<h3>3) <code>vm</code>에서 유저 코드를 돌리고 timeout으로 끊기</h3>
-<p>공격자는 타이밍 경합으로 버퍼 초기화/정리 타이밍을 흔들어 정보 노출이나 비정상 동작을 유도합니다. 유저 코드는 별도 프로세스/컨테이너로 분리하고 IPC로만 통신합니다.</p>
+<h3 id="3-vm에서-유저-코드를-돌리고-timeout으로-끊기">3) <code>vm</code>에서 유저 코드를 돌리고 timeout으로 끊기</h3><p>공격자는 타이밍 경합으로 버퍼 초기화/정리 타이밍을 흔들어 정보 노출이나 비정상 동작을 유도합니다. 유저 코드는 별도 프로세스/컨테이너로 분리하고 IPC로만 통신합니다.</p>
 <p>안 좋은 예:</p>
-<pre><code class="hljs language-js">vm.<span class="hljs-title function_">runInNewContext</span>(untrustedCode, sandbox, { <span class="hljs-attr">timeout</span>: <span class="hljs-number">50</span> })
-</code></pre><p>안전한 대안:</p>
-<pre><code class="hljs language-js"><span class="hljs-comment">// untrusted code는 별도 프로세스/컨테이너에서 실행하고</span>
+<pre><code class="language-js">vm.<span class="hljs-title function_">runInNewContext</span>(untrustedCode, sandbox, { <span class="hljs-attr">timeout</span>: <span class="hljs-number">50</span> })
+</code></pre>
+<p>안전한 대안:</p>
+<pre><code class="language-js"><span class="hljs-comment">// untrusted code는 별도 프로세스/컨테이너에서 실행하고</span>
 <span class="hljs-comment">// 결과만 IPC로 받습니다.</span>
-</code></pre><p>팀 규칙으로 고정합니다.
+</code></pre>
+<p>팀 규칙으로 고정합니다.
 [Source] <a href="https://nodejs.org/en/blog/vulnerability/december-2025-security-releases">https://nodejs.org/en/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)</p>
-<h3>4) UDS 경로를 입력으로 받아 내부 소켓에 연결</h3>
-<p>공격자는 네트워크 권한 경계를 우회하기 위해 로컬 소켓(UDS) 경로를 입력으로 주입하려고 합니다. UDS 경로는 allowlist로 고정하고 입력에서 직접 받지 않도록 설계를 바꿉니다.</p>
+<h3 id="4-uds-경로를-입력으로-받아-내부-소켓에-연결">4) UDS 경로를 입력으로 받아 내부 소켓에 연결</h3><p>공격자는 네트워크 권한 경계를 우회하기 위해 로컬 소켓(UDS) 경로를 입력으로 주입하려고 합니다. UDS 경로는 allowlist로 고정하고 입력에서 직접 받지 않도록 설계를 바꿉니다.</p>
 <p>안 좋은 예:</p>
-<pre><code class="hljs language-js">net.<span class="hljs-title function_">connect</span>(userInput.<span class="hljs-property">socketPath</span>)
-</code></pre><p>안전한 대안:</p>
-<pre><code class="hljs language-js"><span class="hljs-keyword">const</span> <span class="hljs-variable constant_">ALLOWED_UDS</span> = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Set</span>([<span class="hljs-string">&quot;/run/app.sock&quot;</span>])
+<pre><code class="language-js">net.<span class="hljs-title function_">connect</span>(userInput.<span class="hljs-property">socketPath</span>)
+</code></pre>
+<p>안전한 대안:</p>
+<pre><code class="language-js"><span class="hljs-keyword">const</span> <span class="hljs-variable constant_">ALLOWED_UDS</span> = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Set</span>([<span class="hljs-string">&quot;/run/app.sock&quot;</span>])
 <span class="hljs-keyword">if</span> (!<span class="hljs-variable constant_">ALLOWED_UDS</span>.<span class="hljs-title function_">has</span>(userInput.<span class="hljs-property">socketPath</span>)) <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Error</span>(<span class="hljs-string">&quot;blocked&quot;</span>)
 net.<span class="hljs-title function_">connect</span>(userInput.<span class="hljs-property">socketPath</span>)
-</code></pre><p>팀 규칙으로 고정합니다.
+</code></pre>
+<p>팀 규칙으로 고정합니다.
 [Source] <a href="https://nodejs.org/en/blog/vulnerability/december-2025-security-releases">https://nodejs.org/en/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)</p>
-<h3>5) 파일 타임스탬프를 보안 신호로 신뢰</h3>
-<p>공격자는 로그/감사 흐름을 흐리게 만들기 위해 메타데이터(타임스탬프) 조작 가능성을 악용합니다. 타임스탬프를 보안 판단에 직접 쓰지 않고, 별도 감사 이벤트/해시 기반으로 설계를 바꿉니다.</p>
+<h3 id="5-파일-타임스탬프를-보안-신호로-신뢰">5) 파일 타임스탬프를 보안 신호로 신뢰</h3><p>공격자는 로그/감사 흐름을 흐리게 만들기 위해 메타데이터(타임스탬프) 조작 가능성을 악용합니다. 타임스탬프를 보안 판단에 직접 쓰지 않고, 별도 감사 이벤트/해시 기반으로 설계를 바꿉니다.</p>
 <p>안 좋은 예:</p>
-<pre><code class="hljs language-js"><span class="hljs-keyword">if</span> (stat.<span class="hljs-property">mtimeMs</span> &lt; lastSeen) <span class="hljs-title function_">deny</span>() <span class="hljs-comment">// 타임스탬프를 보안 판단으로 사용</span>
-</code></pre><p>안전한 대안:</p>
-<pre><code class="hljs language-js"><span class="hljs-comment">// 파일 내용 해시/서명 검증 + 별도 감사 이벤트 기록으로 전환</span>
-</code></pre><p>팀 규칙으로 고정합니다.
+<pre><code class="language-js"><span class="hljs-keyword">if</span> (stat.<span class="hljs-property">mtimeMs</span> &lt; lastSeen) <span class="hljs-title function_">deny</span>() <span class="hljs-comment">// 타임스탬프를 보안 판단으로 사용</span>
+</code></pre>
+<p>안전한 대안:</p>
+<pre><code class="language-js"><span class="hljs-comment">// 파일 내용 해시/서명 검증 + 별도 감사 이벤트 기록으로 전환</span>
+</code></pre>
+<p>팀 규칙으로 고정합니다.
 [Source] <a href="https://nodejs.org/en/blog/vulnerability/december-2025-security-releases">https://nodejs.org/en/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)</p>
 <p>팀이 오늘 적용할 규칙/코드 조치를 PR 체크리스트에 반영합니다.</p>
-<h2>(2.4) 운영 참고(선택)</h2>
-
+<h2 id="24-운영-참고선택">(2.4) 운영 참고(선택)</h2>
 </section>
 <section class="view-java" data-view-section="java">
-<h1>(3) Java</h1>
-<h2>(3.1) CVE/이슈 표</h2>
-<table>
+<h1 id="3-java">(3) Java</h1><h2 id="31-cve이슈-표">(3.1) CVE/이슈 표</h2><table>
 <thead>
 <tr>
 <th>CVE</th>
@@ -1836,81 +2031,78 @@ net.<span class="hljs-title function_">connect</span>(userInput.<span class="hlj
 <td><a href="https://spring.io/security/cve-2026-22718">https://spring.io/security/cve-2026-22718</a> (2026-01-16)<br><a href="https://github.com/advisories/GHSA-h34g-p94m-h76q">https://github.com/advisories/GHSA-h34g-p94m-h76q</a> (날짜 미표기)<br><a href="https://cveawg.mitre.org/api/cve/CVE-2026-22718">https://cveawg.mitre.org/api/cve/CVE-2026-22718</a> (날짜 미표기)</td>
 </tr>
 </tbody></table>
-<h2>(3.2) 항목별 설명</h2>
-<h3>CVE-2025-68493 (S2-069): Struts XXE 계열 입력 처리</h3>
-<p>XML 파서 기본값/구성요소 조합이 남아 있으면 XXE 계열 입력이 다시 공격 표면이 됩니다. Struts를 패치 버전으로 올리고 XML 파서에서 DTD/외부 엔티티를 비활성화합니다. [Source] <a href="https://cwiki.apache.org/confluence/display/WW/S2-069">https://cwiki.apache.org/confluence/display/WW/S2-069</a> (2026-01-11)
+<h2 id="32-항목별-설명">(3.2) 항목별 설명</h2><h3 id="cve-2025-68493-s2-069-struts-xxe-다시-등장">CVE-2025-68493 (S2-069): Struts XXE 다시 등장</h3><p>XML 파서 기본값을 그대로 쓰면 XXE 공격에 또 당할 수 있습니다. Struts를 패치하고, XML 파서 설정에서 DTD랑 외부 엔티티는 꼭 꺼두세요. [Source] <a href="https://cwiki.apache.org/confluence/display/WW/S2-069">https://cwiki.apache.org/confluence/display/WW/S2-069</a> (2026-01-11)
 [Source] <a href="https://cveawg.mitre.org/api/cve/CVE-2025-68493">https://cveawg.mitre.org/api/cve/CVE-2025-68493</a> (날짜 미표기)</p>
-<h3>CVE-2025-10492: JasperReports 역직렬화/RCE 리스크</h3>
-<p>리포트/템플릿 파이프라인이 “업로드/외부 파일”을 그대로 받아 처리하면 RCE로 연결됩니다. 템플릿 업로드를 차단하고 불가피하면 격리된 실행 환경에서만 처리하며 컴포넌트를 업데이트합니다. [Source] <a href="https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability">https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability</a> (2026-01-12)
+<h3 id="cve-2025-10492-jasperreports-템플릿-파일-조심">CVE-2025-10492: JasperReports, 템플릿 파일 조심</h3><p>리포트 템플릿을 업로드받아서 그대로 렌더링하면 RCE로 이어집니다. 템플릿 업로드는 막고, 정 필요하다면 완전히 격리된 환경에서만 돌려야 합니다. [Source] <a href="https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability">https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability</a> (2026-01-12)
 [Source] <a href="https://cveawg.mitre.org/api/cve/CVE-2025-10492">https://cveawg.mitre.org/api/cve/CVE-2025-10492</a> (날짜 미표기)</p>
-<h3>CVE-2026-22718: 개발 도구(확장) 명령 주입</h3>
-<p>EOL 된 개발 도구는 “패치 없음”이 기본이어서, 취약점이 확인되면 제거가 사실상 유일한 대응입니다. 조직 표준 확장 목록에서 제거하고 신뢰되지 않은 워크스페이스 기본 거부를 적용합니다. [Source] <a href="https://spring.io/security/cve-2026-22718">https://spring.io/security/cve-2026-22718</a> (2026-01-16)
+<h3 id="cve-2026-22718-개발-도구-확장이-뚫리는-경우">CVE-2026-22718: 개발 도구 확장이 뚫리는 경우</h3><p>이미 지원 종료(EOL)된 개발 도구는 패치가 안 나옵니다. 취약점이 발견되면 바로 지우는 게 답입니다. 조직 차원에서 쓰는 확장 목록을 정해두고, 신뢰할 수 없는 워크스페이스는 기본적으로 차단하세요. [Source] <a href="https://spring.io/security/cve-2026-22718">https://spring.io/security/cve-2026-22718</a> (2026-01-16)
 [Source] <a href="https://github.com/advisories/GHSA-h34g-p94m-h76q">https://github.com/advisories/GHSA-h34g-p94m-h76q</a> (날짜 미표기)
 [Source] <a href="https://cveawg.mitre.org/api/cve/CVE-2026-22718">https://cveawg.mitre.org/api/cve/CVE-2026-22718</a> (날짜 미표기)</p>
-<h3>영향 여부 자가진단(빠른 확인)</h3>
-<p>아래 명령으로 의존성(Struts/JasperReports)과 개발 도구(취약 확장) 설치 여부를 먼저 확인합니다.</p>
-<pre><code class="hljs language-bash">mvn -q -DskipTests dependency:tree | grep -Ei <span class="hljs-string">&quot;struts2|jasperreports&quot;</span> || <span class="hljs-literal">true</span>
+<h3 id="영향-여부-자가진단빠른-확인">영향 여부 자가진단(빠른 확인)</h3><p>아래 명령으로 의존성(Struts/JasperReports)과 개발 도구(취약 확장) 설치 여부를 먼저 확인합니다.</p>
+<pre><code class="language-bash">mvn -q -DskipTests dependency:tree | grep -Ei <span class="hljs-string">&quot;struts2|jasperreports&quot;</span> || <span class="hljs-literal">true</span>
 code --list-extensions | grep -Ei <span class="hljs-string">&quot;spring|cli&quot;</span> || <span class="hljs-literal">true</span>
-</code></pre><p>영향 가능성이 있으면 버전을 올리거나(라이브러리) 제거합니다(개발 도구).</p>
-<h2>(3.3) 이번 달 취약 개발 패턴 Top 5</h2>
-<h3>1) 외부 입력(XML)을 파서 기본값으로 처리</h3>
-<p>공격자는 XXE/SSRF/정보 노출을 노리고 “파서 기본값”을 파고듭니다. 외부 엔티티/DTD를 비활성화하고 허용 스키마만 처리합니다.</p>
+</code></pre>
+<p>영향 가능성이 있으면 버전을 올리거나(라이브러리) 제거합니다(개발 도구).</p>
+<h2 id="33-이번-달-취약-개발-패턴-top-5">(3.3) 이번 달 취약 개발 패턴 Top 5</h2><h3 id="1-외부-입력xml을-파서-기본값으로-처리">1) 외부 입력(XML)을 파서 기본값으로 처리</h3><p>공격자는 XXE/SSRF/정보 노출을 노리고 “파서 기본값”을 파고듭니다. 외부 엔티티/DTD를 비활성화하고 허용 스키마만 처리합니다.</p>
 <p>안 좋은 예:</p>
-<pre><code class="hljs language-java"><span class="hljs-type">Document</span> <span class="hljs-variable">doc</span> <span class="hljs-operator">=</span> DocumentBuilderFactory.newInstance()
+<pre><code class="language-java"><span class="hljs-type">Document</span> <span class="hljs-variable">doc</span> <span class="hljs-operator">=</span> DocumentBuilderFactory.newInstance()
   .newDocumentBuilder()
   .parse(inputStream);
-</code></pre><p>안전한 대안:</p>
-<pre><code class="hljs language-java"><span class="hljs-type">DocumentBuilderFactory</span> <span class="hljs-variable">f</span> <span class="hljs-operator">=</span> DocumentBuilderFactory.newInstance();
+</code></pre>
+<p>안전한 대안:</p>
+<pre><code class="language-java"><span class="hljs-type">DocumentBuilderFactory</span> <span class="hljs-variable">f</span> <span class="hljs-operator">=</span> DocumentBuilderFactory.newInstance();
 f.setFeature(<span class="hljs-string">&quot;http://apache.org/xml/features/disallow-doctype-decl&quot;</span>, <span class="hljs-literal">true</span>);
 f.setFeature(<span class="hljs-string">&quot;http://xml.org/sax/features/external-general-entities&quot;</span>, <span class="hljs-literal">false</span>);
 f.setFeature(<span class="hljs-string">&quot;http://xml.org/sax/features/external-parameter-entities&quot;</span>, <span class="hljs-literal">false</span>);
-</code></pre><p>팀 규칙으로 고정합니다.
+</code></pre>
+<p>팀 규칙으로 고정합니다.
 [Source] <a href="https://cwiki.apache.org/confluence/display/WW/S2-069">https://cwiki.apache.org/confluence/display/WW/S2-069</a> (2026-01-11)</p>
-<h3>2) Java 역직렬화를 입력 포맷으로 허용</h3>
-<p>공격자는 gadget chain(역직렬화로 이어지는 호출 연쇄)을 이용해 역직렬화 시점에 코드 실행을 노립니다. 외부 입력은 JSON/Protobuf로 전환하고 필요 시 allowlist 필터를 강제합니다.</p>
+<h3 id="2-java-역직렬화를-입력-포맷으로-허용">2) Java 역직렬화를 입력 포맷으로 허용</h3><p>공격자는 gadget chain(역직렬화로 이어지는 호출 연쇄)을 이용해 역직렬화 시점에 코드 실행을 노립니다. 외부 입력은 JSON/Protobuf로 전환하고 필요 시 allowlist 필터를 강제합니다.</p>
 <p>안 좋은 예:</p>
-<pre><code class="hljs language-java"><span class="hljs-type">Object</span> <span class="hljs-variable">obj</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ObjectInputStream</span>(request.getInputStream()).readObject();
-</code></pre><p>안전한 대안:</p>
-<pre><code class="hljs language-java"><span class="hljs-comment">// 외부 입력은 JSON/Protobuf로 받고 명시적 DTO로 파싱합니다.</span>
-</code></pre><p>팀 규칙으로 고정합니다.
+<pre><code class="language-java"><span class="hljs-type">Object</span> <span class="hljs-variable">obj</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ObjectInputStream</span>(request.getInputStream()).readObject();
+</code></pre>
+<p>안전한 대안:</p>
+<pre><code class="language-java"><span class="hljs-comment">// 외부 입력은 JSON/Protobuf로 받고 명시적 DTO로 파싱합니다.</span>
+</code></pre>
+<p>팀 규칙으로 고정합니다.
 [Source] <a href="https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability">https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability</a> (2026-01-12)</p>
-<h3>3) 리포트/템플릿 파이프라인에서 신뢰 경계를 지우는 패턴</h3>
-<p>공격자는 “템플릿=코드”가 되는 지점을 노립니다. 템플릿 업로드를 금지하거나 격리된 렌더러에서만 처리합니다.</p>
+<h3 id="3-리포트템플릿-파이프라인에서-신뢰-경계를-지우는-패턴">3) 리포트/템플릿 파이프라인에서 신뢰 경계를 지우는 패턴</h3><p>공격자는 “템플릿=코드”가 되는 지점을 노립니다. 템플릿 업로드를 금지하거나 격리된 렌더러에서만 처리합니다.</p>
 <p>안 좋은 예:</p>
-<pre><code class="hljs language-java">compileAndRender(userUploadedTemplate);
-</code></pre><p>안전한 대안:</p>
-<pre><code class="hljs language-java"><span class="hljs-comment">// 템플릿은 저장소에서만 로드하고 서명/해시로 무결성을 검증합니다.</span>
-</code></pre><p>팀 규칙으로 고정합니다.
+<pre><code class="language-java">compileAndRender(userUploadedTemplate);
+</code></pre>
+<p>안전한 대안:</p>
+<pre><code class="language-java"><span class="hljs-comment">// 템플릿은 저장소에서만 로드하고 서명/해시로 무결성을 검증합니다.</span>
+</code></pre>
+<p>팀 규칙으로 고정합니다.
 [Source] <a href="https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability">https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability</a> (2026-01-12)</p>
-<h3>4) 개발툴/확장이 실행하는 명령을 프로젝트 입력이 좌우</h3>
-<p>공격자는 레포/워크스페이스 설정을 통해 개발자 PC에서 명령 실행을 유도합니다. 취약 확장을 제거하고 워크스페이스 신뢰를 기본 거부로 둡니다.</p>
+<h3 id="4-개발툴확장이-실행하는-명령을-프로젝트-입력이-좌우">4) 개발툴/확장이 실행하는 명령을 프로젝트 입력이 좌우</h3><p>공격자는 레포/워크스페이스 설정을 통해 개발자 PC에서 명령 실행을 유도합니다. 취약 확장을 제거하고 워크스페이스 신뢰를 기본 거부로 둡니다.</p>
 <p>안 좋은 예:</p>
-<pre><code class="hljs language-text">workspace 설정값 -&gt; shell command 문자열로 결합 -&gt; 실행
-</code></pre><p>안전한 대안:</p>
-<pre><code class="hljs language-text">확장 설치 allowlist + 신뢰되지 않은 워크스페이스 기본 거부 + EOL 확장 제거
-</code></pre><p>팀 규칙으로 고정합니다.
+<pre><code class="language-text">workspace 설정값 -&gt; shell command 문자열로 결합 -&gt; 실행
+</code></pre>
+<p>안전한 대안:</p>
+<pre><code class="language-text">확장 설치 allowlist + 신뢰되지 않은 워크스페이스 기본 거부 + EOL 확장 제거
+</code></pre>
+<p>팀 규칙으로 고정합니다.
 [Source] <a href="https://spring.io/security/cve-2026-22718">https://spring.io/security/cve-2026-22718</a> (2026-01-16)</p>
-<h3>5) XML/직렬화 입력 경로를 로그/모니터링에서 빼버림</h3>
-<p>공격자는 탐지되지 않는 입력 경로로 반복 시도해 성공 확률을 올립니다. 파서 진입을 보안 이벤트로 분리해 메타데이터를 남깁니다.</p>
+<h3 id="5-xml직렬화-입력-경로를-로그모니터링에서-빼버림">5) XML/직렬화 입력 경로를 로그/모니터링에서 빼버림</h3><p>공격자는 탐지되지 않는 입력 경로로 반복 시도해 성공 확률을 올립니다. 파서 진입을 보안 이벤트로 분리해 메타데이터를 남깁니다.</p>
 <p>안 좋은 예:</p>
-<pre><code class="hljs language-text">/upload, /report 렌더 API는 요청 메타데이터를 거의 기록하지 않음
-</code></pre><p>안전한 대안:</p>
-<pre><code class="hljs language-text">요청 크기/파일 타입/해시/렌더 결과 코드 등 최소 메타데이터를 보안 이벤트로 기록
-</code></pre><p>팀 규칙으로 고정합니다.
+<pre><code class="language-text">/upload, /report 렌더 API는 요청 메타데이터를 거의 기록하지 않음
+</code></pre>
+<p>안전한 대안:</p>
+<pre><code class="language-text">요청 크기/파일 타입/해시/렌더 결과 코드 등 최소 메타데이터를 보안 이벤트로 기록
+</code></pre>
+<p>팀 규칙으로 고정합니다.
 [Source] <a href="https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability">https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability</a> (2026-01-12)</p>
 <p>팀이 오늘 적용할 규칙/코드 조치를 PR 체크리스트에 반영합니다.</p>
-<h2>(3.4) 운영 참고(선택)</h2>
-
+<h2 id="34-운영-참고선택">(3.4) 운영 참고(선택)</h2>
 </section>
 <section class="view-rest" data-view-section="rest">
-<h1>(4) 공통 트렌드/권장사항</h1>
-<ul>
+<h1 id="4-공통-트렌드권장사항">(4) 공통 트렌드/권장사항</h1><ul>
 <li>권한/격리 기능을 “보안 경계”로 단정하면 우회가 나옵니다. 런타임 업데이트와 함께 OS/컨테이너 격리를 기본으로 적용합니다. [Source] <a href="https://nodejs.org/en/blog/vulnerability/december-2025-security-releases">https://nodejs.org/en/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)</li>
 <li>XML/직렬화/템플릿은 입력이 곧 코드가 되는 지점이 생깁니다. 외부 입력 템플릿을 차단하고 불가피하면 격리된 렌더러에서만 처리합니다. [Source] <a href="https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability">https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability</a> (2026-01-12)</li>
 <li>개발 도구(EOL 확장)는 “패치 없음”이므로 취약점 확인 시 제거가 정답입니다. 조직 표준 확장 allowlist를 운영하고 취약 확장을 제거합니다. [Source] <a href="https://spring.io/security/cve-2026-22718">https://spring.io/security/cve-2026-22718</a> (2026-01-16)</li>
 </ul>
-<h1>(5) 이번 달 개발자 체크리스트</h1>
-<ol>
+<h1 id="5-이번-달-개발자-체크리스트">(5) 이번 달 개발자 체크리스트</h1><ol>
 <li>Node.js permission model은 보안 경계로 쓰지 않고 realpath allowlist+OS 격리를 기본으로 둡니다. [Source] <a href="https://nodejs.org/en/blog/vulnerability/december-2025-security-releases">https://nodejs.org/en/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)</li>
 <li>파일 경로는 문자열 검증이 아니라 정규화+realpath 기준으로만 검증합니다. [Source] <a href="https://nodejs.org/en/blog/vulnerability/december-2025-security-releases">https://nodejs.org/en/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)</li>
 <li><code>vm</code>으로 유저 코드를 실행하지 않고 불가피하면 별도 프로세스/컨테이너로 격리합니다. [Source] <a href="https://nodejs.org/en/blog/vulnerability/december-2025-security-releases">https://nodejs.org/en/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)</li>
@@ -1926,8 +2118,7 @@ f.setFeature(<span class="hljs-string">&quot;http://xml.org/sax/features/externa
 {"id":"checklist-1","kind":"checklist","header":"체크리스트","title":"이번 달 개발자 체크리스트(10)","bodyMd":"1. Node.js permission model은 보안 경계로 쓰지 않고 realpath allowlist+OS 격리를 기본으로 둡니다.\n2. 파일 경로는 문자열 검증이 아니라 정규화+realpath 기준으로만 검증합니다.\n3. `vm`으로 유저 코드를 실행하지 않고 불가피하면 별도 프로세스/컨테이너로 격리합니다.\n4. UDS(로컬 소켓) 경로는 입력에서 직접 받지 않고 allowlist로 고정합니다.\n5. EOL 개발 도구/확장은 즉시 제거하고 조직 표준 allowlist로만 설치합니다.\n6. Node.js 런타임을 보안 릴리스 버전으로 업데이트합니다.\n7. `fs.futimes()` 사용 여부를 점검하고 보안 의미로 파일 타임스탬프를 신뢰하지 않도록 설계를 바꿉니다.\n8. Struts 사용 시 S2-069 패치 버전으로 업그레이드하고 XML 파서에서 DTD/외부 엔티티를 비활성화합니다.\n9. JasperReports 사용 시 외부 템플릿 업로드/로딩 경로를 차단하고 컴포넌트를 업데이트합니다.\n10. 워크스페이스 신뢰를 기본 거부로 두고 신뢰된 레포에서만 확장을 실행합니다.","actionMd":"이번 카드의 항목을 완료 처리합니다.","source":"https://nodejs.org/en/blog/vulnerability/december-2025-security-releases"}
 -->
 
-<h1>(6) 참고자료</h1>
-<ul>
+<h1 id="6-참고자료">(6) 참고자료</h1><ul>
 <li><a href="https://nodejs.org/en/blog/vulnerability/december-2025-security-releases">https://nodejs.org/en/blog/vulnerability/december-2025-security-releases</a></li>
 <li><a href="https://cveawg.mitre.org/api/cve/CVE-2025-55131">https://cveawg.mitre.org/api/cve/CVE-2025-55131</a></li>
 <li><a href="https://cveawg.mitre.org/api/cve/CVE-2025-55130">https://cveawg.mitre.org/api/cve/CVE-2025-55130</a></li>
@@ -1944,16 +2135,20 @@ f.setFeature(<span class="hljs-string">&quot;http://xml.org/sax/features/externa
 
 </section>
       </article>
+      </div>
     </main>
     <script>
       (function () {
         const KEY = "devsecnews:view";
-        const buttons = Array.from(document.querySelectorAll("[data-view-btn]"));
+        const viewToggle = document.getElementById("view-toggle");
+        const tocToggle = document.getElementById("toc-toggle");
+        const tocPanel = document.getElementById("toc-panel");
+        const tocList = document.getElementById("toc-list");
 
         function setView(v, persist) {
           if (!["summary","all","node","java"].includes(v)) v = "all";
           document.body.dataset.view = v;
-          for (const b of buttons) b.setAttribute("aria-pressed", String(b.dataset.viewBtn === v));
+          if (viewToggle) viewToggle.textContent = "보기: " + (v === "all" ? "전체" : v === "summary" ? "요약" : v === "node" ? "Node.js" : "Java");
           if (persist) {
             try { localStorage.setItem(KEY, v); } catch {}
           }
@@ -1961,6 +2156,62 @@ f.setFeature(<span class="hljs-string">&quot;http://xml.org/sax/features/externa
           try { history.replaceState(null, "", v === "all" ? "#all" : ("#" + v)); } catch {}
           // If speaking, restart to read the newly visible section only.
           if (speaking) startTts();
+          buildToc();
+        }
+
+        function getSectionsForView(view) {
+          if (view === "summary") return [document.querySelector(".view-summary")];
+          if (view === "node") return [document.querySelector(".view-node")];
+          if (view === "java") return [document.querySelector(".view-java")];
+          return [
+            document.querySelector(".view-summary"),
+            document.querySelector(".view-node"),
+            document.querySelector(".view-java"),
+            document.querySelector(".view-rest"),
+          ];
+        }
+
+        function buildToc() {
+          if (!tocList) return;
+          const view = document.body.dataset.view || "all";
+          const sections = getSectionsForView(view);
+          const items = [];
+          for (const s of sections) {
+            if (!s) continue;
+            const heads = Array.from(s.querySelectorAll("h1,h2,h3"));
+            for (const h of heads) {
+              const text = (h.innerText || h.textContent || "").trim();
+              if (!text) continue;
+              if (!h.id) continue;
+              items.push({ level: h.tagName.toLowerCase(), text, id: h.id });
+            }
+          }
+          tocList.innerHTML = "";
+          if (!items.length) {
+            const empty = document.createElement("div");
+            empty.style.fontSize = "13px";
+            empty.style.color = "var(--text-muted)";
+            empty.textContent = "표시할 목차가 없습니다.";
+            tocList.appendChild(empty);
+            return;
+          }
+          for (const it of items) {
+            const a = document.createElement("a");
+            a.href = "#" + it.id;
+            a.textContent = it.text;
+            a.className = it.level === "h2" ? "toc-l2" : (it.level === "h3" ? "toc-l3" : "");
+            a.addEventListener("click", () => {
+              document.body.dataset.toc = "";
+            });
+            tocList.appendChild(a);
+          }
+        }
+
+        if (tocToggle && tocPanel) {
+          tocToggle.addEventListener("click", () => {
+            const open = document.body.dataset.toc === "open";
+            document.body.dataset.toc = open ? "" : "open";
+          });
         }
 
         // Code block: add copy buttons
@@ -2078,31 +2329,17 @@ f.setFeature(<span class="hljs-string">&quot;http://xml.org/sax/features/externa
 
         // TTS (Web Speech API)
         const synth = window.speechSynthesis;
-        const playBtn = document.getElementById("tts-play");
-        const pauseBtn = document.getElementById("tts-pause");
-        const stopBtn = document.getElementById("tts-stop");
-        const rateSel = document.getElementById("tts-rate");
-        const voiceSel = document.getElementById("tts-voice");
-        const skipUrlsChk = document.getElementById("tts-skip-urls");
-        const skipRefsChk = document.getElementById("tts-skip-refs");
+        const ttsBtn = document.getElementById("tts-toggle");
+        const rateSel = null;
+        const voiceSel = null;
+        const skipUrlsChk = null;
+        const skipRefsChk = null;
         let queue = [];
         let speaking = false;
+        let ttsState = "idle"; // idle | playing | paused
 
         function getActiveView() {
           return document.body.dataset.view || "all";
-        }
-
-        function getSectionsForView(view) {
-          if (view === "summary") return [document.querySelector(".view-summary")];
-          if (view === "node") return [document.querySelector(".view-node")];
-          if (view === "java") return [document.querySelector(".view-java")];
-          // all
-          return [
-            document.querySelector(".view-summary"),
-            document.querySelector(".view-node"),
-            document.querySelector(".view-java"),
-            document.querySelector(".view-rest"),
-          ];
         }
 
         function extractReadableLines(root, opts) {
@@ -2242,8 +2479,9 @@ f.setFeature(<span class="hljs-string">&quot;http://xml.org/sax/features/externa
           
           // Auto-select logic (Prioritize Korean High Quality)
           const ko = voices.filter(v => (v.lang || "").toLowerCase().startsWith("ko"));
-          // Try to find "Google", "Siri", or "Premium" in name for better quality
+          // Try to find "Google", "Siri", "Yuna", or "Premium" in name for better quality
           const best = ko.find(v => v.name.includes("Google")) || 
+                       ko.find(v => v.name.includes("Yuna")) || 
                        ko.find(v => v.name.includes("Siri")) || 
                        ko.find(v => v.name.includes("Premium")) || 
                        ko[0];
@@ -2251,22 +2489,22 @@ f.setFeature(<span class="hljs-string">&quot;http://xml.org/sax/features/externa
         }
 
         function setButtonsState() {
-          if (!playBtn || !pauseBtn || !stopBtn) return;
-          pauseBtn.disabled = !speaking || synth.paused;
-          stopBtn.disabled = !speaking;
-          playBtn.textContent = synth.speaking && synth.paused ? "재개" : "읽기";
+          if (!ttsBtn) return;
+          ttsBtn.textContent = ttsState === "playing" ? "일시정지" : "읽기";
         }
 
         function stopTts() {
           try { synth.cancel(); } catch {}
           queue = [];
           speaking = false;
+          ttsState = "idle";
           setButtonsState();
         }
 
         function speakNext() {
           if (!queue.length) {
             speaking = false;
+            ttsState = "idle";
             setButtonsState();
             return;
           }
@@ -2281,60 +2519,67 @@ f.setFeature(<span class="hljs-string">&quot;http://xml.org/sax/features/externa
           u.onend = () => speakNext();
           u.onerror = () => speakNext();
           speaking = true;
+          ttsState = "playing";
           setButtonsState();
           synth.speak(u);
         }
 
         function startTts() {
           // Resume if paused
-          if (synth.speaking && synth.paused) {
+          if (ttsState === "paused") {
             synth.resume();
             speaking = true;
+            ttsState = "playing";
             setButtonsState();
             return;
           }
           stopTts();
           const text = buildTextForCurrentView();
           queue = chunkText(text);
-          if (!queue.length) return;
+          if (!queue.length) {
+            ttsState = "idle";
+            setButtonsState();
+            return;
+          }
           // Some browsers need a micro-delay after cancel() before speak().
           setTimeout(() => speakNext(), 60);
         }
 
-        if (synth && playBtn) {
+        if (synth && ttsBtn) {
           populateVoices();
           if (typeof speechSynthesis !== "undefined" && speechSynthesis.onvoiceschanged !== undefined) {
             speechSynthesis.onvoiceschanged = () => populateVoices();
           }
-          playBtn.addEventListener("click", startTts);
-          pauseBtn && pauseBtn.addEventListener("click", () => {
-            try { synth.pause(); } catch {}
-            setButtonsState();
-          });
-          stopBtn && stopBtn.addEventListener("click", stopTts);
-          voiceSel && voiceSel.addEventListener("change", () => {
-            // If currently speaking, restart with new voice.
-            if (speaking) startTts();
-          });
-          rateSel && rateSel.addEventListener("change", () => {
-            if (speaking) startTts();
-          });
-          skipUrlsChk && skipUrlsChk.addEventListener("change", () => {
-            if (speaking) startTts();
-          });
-          skipRefsChk && skipRefsChk.addEventListener("change", () => {
-            if (speaking) startTts();
+          ttsBtn.addEventListener("click", () => {
+            if (ttsState === "playing") {
+              try { synth.pause(); } catch {}
+              ttsState = "paused";
+              setButtonsState();
+              return;
+            }
+            if (ttsState === "paused") {
+              try { synth.resume(); } catch {}
+              ttsState = "playing";
+              setButtonsState();
+              return;
+            }
+            startTts();
           });
         } else {
           // No TTS support: hide controls
-          const tts = document.querySelector(".tts");
-          if (tts) tts.style.display = "none";
+          if (ttsBtn) ttsBtn.style.display = "none";
         }
 
         // setView is defined above to allow reuse by other UI features.
 
-        for (const b of buttons) {
-          b.addEventListener("click", () => setView(b.dataset.viewBtn, true));
+        if (viewToggle) {
+          const order = ["all","summary","node","java"];
+          viewToggle.addEventListener("click", () => {
+            const cur = document.body.dataset.view || "all";
+            const idx = order.indexOf(cur);
+            const next = order[(idx + 1) % order.length];
+            setView(next, true);
+          });
         }
 
         const hash = (location.hash || "").replace("#", "");
@@ -2346,6 +2591,7 @@ f.setFeature(<span class="hljs-string">&quot;http://xml.org/sax/features/externa
           const saved = localStorage.getItem(KEY);
           if (saved) setView(saved, false);
         } catch {}
+        buildToc();
       })();
     </script>
   </body>

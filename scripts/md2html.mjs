@@ -42,7 +42,25 @@ marked.use(
     },
   })
 );
-marked.setOptions({ gfm: true, breaks: false });
+const slugCounts = new Map();
+function slugify(raw) {
+  const base = String(raw || "")
+    .toLowerCase()
+    .trim()
+    .replace(/[^\p{L}\p{N}\s-]/gu, "")
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-");
+  const key = base || "section";
+  const count = slugCounts.get(key) || 0;
+  slugCounts.set(key, count + 1);
+  return count ? `${key}-${count}` : key;
+}
+const renderer = new marked.Renderer();
+renderer.heading = (text, level, raw) => {
+  const id = slugify(raw);
+  return `<h${level} id="${id}">${text}</h${level}>`;
+};
+marked.setOptions({ gfm: true, breaks: false, mangle: false, headerIds: true, renderer });
 
 const parts = splitByHeadings(md);
 const htmlPrelude = marked.parse(parts.prelude);
@@ -62,48 +80,173 @@ const hljsCssDark = readOptionalTextFile(
 );
 
 const css = `
-  :root {
-    --bg-body: #ffffff;
-    --text-body: #1f2328;
-    --text-muted: #656d76;
-    --bg-topbar: rgba(255,255,255,0.92);
-    --border-color: #d0d7de;
-    --bg-code: #f6f8fa;
-    --code-border: rgba(31,35,40,0.12);
-    --btn-hover: rgba(31,35,40,0.08); 
-    --btn-active: rgba(31,35,40,0.12);
-    --highlight-bg: rgba(9,105,218,0.12);
-    --highlight-text: #0969da;
-    color-scheme: light;
+  @keyframes slideUpFade {
+    from { opacity: 0; transform: translateY(20px) scale(0.98); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
   }
-  @media (prefers-color-scheme: dark) {
+  .report-wrap {
+    animation: slideUpFade 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  :root {
+    --bg-body: #0a0f17;
+    --text-body: #e6edf3;
+    --text-muted: #9aa4b2;
+    --bg-topbar: rgba(10,15,23,0.92);
+    --border-color: rgba(95,125,155,0.35);
+    --bg-code: #0f172a;
+    --code-border: rgba(148,163,184,0.25);
+    --btn-hover: rgba(148,163,184,0.14);
+    --btn-active: rgba(148,163,184,0.22);
+    --highlight-bg: rgba(34,211,238,0.14);
+    --highlight-text: #22d3ee;
+    --accent-pink: #f472b6;
+    --accent-green: #22c55e;
+    --panel-bg: rgba(15,23,42,0.78);
+    --panel-border: rgba(148,163,184,0.25);
+    --surface: rgba(2,6,23,0.6);
+    --surface-strong: rgba(2,6,23,0.85);
+    color-scheme: light dark;
+  }
+
+  @media (prefers-color-scheme: light) {
     :root {
-      --bg-body: #0d1117;
-      --text-body: #c9d1d9;
-      --text-muted: #8b949e;
-      --bg-topbar: rgba(13,17,23,0.92);
-      --border-color: #30363d;
-      --bg-code: #161b22;
-      --code-border: #30363d;
-      --btn-hover: rgba(177,186,196,0.12);
-      --btn-active: rgba(177,186,196,0.2);
-      --highlight-bg: rgba(56,139,253,0.15);
-      --highlight-text: #4493f8;
-      color-scheme: dark;
+      --bg-body: #f7f5ef;
+      --text-body: #0f172a;
+      --text-muted: #475569;
+      --bg-topbar: rgba(247,245,239,0.9);
+      --border-color: rgba(148,163,184,0.45);
+      --bg-code: #f1f5f9;
+      --code-border: rgba(15,23,42,0.12);
+      --btn-hover: rgba(15,23,42,0.06);
+      --btn-active: rgba(15,23,42,0.12);
+      --highlight-bg: rgba(14,165,233,0.12);
+      --highlight-text: #0ea5e9;
+      --accent-pink: #db2777;
+      --accent-green: #16a34a;
+      --panel-border: rgba(15,23,42,0.12);
+      --surface: rgba(255,255,255,0.8);
+      --surface-strong: rgba(255,255,255,0.95);
     }
+    body {
+      background:
+        radial-gradient(1000px 600px at 8% -10%, rgba(14,165,233,0.16), transparent 60%),
+        radial-gradient(900px 600px at 92% -5%, rgba(219,39,119,0.12), transparent 55%),
+        radial-gradient(600px 600px at 50% 120%, rgba(34,197,94,0.10), transparent 60%),
+        var(--bg-body);
+    }
+    }
+    body::before { opacity: 0.06; }
+    .markdown-body {
+      background: linear-gradient(180deg, #f8fafc 0%, #eef2f7 100%);
+      box-shadow: 0 12px 26px rgba(15,23,42,0.12);
+      border: 1px solid rgba(15,23,42,0.12);
+      border-top: 0;
+      border-radius: 0 0 20px 20px;
+    }
+    .hero {
+      background: rgba(255,255,255,0.9);
+      border: 1px solid rgba(14,165,233,0.2);
+      border-bottom: 0;
+      border-radius: 20px 20px 0 0;
+    }
+    .nav-pill {
+      background: rgba(255,255,255,0.92);
+      border: 1px solid rgba(15,23,42,0.12);
+    }
+    .nav-btn {
+      color: #0f172a;
+      border: 1px solid rgba(14,165,233,0.25);
+      background: rgba(255,255,255,0.95);
+      height: 30px;
+    }
+    .nav-center { color: #0ea5e9; }
+    .ansi-line { color: #0ea5e9; text-shadow: none; }
   }
 
   body {
     margin: 0;
-    background: var(--bg-body);
+    background:
+      radial-gradient(1200px 600px at 8% -10%, rgba(34,211,238,0.18), transparent 60%),
+      radial-gradient(900px 500px at 92% -5%, rgba(244,114,182,0.12), transparent 55%),
+      radial-gradient(600px 600px at 50% 120%, rgba(34,197,94,0.08), transparent 60%),
+      var(--bg-body);
     color: var(--text-body);
-    font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+    font-family: "IBM Plex Sans", "Pretendard", "Apple SD Gothic Neo", "Noto Sans KR", system-ui, sans-serif;
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
   }
-  main { max-width: 980px; margin: 0 auto; padding: 28px 18px; }
-  .markdown-body { box-sizing: border-box; min-width: 200px; color: var(--text-body); }
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+      repeating-linear-gradient(
+        to bottom,
+        rgba(255,255,255,0.04),
+        rgba(255,255,255,0.04) 1px,
+        transparent 1px,
+        transparent 3px
+      );
+    opacity: 0.12;
+    mix-blend-mode: soft-light;
+  }
+  main { max-width: 1080px; margin: 0 auto; padding: 72px 16px 60px; position: relative; }
+  .hero {
+    margin: 0;
+    padding: 8px 14px;
+    border-radius: 20px 20px 0 0;
+    border: 1px solid rgba(34,211,238,0.25);
+    border-bottom: 0;
+    background: rgba(2,6,23,0.85);
+    box-shadow: 0 10px 24px rgba(0,0,0,0.3);
+  }
+  .ansi-line {
+    font-family: "JetBrains Mono", "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    font-size: 12px;
+    color: #7dd3fc;
+    text-shadow: 0 0 10px rgba(34,211,238,0.35);
+    white-space: nowrap;
+    overflow: hidden;
+    line-height: 1;
+  }
+  .markdown-body {
+    box-sizing: border-box;
+    min-width: 200px;
+    color: #0b1220;
+    background: linear-gradient(180deg, #f8fafc 0%, #eef2f7 100%);
+    border: 1px solid rgba(15,23,42,0.12);
+    border-top: 0;
+    border-radius: 0 0 20px 20px;
+    padding: 18px;
+    box-shadow: 0 18px 40px rgba(2,6,23,0.18);
+  }
+  .markdown-body a { color: #0ea5e9; }
+  .markdown-body code, .markdown-body pre code { color: #0b1220; }
+  .markdown-body h1, .markdown-body h2, .markdown-body h3 {
+    font-family: "IBM Plex Sans", "Pretendard", "Noto Sans KR", system-ui, sans-serif;
+    letter-spacing: -0.01em;
+  }
   .markdown-body table { display: table; width: 100%; border-collapse: collapse; }
+  .markdown-body th, .markdown-body td {
+    border: 1px solid var(--border-color);
+    padding: 8px 10px;
+  }
+  .markdown-body th {
+    background: rgba(248,250,252,0.95);
+    color: #0b1220;
+  }
+  .markdown-body td {
+    background: rgba(248,250,252,0.9);
+    color: #0b1220;
+  }
+  .markdown-body blockquote {
+    border-left: 3px solid #94a3b8;
+    background: rgba(248,250,252,0.9);
+    padding: 10px 12px;
+    border-radius: 10px;
+    color: #0b1220;
+  }
   
   /* Code blocks */
   .markdown-body pre {
@@ -112,6 +255,7 @@ const css = `
     overflow: auto;
     background: var(--bg-code);
     border: 1px solid var(--code-border);
+    box-shadow: inset 0 0 0 1px rgba(34,211,238,0.06);
   }
   /* Code blocks: bad vs good contrast (driven by JS classes on .codeblock) */
   .codeblock.bad pre {
@@ -129,105 +273,90 @@ const css = `
   }
   a { word-break: break-all; color: var(--highlight-text); }
   .topbar {
-    position: sticky;
-    top: 0;
-    z-index: 20;
-    background: var(--bg-topbar);
-    backdrop-filter: blur(8px);
-    border-bottom: 1px solid var(--border-color);
+    position: fixed;
+    top: 14px;
+    left: 14px;
+    right: 14px;
+    z-index: 30;
+    background: transparent;
+  }
+  .ansi-topbar {
+    font-family: "JetBrains Mono", "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    font-size: 12px;
+    color: #7dd3fc;
+    letter-spacing: 0.4px;
   }
   .topbar-inner {
-    max-width: 980px;
+    max-width: 1080px;
     margin: 0 auto;
-    padding: 10px 18px;
     display: flex;
     gap: 10px;
     align-items: center;
     justify-content: space-between;
   }
-  .segmented {
+  .nav-pill {
     display: inline-flex;
-    border: 1px solid var(--border-color);
+    gap: 8px;
+    align-items: center;
+    background: rgba(10,15,23,0.92);
+    border: 1px solid rgba(148,163,184,0.25);
     border-radius: 999px;
-    overflow: hidden;
-    background: var(--bg-body);
+    padding: 8px 10px;
+    backdrop-filter: blur(10px);
   }
-  .segmented button {
+  .nav-btn {
     appearance: none;
-    border: 0;
-    background: transparent;
-    padding: 8px 12px;
-    font-size: 13px;
+    border: 1px solid rgba(34,211,238,0.3);
+    background: rgba(2,6,23,0.7);
+    color: #e2e8f0;
+    border-radius: 999px;
+    padding: 0 12px;
+    font-size: 12px;
     cursor: pointer;
-    color: var(--text-body);
-  }
-  .segmented button[aria-pressed="true"] {
-    background: var(--highlight-bg);
-    color: var(--highlight-text);
-    font-weight: 600;
+    white-space: nowrap;
+    height: 30px;
+    line-height: 30px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 64px;
   }
   .hint {
     font-size: 12px;
     color: var(--text-muted);
     white-space: nowrap;
   }
-  .topbar-right {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-    justify-content: flex-end;
-    flex-wrap: wrap;
+  .tocPanel {
+    position: fixed;
+    right: 16px;
+    top: 64px;
+    z-index: 30;
+    width: 260px;
+    max-height: calc(100vh - 96px);
+    overflow: auto;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    background: var(--surface);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    padding: 10px 12px;
+    display: none;
   }
-  .tts {
-    display: inline-flex;
-    gap: 8px;
-    align-items: center;
-    flex-wrap: wrap;
-  }
-  .tts button, .tts select, .tts label {
+  body[data-toc="open"] .tocPanel { display: block; }
+  .tocPanel h4 {
+    margin: 0 0 8px;
     font-size: 13px;
+    color: var(--text-muted);
+  }
+  .tocPanel a {
+    display: block;
     color: var(--text-body);
+    text-decoration: none;
+    font-size: 13px;
+    padding: 4px 2px;
   }
-  .tts button {
-    appearance: none;
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    background: var(--bg-body);
-    padding: 6px 12px;
-    cursor: pointer;
-    white-space: nowrap;
-    transition: background 0.2s;
-  }
-  .tts button:hover:not([disabled]) {
-    background: var(--btn-hover);
-  }
-  .tts button:active:not([disabled]) {
-    background: var(--btn-active);
-  }
-  .tts button[disabled] {
-    opacity: 0.55;
-    cursor: not-allowed;
-  }
-  .tts select {
-    appearance: none;
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    background: var(--bg-body);
-    padding: 6px 24px 6px 10px; /* space for arrow if custom */
-    max-width: 220px;
-  }
-  .tts .chk {
-    display: inline-flex;
-    gap: 6px;
-    align-items: center;
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    background: var(--bg-body);
-    padding: 6px 10px;
-    white-space: nowrap;
-    cursor: pointer;
-    user-select: none;
-  }
+  .tocPanel a:hover { color: var(--highlight-text); }
+  .tocPanel .toc-l2 { padding-left: 8px; }
+  .tocPanel .toc-l3 { padding-left: 16px; }
   /* Code copy button */
   .codeblock {
     position: relative;
@@ -240,7 +369,7 @@ const css = `
     appearance: none;
     border: 1px solid var(--border-color);
     border-radius: 8px;
-    background: var(--bg-body);
+    background: var(--surface);
     opacity: 0.8;
     padding: 4px 8px;
     font-size: 12px;
@@ -262,7 +391,7 @@ const css = `
     color: var(--text-muted);
     margin-top: 6px;
     padding: 4px 8px;
-    background: var(--btn-hover);
+    background: rgba(34,211,238,0.12);
     border-radius: 6px;
     display: inline-block;
   }
@@ -273,38 +402,28 @@ const css = `
 
   /* Responsive (mobile-first adjustments) */
   @media (max-width: 720px) {
-    main { padding: 16px 16px; }
+    main { padding: 16px 16px 96px; }
+    .topbar {
+      position: fixed;
+      bottom: 10px;
+      left: 10px;
+      right: 10px;
+      top: auto;
+      background: transparent;
+      z-index: 30;
+    }
+    .topbar-inner { flex-wrap: wrap; }
     .markdown-body { font-size: 16px; line-height: 1.6; }
     .markdown-body h1 { font-size: 1.6em; }
     
-    /* Topbar: Stack vertically for better touch targets */
-    .topbar-inner { 
-      flex-direction: column; 
-      align-items: stretch;
-      gap: 12px; 
-      padding: 12px 16px;
+    .tocPanel {
+      right: 10px;
+      left: 10px;
+      width: auto;
+      top: 80px;
+      max-height: 55vh;
     }
-    .segmented { display: flex; width: 100%; }
-    .segmented button { flex: 1; text-align: center; padding: 10px 4px; font-size: 14px; }
     
-    .topbar-right { justify-content: space-between; gap: 12px; width: 100%; }
-    .hint { display: none; }
-    .tts { width: 100%; justify-content: space-between; gap: 8px; }
-    
-    /* Play controls bigger */
-    #tts-play, #tts-pause, #tts-stop {
-      flex: 1; 
-      text-align: center; 
-      padding: 10px 8px;
-      font-size: 14px;
-    }
-    /* Options row */
-    .tts select, .tts .chk {
-      font-size: 13px; 
-      padding: 8px 6px;
-      max-width: none;
-      flex: 1;
-    }
     
     /* Tables: horizontal scroll */
     .markdown-body table { display: block; width: 100%; overflow-x: auto; white-space: nowrap; -webkit-overflow-scrolling: touch; }
@@ -337,43 +456,26 @@ const html = `<!doctype html>
     <style>${css}</style>
   </head>
   <body data-view="all">
-    <div class="topbar">
-      <div class="topbar-inner">
-        <div class="segmented" role="group" aria-label="보기 선택">
-          <button type="button" data-view-btn="summary" aria-pressed="false">요약</button>
-          <button type="button" data-view-btn="node" aria-pressed="false">Node.js</button>
-          <button type="button" data-view-btn="java" aria-pressed="false">Java</button>
-          <button type="button" data-view-btn="all" aria-pressed="true">전체</button>
+    <div class="topbar ansi-topbar">
+      <div class="topbar-inner" aria-label="상단 내비게이션">
+        <div class="nav-pill nav-left">
+          <button type="button" class="nav-btn" id="view-toggle" aria-label="보기 모드">보기: 전체</button>
         </div>
-        <div class="topbar-right">
-          <div class="hint">상단 탭으로 필요한 부분만 봅니다.</div>
-          <div class="tts" aria-label="읽어주기(TTS)">
-            <button type="button" id="tts-play">읽기</button>
-            <button type="button" id="tts-pause" disabled>일시정지</button>
-            <button type="button" id="tts-stop" disabled>중지</button>
-            <select id="tts-rate" aria-label="읽기 속도">
-              <option value="0.9">0.9x</option>
-              <option value="1" selected>1.0x</option>
-              <option value="1.1">1.1x</option>
-              <option value="1.2">1.2x</option>
-            </select>
-            <select id="tts-voice" aria-label="목소리 선택">
-              <option value="">(목소리 자동)</option>
-            </select>
-            <label class="chk">
-              <input type="checkbox" id="tts-skip-urls" checked />
-              URL 제외
-            </label>
-            <label class="chk">
-              <input type="checkbox" id="tts-skip-refs" checked />
-              참고자료 제외
-            </label>
-          </div>
+        <div class="nav-pill nav-right">
+          <button type="button" class="nav-btn" id="tts-toggle" aria-label="읽기">읽기</button>
+          <button type="button" class="nav-btn" id="toc-toggle" aria-label="목차">목차</button>
         </div>
       </div>
     </div>
+    <div class="tocPanel" id="toc-panel" aria-label="목차">
+      <h4>목차</h4>
+      <div id="toc-list"></div>
+    </div>
     <main>
-      <article class="markdown-body">
+      <div class="hero ansi-bar">
+        <div class="ansi-line">┌─ DEVSECNEWS ─ REPORT ───────────────────────────────────────┐</div>
+      </div>
+        <article class="markdown-body">
 <section class="view-summary" data-view-section="summary">
 ${htmlPrelude}
 </section>
@@ -387,16 +489,20 @@ ${htmlJava}
 ${htmlRest}
 </section>
       </article>
+      </div>
     </main>
     <script>
       (function () {
         const KEY = "devsecnews:view";
-        const buttons = Array.from(document.querySelectorAll("[data-view-btn]"));
+        const viewToggle = document.getElementById("view-toggle");
+        const tocToggle = document.getElementById("toc-toggle");
+        const tocPanel = document.getElementById("toc-panel");
+        const tocList = document.getElementById("toc-list");
 
         function setView(v, persist) {
           if (!["summary","all","node","java"].includes(v)) v = "all";
           document.body.dataset.view = v;
-          for (const b of buttons) b.setAttribute("aria-pressed", String(b.dataset.viewBtn === v));
+          if (viewToggle) viewToggle.textContent = "보기: " + (v === "all" ? "전체" : v === "summary" ? "요약" : v === "node" ? "Node.js" : "Java");
           if (persist) {
             try { localStorage.setItem(KEY, v); } catch {}
           }
@@ -404,6 +510,62 @@ ${htmlRest}
           try { history.replaceState(null, "", v === "all" ? "#all" : ("#" + v)); } catch {}
           // If speaking, restart to read the newly visible section only.
           if (speaking) startTts();
+          buildToc();
+        }
+
+        function getSectionsForView(view) {
+          if (view === "summary") return [document.querySelector(".view-summary")];
+          if (view === "node") return [document.querySelector(".view-node")];
+          if (view === "java") return [document.querySelector(".view-java")];
+          return [
+            document.querySelector(".view-summary"),
+            document.querySelector(".view-node"),
+            document.querySelector(".view-java"),
+            document.querySelector(".view-rest"),
+          ];
+        }
+
+        function buildToc() {
+          if (!tocList) return;
+          const view = document.body.dataset.view || "all";
+          const sections = getSectionsForView(view);
+          const items = [];
+          for (const s of sections) {
+            if (!s) continue;
+            const heads = Array.from(s.querySelectorAll("h1,h2,h3"));
+            for (const h of heads) {
+              const text = (h.innerText || h.textContent || "").trim();
+              if (!text) continue;
+              if (!h.id) continue;
+              items.push({ level: h.tagName.toLowerCase(), text, id: h.id });
+            }
+          }
+          tocList.innerHTML = "";
+          if (!items.length) {
+            const empty = document.createElement("div");
+            empty.style.fontSize = "13px";
+            empty.style.color = "var(--text-muted)";
+            empty.textContent = "표시할 목차가 없습니다.";
+            tocList.appendChild(empty);
+            return;
+          }
+          for (const it of items) {
+            const a = document.createElement("a");
+            a.href = "#" + it.id;
+            a.textContent = it.text;
+            a.className = it.level === "h2" ? "toc-l2" : (it.level === "h3" ? "toc-l3" : "");
+            a.addEventListener("click", () => {
+              document.body.dataset.toc = "";
+            });
+            tocList.appendChild(a);
+          }
+        }
+
+        if (tocToggle && tocPanel) {
+          tocToggle.addEventListener("click", () => {
+            const open = document.body.dataset.toc === "open";
+            document.body.dataset.toc = open ? "" : "open";
+          });
         }
 
         // Code block: add copy buttons
@@ -521,31 +683,17 @@ ${htmlRest}
 
         // TTS (Web Speech API)
         const synth = window.speechSynthesis;
-        const playBtn = document.getElementById("tts-play");
-        const pauseBtn = document.getElementById("tts-pause");
-        const stopBtn = document.getElementById("tts-stop");
-        const rateSel = document.getElementById("tts-rate");
-        const voiceSel = document.getElementById("tts-voice");
-        const skipUrlsChk = document.getElementById("tts-skip-urls");
-        const skipRefsChk = document.getElementById("tts-skip-refs");
+        const ttsBtn = document.getElementById("tts-toggle");
+        const rateSel = null;
+        const voiceSel = null;
+        const skipUrlsChk = null;
+        const skipRefsChk = null;
         let queue = [];
         let speaking = false;
+        let ttsState = "idle"; // idle | playing | paused
 
         function getActiveView() {
           return document.body.dataset.view || "all";
-        }
-
-        function getSectionsForView(view) {
-          if (view === "summary") return [document.querySelector(".view-summary")];
-          if (view === "node") return [document.querySelector(".view-node")];
-          if (view === "java") return [document.querySelector(".view-java")];
-          // all
-          return [
-            document.querySelector(".view-summary"),
-            document.querySelector(".view-node"),
-            document.querySelector(".view-java"),
-            document.querySelector(".view-rest"),
-          ];
         }
 
         function extractReadableLines(root, opts) {
@@ -695,22 +843,22 @@ ${htmlRest}
         }
 
         function setButtonsState() {
-          if (!playBtn || !pauseBtn || !stopBtn) return;
-          pauseBtn.disabled = !speaking || synth.paused;
-          stopBtn.disabled = !speaking;
-          playBtn.textContent = synth.speaking && synth.paused ? "재개" : "읽기";
+          if (!ttsBtn) return;
+          ttsBtn.textContent = ttsState === "playing" ? "일시정지" : "읽기";
         }
 
         function stopTts() {
           try { synth.cancel(); } catch {}
           queue = [];
           speaking = false;
+          ttsState = "idle";
           setButtonsState();
         }
 
         function speakNext() {
           if (!queue.length) {
             speaking = false;
+            ttsState = "idle";
             setButtonsState();
             return;
           }
@@ -725,60 +873,67 @@ ${htmlRest}
           u.onend = () => speakNext();
           u.onerror = () => speakNext();
           speaking = true;
+          ttsState = "playing";
           setButtonsState();
           synth.speak(u);
         }
 
         function startTts() {
           // Resume if paused
-          if (synth.speaking && synth.paused) {
+          if (ttsState === "paused") {
             synth.resume();
             speaking = true;
+            ttsState = "playing";
             setButtonsState();
             return;
           }
           stopTts();
           const text = buildTextForCurrentView();
           queue = chunkText(text);
-          if (!queue.length) return;
+          if (!queue.length) {
+            ttsState = "idle";
+            setButtonsState();
+            return;
+          }
           // Some browsers need a micro-delay after cancel() before speak().
           setTimeout(() => speakNext(), 60);
         }
 
-        if (synth && playBtn) {
+        if (synth && ttsBtn) {
           populateVoices();
           if (typeof speechSynthesis !== "undefined" && speechSynthesis.onvoiceschanged !== undefined) {
             speechSynthesis.onvoiceschanged = () => populateVoices();
           }
-          playBtn.addEventListener("click", startTts);
-          pauseBtn && pauseBtn.addEventListener("click", () => {
-            try { synth.pause(); } catch {}
-            setButtonsState();
-          });
-          stopBtn && stopBtn.addEventListener("click", stopTts);
-          voiceSel && voiceSel.addEventListener("change", () => {
-            // If currently speaking, restart with new voice.
-            if (speaking) startTts();
-          });
-          rateSel && rateSel.addEventListener("change", () => {
-            if (speaking) startTts();
-          });
-          skipUrlsChk && skipUrlsChk.addEventListener("change", () => {
-            if (speaking) startTts();
-          });
-          skipRefsChk && skipRefsChk.addEventListener("change", () => {
-            if (speaking) startTts();
+          ttsBtn.addEventListener("click", () => {
+            if (ttsState === "playing") {
+              try { synth.pause(); } catch {}
+              ttsState = "paused";
+              setButtonsState();
+              return;
+            }
+            if (ttsState === "paused") {
+              try { synth.resume(); } catch {}
+              ttsState = "playing";
+              setButtonsState();
+              return;
+            }
+            startTts();
           });
         } else {
           // No TTS support: hide controls
-          const tts = document.querySelector(".tts");
-          if (tts) tts.style.display = "none";
+          if (ttsBtn) ttsBtn.style.display = "none";
         }
 
         // setView is defined above to allow reuse by other UI features.
 
-        for (const b of buttons) {
-          b.addEventListener("click", () => setView(b.dataset.viewBtn, true));
+        if (viewToggle) {
+          const order = ["all","summary","node","java"];
+          viewToggle.addEventListener("click", () => {
+            const cur = document.body.dataset.view || "all";
+            const idx = order.indexOf(cur);
+            const next = order[(idx + 1) % order.length];
+            setView(next, true);
+          });
         }
 
         const hash = (location.hash || "").replace("#", "");
@@ -790,6 +945,7 @@ ${htmlRest}
           const saved = localStorage.getItem(KEY);
           if (saved) setView(saved, false);
         } catch {}
+        buildToc();
       })();
     </script>
   </body>
