@@ -2,10 +2,10 @@
 
 # (1) Summary
 
-- Node.js는 권한 경계(권한 모델/경로/소켓) 관련 취약점을 묶어서 패치했습니다. 런타임을 보안 릴리스 버전으로 업데이트합니다. [Source] https://nodejs.org/en/blog/vulnerability/december-2025-security-releases (2026-01-13)
-- Java는 외부 입력이 XML/템플릿/직렬화로 흘러가는 경로가 핵심 위험 지점입니다. 외부 입력 기반 템플릿·직렬화 경로를 차단하거나 격리합니다. [Source] https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability (2026-01-12)
-- Struts(XXE, S2-069)는 XML 파서 기본값이 그대로면 다시 공격면이 됩니다. Struts를 패치 버전으로 올리고 XML 파서 보안 설정을 강제합니다. [Source] https://cwiki.apache.org/confluence/display/WW/S2-069 (2026-01-11)
-- 개발자 도구(Spring CLI VSCode extension)는 명령 주입이 확인됐고, EOL이면 제거가 우선입니다. 조직 표준 확장 목록에서 해당 확장을 제거하고 워크스페이스 신뢰를 기본 거부로 둡니다. [Source] https://spring.io/security/cve-2026-22718 (2026-01-16)
+- Node.js는 이번에 권한 모델, 파일 경로, 소켓 관련 취약점을 한꺼번에 패치했습니다. 바로 보안 릴리스 버전으로 올리세요. [Source] https://nodejs.org/en/blog/vulnerability/december-2025-security-releases (2026-01-13)
+- Java는 외부 입력이 XML 파서나 템플릿 엔진으로 흘러들어가는 경로가 가장 위험합니다. 이쪽 경로를 아예 막거나 격리해야 안전합니다. [Source] https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability (2026-01-12)
+- Struts(XXE, S2-069)는 XML 파서 기본값을 그대로 두면 공격 통로가 열립니다. 패치 버전으로 올리고 파서 보안 설정을 강제하세요. [Source] https://cwiki.apache.org/confluence/display/WW/S2-069 (2026-01-11)
+- 개발자 도구(Spring CLI VSCode extension)에서 명령 주입이 발견됐습니다. 이미 EOL된 버전이라 패치가 없으니, 조직 표준 목록에서 빼고 바로 지워야 합니다. [Source] https://spring.io/security/cve-2026-22718 (2026-01-16)
 
 <!--CARD
 {"id":"summary-1","kind":"summary","header":"요약","title":"Node.js 권한 경계 패치","bodyMd":"이번 달은 권한 경계를 흔드는 이슈가 한꺼번에 공개됐습니다. 파일 경로와 로컬 소켓까지 같이 봅니다.","whyMd":"옵션만 믿으면 symlink/UDS 같은 우회 경로로 보안 경계가 깨집니다.","impactMd":"허용 범위를 벗어난 파일 접근이나 내부 소켓 접근이 생깁니다.","actionMd":"런타임을 보안 릴리스 버전으로 업데이트합니다.","source":"https://nodejs.org/en/blog/vulnerability/december-2025-security-releases"}
@@ -33,39 +33,39 @@
 
 ## (2.2) 항목별 설명
 
-### Node.js 보안 릴리스(Active release lines)
+### Node.js 보안 릴리스 (Active release lines)
 
-Node.js는 다수 취약점 패치를 포함한 보안 릴리스를 공개했습니다. 런타임을 보안 릴리스 버전으로 업데이트합니다. [Source] https://nodejs.org/en/blog/vulnerability/december-2025-security-releases (2026-01-13)
+Node.js가 여러 취약점을 패치한 보안 릴리스를 내놨습니다. 런타임을 최신 보안 버전으로 업데이트하는 게 가장 확실한 방법입니다. [Source] https://nodejs.org/en/blog/vulnerability/december-2025-security-releases (2026-01-13)
 
-### 영향 여부 자가진단(빠른 확인)
+### 영향 여부 자가진단 (빠른 확인)
 
-아래 명령으로 런타임 버전과 실행 옵션(권한 모델 사용 여부)을 먼저 확인합니다.
+지금 쓰고 있는 런타임 버전과 권한 모델 옵션을 켜뒀는지 확인해 보세요.
 
 ```bash
 node -v
 ps aux | grep -E "node .*--permission|node .*--allow-fs-" | grep -v grep || true
 ```
 
-영향 가능성이 있으면 보안 릴리스 버전으로 업데이트합니다.
+설정된 게 있다면 보안 릴리스 버전으로 업데이트해야 합니다.
 
-### CVE-2025-55131: `vm`+`timeout`에서 메모리 노출 가능
+### CVE-2025-55131: `vm`+`timeout` 쓰면 메모리 샐 수 있음
 
-`vm` 모듈에서 `timeout`로 실행을 끊는 흐름이 있으면, 버퍼 초기화가 기대대로 동작하지 않아 이전 메모리 잔여가 노출될 수 있습니다. `vm`으로 “유저 코드”를 실행하는 구조를 별도 프로세스/컨테이너로 분리하고 런타임을 업데이트합니다. [Source] https://nodejs.org/en/blog/vulnerability/december-2025-security-releases (2026-01-13)
+`vm` 모듈에서 `timeout`으로 실행을 강제로 끊으면, 버퍼 초기화가 제대로 안 돼서 이전 메모리에 있던 데이터가 노출될 수 있습니다. `vm`으로 유저 코드를 돌리는 건 위험하니 별도 프로세스나 컨테이너로 격리하세요. [Source] https://nodejs.org/en/blog/vulnerability/december-2025-security-releases (2026-01-13)
 [Source] https://cveawg.mitre.org/api/cve/CVE-2025-55131 (날짜 미표기)
 
-### CVE-2025-55130: permission model 파일시스템 권한 우회(symlink)
+### CVE-2025-55130: 권한 모델, symlink로 우회 가능
 
-`--allow-fs-read`/`--allow-fs-write`는 입력 경로와 symlink 체인 조합으로 우회될 수 있어 “옵션만으로” 보안 경계를 만들면 위험합니다. 허용 경로는 realpath(심볼릭 링크를 해소한 실제 경로) 기준 allowlist로 검증하고 런타임을 업데이트합니다. [Source] https://nodejs.org/en/blog/vulnerability/december-2025-security-releases (2026-01-13)
+`--allow-fs-read` 같은 옵션만 믿으면 안 됩니다. 입력 경로와 symlink 조합으로 권한 밖의 파일에 접근할 수 있거든요. 허용 경로는 반드시 심볼릭 링크를 푼 `realpath` 기준으로 검증해야 합니다. [Source] https://nodejs.org/en/blog/vulnerability/december-2025-security-releases (2026-01-13)
 [Source] https://cveawg.mitre.org/api/cve/CVE-2025-55130 (날짜 미표기)
 
-### CVE-2026-21636: `--permission`에서 UDS로 네트워크 제한 우회
+### CVE-2026-21636: 네트워크 막아도 UDS(로컬 소켓)는 뚫림
 
-네트워크 권한을 제한했다고 해도 UDS(Unix Domain Socket, 로컬 소켓) 연결은 다른 경로로 열릴 수 있습니다. UDS 경로는 입력에서 직접 받지 않도록 하고 allowlist+정규화로 통제하며 필요하면 OS 격리를 적용합니다. [Source] https://nodejs.org/en/blog/vulnerability/december-2025-security-releases (2026-01-13)
+`--permission`으로 네트워크를 막아도 유닉스 도메인 소켓(UDS) 연결은 열릴 수 있습니다. UDS 경로는 사용자 입력으로 받지 말고, 화이트리스트로 고정해서 쓰세요. [Source] https://nodejs.org/en/blog/vulnerability/december-2025-security-releases (2026-01-13)
 [Source] https://cveawg.mitre.org/api/cve/CVE-2026-21636 (날짜 미표기)
 
-### CVE-2025-55132: `fs.futimes()`로 메타데이터(타임스탬프) 변경 가능
+### CVE-2025-55132: `fs.futimes()`로 타임스탬프 조작
 
-읽기 권한만 가정한 환경에서도 파일 타임스탬프가 변경될 수 있어, 타임라인 기반 감시/감사 로직이 깨질 수 있습니다. `fs.futimes()` 사용 여부를 점검하고 보안 의미로 파일 타임스탬프를 신뢰하지 않도록 설계를 바꿉니다. [Source] https://nodejs.org/en/blog/vulnerability/december-2025-security-releases (2026-01-13)
+읽기 권한만 있어도 파일 타임스탬프를 바꿀 수 있다는 게 밝혀졌습니다. 이러면 감사 로그의 시점이 꼬일 수 있죠. 파일 타임스탬프를 보안 검증 수단으로 쓰고 있다면 설계를 바꿔야 합니다. [Source] https://nodejs.org/en/blog/vulnerability/december-2025-security-releases (2026-01-13)
 [Source] https://cveawg.mitre.org/api/cve/CVE-2025-55132 (날짜 미표기)
 
 ## (2.3) 이번 달 취약 개발 패턴 Top 5
@@ -193,19 +193,19 @@ if (stat.mtimeMs < lastSeen) deny() // 타임스탬프를 보안 판단으로 �
 
 ## (3.2) 항목별 설명
 
-### CVE-2025-68493 (S2-069): Struts XXE 계열 입력 처리
+### CVE-2025-68493 (S2-069): Struts XXE 다시 등장
 
-XML 파서 기본값/구성요소 조합이 남아 있으면 XXE 계열 입력이 다시 공격 표면이 됩니다. Struts를 패치 버전으로 올리고 XML 파서에서 DTD/외부 엔티티를 비활성화합니다. [Source] https://cwiki.apache.org/confluence/display/WW/S2-069 (2026-01-11)
+XML 파서 기본값을 그대로 쓰면 XXE 공격에 또 당할 수 있습니다. Struts를 패치하고, XML 파서 설정에서 DTD랑 외부 엔티티는 꼭 꺼두세요. [Source] https://cwiki.apache.org/confluence/display/WW/S2-069 (2026-01-11)
 [Source] https://cveawg.mitre.org/api/cve/CVE-2025-68493 (날짜 미표기)
 
-### CVE-2025-10492: JasperReports 역직렬화/RCE 리스크
+### CVE-2025-10492: JasperReports, 템플릿 파일 조심
 
-리포트/템플릿 파이프라인이 “업로드/외부 파일”을 그대로 받아 처리하면 RCE로 연결됩니다. 템플릿 업로드를 차단하고 불가피하면 격리된 실행 환경에서만 처리하며 컴포넌트를 업데이트합니다. [Source] https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability (2026-01-12)
+리포트 템플릿을 업로드받아서 그대로 렌더링하면 RCE로 이어집니다. 템플릿 업로드는 막고, 정 필요하다면 완전히 격리된 환경에서만 돌려야 합니다. [Source] https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability (2026-01-12)
 [Source] https://cveawg.mitre.org/api/cve/CVE-2025-10492 (날짜 미표기)
 
-### CVE-2026-22718: 개발 도구(확장) 명령 주입
+### CVE-2026-22718: 개발 도구 확장이 뚫리는 경우
 
-EOL 된 개발 도구는 “패치 없음”이 기본이어서, 취약점이 확인되면 제거가 사실상 유일한 대응입니다. 조직 표준 확장 목록에서 제거하고 신뢰되지 않은 워크스페이스 기본 거부를 적용합니다. [Source] https://spring.io/security/cve-2026-22718 (2026-01-16)
+이미 지원 종료(EOL)된 개발 도구는 패치가 안 나옵니다. 취약점이 발견되면 바로 지우는 게 답입니다. 조직 차원에서 쓰는 확장 목록을 정해두고, 신뢰할 수 없는 워크스페이스는 기본적으로 차단하세요. [Source] https://spring.io/security/cve-2026-22718 (2026-01-16)
 [Source] https://github.com/advisories/GHSA-h34g-p94m-h76q (날짜 미표기)
 [Source] https://cveawg.mitre.org/api/cve/CVE-2026-22718 (날짜 미표기)
 
