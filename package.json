@@ -9,7 +9,8 @@
     "build:html:file": "node scripts/md2html.mjs",
     "build:cards:html": "node scripts/md2cards.mjs devsecnews-2026-01-node-java.md",
     "build:cards:png": "node scripts/cards2png.mjs cards/devsecnews-2026-01-node-java/cards.html",
-    "build:cards": "npm run build:cards:html && npm run build:cards:png && npm run build:html"
+    "build:cards": "npm run build:cards:html && npm run build:cards:png && npm run build:html",
+    "deploy": "npm run build:cards && mkdir -p docs/cards && cp devsecnews-2026-01-node-java.html docs/ && cp -R cards/devsecnews-2026-01-node-java docs/cards/"
   },
   "devDependencies": {
     "@playwright/test": "^1.57.0",
