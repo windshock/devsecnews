@@ -11,6 +11,11 @@
     background: #0b1220;
     color: #111827;
     font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  @keyframes slideUpFade {
+    from { opacity: 0; transform: translateY(20px) scale(0.98); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
   }
   .links {
     position: fixed;
@@ -80,11 +85,15 @@
     width: min(1080px, calc(100vw - 32px));
     height: min(1350px, calc(100vh - 32px));
     aspect-ratio: 1080 / 1350;
-    background: radial-gradient(1000px 800px at 10% 10%, rgba(9,105,218,0.14), transparent 60%),
-                radial-gradient(900px 700px at 90% 20%, rgba(34,197,94,0.10), transparent 55%),
+    background: radial-gradient(circle at 10% 10%, rgba(255, 255, 255, 0.03) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(255, 255, 255, 0.04) 0%, transparent 40%),
                 #ffffff;
     border-radius: 28px;
     border: 1px solid rgba(31,35,40,0.12);
+    /* Dynamic Theme Variables */
+    --theme-color: #0969da;
+    --theme-bg: rgba(9,105,218,0.10);
+    --theme-border: rgba(9,105,218,0.22);
     box-shadow: 0 18px 60px rgba(0,0,0,0.35);
     overflow: hidden;
     position: relative;
@@ -92,7 +101,27 @@
     flex-direction: column;
     display: none; /* single-card view */
   }
-  .card.active { display: block; }
+  .card.active {
+    display: flex;
+    animation: slideUpFade 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  
+  /* Theme overrides by card kind */
+  .card.checklist {
+    --theme-color: #8250df;
+    --theme-bg: rgba(130,80,223,0.10);
+    --theme-border: rgba(130,80,223,0.22);
+  }
+  .card.rules {
+    --theme-color: #bf8700;
+    --theme-bg: rgba(191,135,0,0.14);
+    --theme-border: rgba(191,135,0,0.3);
+  }
+  .card.warning {
+    --theme-color: #cf222e;
+    --theme-bg: rgba(207,34,46,0.10);
+    --theme-border: rgba(207,34,46,0.22);
+  }
 
   /* Desktop reading: use a shorter, wide card (16:9) in landscape */
   @media (min-width: 900px) and (orientation: landscape) {
@@ -140,9 +169,11 @@
     gap: 10px;
     padding: 10px 14px;
     border-radius: 999px;
-    background: rgba(9,105,218,0.10);
-    border: 1px solid rgba(9,105,218,0.22);
-    color: #0b3d91;
+    padding: 10px 14px;
+    border-radius: 999px;
+    background: var(--theme-bg);
+    border: 1px solid var(--theme-border);
+    color: var(--theme-color);
     font-weight: 700;
     font-size: 18px;
   }
@@ -242,14 +273,15 @@
   }
   .action {
     padding: 14px 14px;
+    padding: 14px 14px;
     border-radius: 16px;
-    border: 1px solid rgba(9,105,218,0.16);
-    background: rgba(9,105,218,0.07);
+    border: 1px solid var(--theme-border);
+    background: var(--theme-bg);
     font-size: 24px;
     line-height: 1.45;
     color: rgba(15,23,42,0.92);
   }
-  .action strong { color: #0b3d91; }
+  .action strong { color: var(--theme-color); }
   .source {
     font-size: 18px;
     color: rgba(31,35,40,0.75);
@@ -263,24 +295,68 @@
   }
   @media (max-width: 720px) {
     .stage { padding: 10px; }
-    .card { border-radius: 18px; }
-    .top { padding: 18px 18px 10px; }
-    .title { padding: 0 18px; font-size: 26px; }
-    .headline { padding: 0 18px; font-size: 28px; }
-    .body { padding: 14px 18px 0; font-size: 18px; }
-    .slots { padding: 12px 18px 0; gap: 10px; }
-    .slot { border-radius: 14px; padding: 10px 10px; }
-    .slot h4 { font-size: 12px; }
-    .slot .slotBody { font-size: 14px; }
-    .action { font-size: 14px; padding: 10px 10px; border-radius: 12px; }
-    .foot { padding: 14px 18px 18px; }
-    .badge { font-size: 13px; padding: 8px 10px; }
-    .meta { font-size: 12px; }
-    .source { font-size: 12px; }
-    .nav { top: 10px; right: 10px; padding: 6px 8px; }
-    .nav button { padding: 6px 8px; }
-    .links { top: 10px; left: 10px; padding: 6px 8px; }
-    .links a { padding: 6px 8px; }
+    /* Mobile: use available screen height, unset fixed aspect ratio to avoid tiny cards */
+    .card {
+      width: calc(100vw - 24px);
+      height: calc(100vh - 80px); /* Fill screen, leaving space for margins */
+      aspect-ratio: auto;
+      border-radius: 20px;
+      /* Flexbox properties ready for when it becomes active */
+      flex-direction: column;
+      overflow-y: auto;
+      overflow-x: hidden;
+      /* Ensure scrollbar is visible */
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255,255,255,0.3) rgba(255,255,255,0.05);
+    }
+    .card.active {
+      display: flex; /* Only show active card */
+    }
+    /* Allow inner content to expand so card can scroll it */
+    .mid {
+      overflow: visible;
+      flex: 0 0 auto;
+    }
+    .card::-webkit-scrollbar {
+      width: 6px;
+    }
+    .card::-webkit-scrollbar-thumb {
+      background: rgba(0,0,0,0.2); 
+      border-radius: 4px;
+    }
+    .card::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    /* Flex children */
+    .top, .title, .headline, .meta, .source { flex-shrink: 0; }
+    .body, .checkGrid, .slots { flex-shrink: 0; } /* Let them scroll with the card */
+    .foot { flex-shrink: 0; margin-top: auto; } /* Push to bottom if space permits */
+    /* Increase top padding to avoid overlap with fixed buttons (Nav/Links) */
+    .top { padding: 60px 20px 10px; }
+    .title { padding: 0 20px; font-size: 24px; }
+    .headline { padding: 0 20px; font-size: 26px; }
+    .body { padding: 10px 20px 0; font-size: 17px; }
+    
+    .slots { padding: 10px 20px 0; gap: 8px; }
+    .slot { border-radius: 12px; padding: 10px 12px; }
+    .slot h4 { font-size: 12px; margin-bottom: 4px; }
+    .slot .slotBody { font-size: 14px; line-height: 1.4; }
+    
+    .action { font-size: 13px; padding: 10px 12px; border-radius: 12px; margin-top: 4px; }
+    .foot { padding: 10px 20px 16px; }
+    
+    .badge { font-size: 12px; padding: 6px 10px; }
+    .meta { font-size: 12px; max-width: 60%; line-height: 1.2; }
+    .source { font-size: 11px; word-break: break-all; margin-top: 10px; }
+    
+    .nav { top: 10px; right: 10px; padding: 6px 10px; }
+    .nav button { padding: 4px 8px; font-size: 12px; }
+    .links { top: 10px; left: 10px; padding: 6px 10px; }
+    .links a { padding: 4px 8px; font-size: 12px; }
+    
+    /* Checklist sizing */
+    .checkGrid { padding: 10px 20px 0; }
+    .checkGrid li { font-size: 15px; margin: 0 0 8px; line-height: 1.35; }
   }
   </style>
   </head>
@@ -295,7 +371,7 @@
     </div>
     <main class="stage" id="stage">
 
-<section class="card" data-card-idx="1">
+<section class="card summary" data-card-idx="1">
   <div class="top">
     <div class="badge">요약</div>
     <div class="meta">DevSecNews 2026-01 — Node.js/Java 보안 요약(개발자용)<br/>Node.js 권한 경계 패치</div>
@@ -315,11 +391,11 @@
   <div class="foot">
     <div class="action"><strong>오늘 조치</strong><br/><p>런타임을 보안 릴리스 버전으로 업데이트합니다.</p>
 </div>
-    <div class="hr"></div><div class="source">[Source] https://nodejs.org/en/blog/vulnerability/december-2025-security-releases</div>
+    <div class="hr"></div><div class="source">[Source] <a href="https://nodejs.org/en/blog/vulnerability/december-2025-security-releases" target="_blank" style="color: inherit;">https://nodejs.org/en/blog/vulnerability/december-2025-security-releases</a></div>
   </div>
 </section>
 
-<section class="card" data-card-idx="2">
+<section class="card summary" data-card-idx="2">
   <div class="top">
     <div class="badge">요약</div>
     <div class="meta">DevSecNews 2026-01 — Node.js/Java 보안 요약(개발자용)<br/>Java 입력 경계(XML/템플릿/직렬화)</div>
@@ -339,11 +415,11 @@
   <div class="foot">
     <div class="action"><strong>오늘 조치</strong><br/><p>외부 입력 기반 템플릿·직렬화 경로를 차단하거나 격리합니다.</p>
 </div>
-    <div class="hr"></div><div class="source">[Source] https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability</div>
+    <div class="hr"></div><div class="source">[Source] <a href="https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability" target="_blank" style="color: inherit;">https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability</a></div>
   </div>
 </section>
 
-<section class="card" data-card-idx="3">
+<section class="card summary" data-card-idx="3">
   <div class="top">
     <div class="badge">요약</div>
     <div class="meta">DevSecNews 2026-01 — Node.js/Java 보안 요약(개발자용)<br/>Struts S2-069(XXE)</div>
@@ -363,11 +439,11 @@
   <div class="foot">
     <div class="action"><strong>오늘 조치</strong><br/><p>Struts를 패치 버전으로 올리고 XML 파서 보안 설정을 강제합니다.</p>
 </div>
-    <div class="hr"></div><div class="source">[Source] https://cwiki.apache.org/confluence/display/WW/S2-069</div>
+    <div class="hr"></div><div class="source">[Source] <a href="https://cwiki.apache.org/confluence/display/WW/S2-069" target="_blank" style="color: inherit;">https://cwiki.apache.org/confluence/display/WW/S2-069</a></div>
   </div>
 </section>
 
-<section class="card" data-card-idx="4">
+<section class="card summary" data-card-idx="4">
   <div class="top">
     <div class="badge">요약</div>
     <div class="meta">DevSecNews 2026-01 — Node.js/Java 보안 요약(개발자용)<br/>개발자 도구(EOL 확장) 명령 주입</div>
@@ -387,11 +463,11 @@
   <div class="foot">
     <div class="action"><strong>오늘 조치</strong><br/><p>조직 표준 확장 목록에서 해당 확장을 제거하고 워크스페이스 신뢰를 기본 거부로 둡니다.</p>
 </div>
-    <div class="hr"></div><div class="source">[Source] https://spring.io/security/cve-2026-22718</div>
+    <div class="hr"></div><div class="source">[Source] <a href="https://spring.io/security/cve-2026-22718" target="_blank" style="color: inherit;">https://spring.io/security/cve-2026-22718</a></div>
   </div>
 </section>
 
-<section class="card" data-card-idx="5">
+<section class="card checklist" data-card-idx="5">
   <div class="top">
     <div class="badge">체크리스트</div>
     <div class="meta">DevSecNews 2026-01 — Node.js/Java 보안 요약(개발자용)<br/>이번 달 개발자 체크리스트(10)</div>
@@ -414,7 +490,7 @@
   <div class="foot">
     <div class="action"><strong>오늘 조치</strong><br/><p>이번 카드의 항목을 완료 처리합니다.</p>
 </div>
-    <div class="hr"></div><div class="source">[Source] https://nodejs.org/en/blog/vulnerability/december-2025-security-releases</div>
+    <div class="hr"></div><div class="source">[Source] <a href="https://nodejs.org/en/blog/vulnerability/december-2025-security-releases" target="_blank" style="color: inherit;">https://nodejs.org/en/blog/vulnerability/december-2025-security-releases</a></div>
   </div>
 </section>
     </main>
@@ -449,6 +525,33 @@
           if (e.key === "ArrowUp") set(idx - 1, true);
           if (e.key === "ArrowDown") set(idx + 1, true);
         });
+
+        // Swipe (Mobile Touch)
+        let touchstartX = 0;
+        let touchstartY = 0;
+        const main = document.getElementById("stage");
+        if (main) {
+          main.addEventListener("touchstart", (e) => {
+            touchstartX = e.changedTouches[0].screenX;
+            touchstartY = e.changedTouches[0].screenY;
+          }, { passive: true });
+          main.addEventListener("touchend", (e) => {
+            const touchendX = e.changedTouches[0].screenX;
+            const touchendY = e.changedTouches[0].screenY;
+            handleSwipe(touchstartX, touchstartY, touchendX, touchendY);
+          }, { passive: true });
+        }
+
+        function handleSwipe(sx, sy, ex, ey) {
+          const dx = ex - sx;
+          const dy = ey - sy;
+          // Ignore vertical scrolls (if dy > dx)
+          if (Math.abs(dy) > Math.abs(dx)) return;
+          // Min swipe distance
+          if (Math.abs(dx) < 50) return;
+          if (dx < 0) set(idx + 1, true); // Swipe Left -> Next
+          if (dx > 0) set(idx - 1, true); // Swipe Right -> Prev
+        }
 
         // Init
         set(0, false);
