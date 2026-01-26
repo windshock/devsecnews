@@ -43,28 +43,32 @@
       color: #0f172a;
     }
     body::before { opacity: 0.05; }
-    .links, .nav {
+    .page-header {
       background: rgba(255,255,255,0.92);
       border: 1px solid rgba(15,23,42,0.12);
     }
-    .links a, .nav button {
+    .report-link, .pager-btn {
       color: #0f172a;
       border: 1px solid rgba(14,165,233,0.25);
       background: rgba(255,255,255,0.95);
     }
-    .nav .count { color: rgba(15,23,42,0.7); }
+    .pager-indicator { color: rgba(15,23,42,0.7); }
   }
   @keyframes slideUpFade {
     from { opacity: 0; transform: translateY(20px) scale(0.98); }
     to { opacity: 1; transform: translateY(0) scale(1); }
   }
-  .links {
+  .page-header {
     position: fixed;
     top: 14px;
-    left: 14px;
+    left: 50%;
+    transform: translateX(-50%);
     z-index: 20;
-    display: inline-flex;
-    gap: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    width: min(920px, calc(100% - 32px));
     align-items: center;
     background: rgba(10,15,23,0.92);
     border: 1px solid rgba(148,163,184,0.25);
@@ -72,7 +76,7 @@
     padding: 8px 10px;
     backdrop-filter: blur(10px);
   }
-  .links a {
+  .report-link {
     display: inline-flex;
     align-items: center;
     gap: 6px;
@@ -85,29 +89,13 @@
     font-size: 12px;
     line-height: 1;
   }
-  .links a:hover { border-color: rgba(34,211,238,0.55); }
-  .stage {
-    height: 100vh;
-    display: grid;
-    place-items: center;
-    padding: 16px;
-    box-sizing: border-box;
-  }
-  .nav {
-    position: fixed;
-    top: 14px;
-    right: 14px;
-    z-index: 20;
+  .report-link:hover { border-color: rgba(34,211,238,0.55); }
+  .pager {
     display: inline-flex;
     gap: 8px;
     align-items: center;
-    background: rgba(10,15,23,0.92);
-    border: 1px solid rgba(148,163,184,0.25);
-    border-radius: 999px;
-    padding: 8px 10px;
-    backdrop-filter: blur(10px);
   }
-  .nav button {
+  .pager-btn {
     appearance: none;
     border: 1px solid rgba(34,211,238,0.3);
     background: rgba(2,6,23,0.7);
@@ -117,510 +105,320 @@
     cursor: pointer;
     color: #e2e8f0;
   }
-  .nav .count {
+  .pager-btn:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+  .pager-indicator {
     font-size: 12px;
     color: rgba(226,232,240,0.7);
-    min-width: 54px;
+    min-width: 56px;
     text-align: center;
   }
-  .ansi-top {
-    font-family: "JetBrains Mono", "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
-    font-size: 12px;
-    color: #7dd3fc;
-    background: rgba(2,6,23,0.85);
-    border-bottom: 1px solid rgba(34,211,238,0.35);
-    padding: 8px 16px;
-    letter-spacing: 0.4px;
-    text-transform: uppercase;
+  .deck {
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 92px 16px 28px;
+    display: grid;
+    gap: 16px;
   }
-  .ansi-top span { color: rgba(244,114,182,0.9); }
   .card {
-    width: min(1080px, calc(100vw - 32px));
-    height: min(1350px, calc(100vh - 32px));
-    aspect-ratio: 1080 / 1350;
+    border: 1px solid rgba(148,163,184,0.3);
+    border-radius: 20px;
+    padding: 16px;
     background:
-      radial-gradient(circle at 12% 10%, rgba(34,211,238,0.08) 0%, transparent 45%),
-      radial-gradient(circle at 88% 80%, rgba(244,114,182,0.06) 0%, transparent 45%),
-      linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
-    border-radius: 28px;
-    border: 1px solid rgba(34,211,238,0.25);
-    /* Dynamic Theme Variables */
-    --theme-color: #0ea5e9;
-    --theme-bg: rgba(14,165,233,0.12);
-    --theme-border: rgba(14,165,233,0.28);
-    box-shadow: 0 18px 60px rgba(2,6,23,0.55);
-    overflow: hidden;
-    position: relative;
+      radial-gradient(circle at 10% 0%, rgba(34,211,238,0.08) 0%, transparent 45%),
+      radial-gradient(circle at 90% 100%, rgba(244,114,182,0.06) 0%, transparent 45%),
+      linear-gradient(180deg, rgba(248,250,252,0.98) 0%, rgba(241,245,249,0.98) 100%);
+    box-shadow: 0 18px 60px rgba(2,6,23,0.4);
+    color: #0b1220;
+  }
+  .card[hidden] { display: none; }
+  .card.is-active { animation: slideUpFade 0.5s cubic-bezier(0.2, 0.8, 0.2, 1); }
+  .card-head { margin-bottom: 12px; }
+  .meta {
     display: flex;
-    flex-direction: column;
-    display: none; /* single-card view */
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+    margin-bottom: 6px;
   }
-  .card.active {
-    display: flex;
-    animation: slideUpFade 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
-  }
-  
-  /* Theme overrides by card kind */
-  .card.checklist {
-    --theme-color: #a855f7;
-    --theme-bg: rgba(168,85,247,0.12);
-    --theme-border: rgba(168,85,247,0.28);
-  }
-  .card.rules {
-    --theme-color: #f59e0b;
-    --theme-bg: rgba(245,158,11,0.14);
-    --theme-border: rgba(245,158,11,0.32);
-  }
-  .card.warning {
-    --theme-color: #f43f5e;
-    --theme-bg: rgba(244,63,94,0.12);
-    --theme-border: rgba(244,63,94,0.28);
-  }
-
-  /* Desktop reading: use a shorter, wide card (16:9) in landscape */
-  @media (min-width: 900px) and (orientation: landscape) {
-    body:not(.export) .card {
-      width: min(1200px, calc(100vw - 32px));
-      height: min(820px, calc(100vh - 32px));
-      aspect-ratio: 4 / 3;
-      border-radius: 22px;
-    }
-    body:not(.export) .top { padding: 22px 28px 10px; }
-    body:not(.export) .title { padding: 0 28px; font-size: 30px; }
-    body:not(.export) .headline { padding: 0 28px; font-size: 36px; }
-    body:not(.export) .slots { padding: 12px 28px 0; }
-    body:not(.export) .body { padding: 12px 28px 0; font-size: 20px; }
-    body:not(.export) .action { font-size: 14px; padding: 10px 12px; border-radius: 12px; }
-    body:not(.export) .foot { padding: 14px 28px 18px; }
-    body:not(.export) .source { font-size: 12px; }
-    body:not(.export) .badge { font-size: 13px; padding: 8px 10px; }
-    body:not(.export) .meta { font-size: 12px; }
-  }
-  /* Export mode for PNG: fixed canvas */
-  body.export .stage { height: auto; display: block; padding: 24px; }
-  body.export .links { display: none; }
-  body.export .card {
-    display: block;
-    width: 1080px;
-    height: 1350px;
-    aspect-ratio: auto;
-    margin: 0 auto 18px;
-  }
-  .mid {
-    flex: 1;
-    overflow: hidden;
-  }
-  .top {
-    padding: 40px 52px 14px;
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 18px;
+  .kicker {
+    margin: 0;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(15,23,42,0.6);
+    font-family: "JetBrains Mono", "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
   }
   .badge {
     display: inline-flex;
     align-items: center;
-    gap: 10px;
-    padding: 10px 14px;
     border-radius: 999px;
-    padding: 10px 14px;
-    border-radius: 999px;
-    background: var(--theme-bg);
-    border: 1px solid var(--theme-border);
-    color: var(--theme-color);
+    padding: 2px 8px;
+    font-size: 11px;
     font-weight: 700;
-    font-size: 16px;
-    font-family: "JetBrains Mono", "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
-    text-shadow: 0 0 12px rgba(14,165,233,0.25);
-  }
-  .meta {
-    text-align: right;
-    color: rgba(15,23,42,0.65);
-    font-size: 18px;
-    line-height: 1.3;
-  }
-  .title {
-    padding: 0 52px;
-    font-size: 42px;
-    font-weight: 800;
-    letter-spacing: -0.02em;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    border: 1px solid rgba(14,165,233,0.35);
+    background: rgba(14,165,233,0.12);
     color: #0b1220;
   }
-  .headline {
-    padding: 0 52px;
-    font-size: 48px;
-    font-weight: 900;
-    letter-spacing: -0.03em;
-    color: #0b1220;
-    line-height: 1.12;
+  .badge--node {
+    border-color: rgba(14,165,233,0.45);
+    background: rgba(14,165,233,0.14);
   }
-  .slots {
-    padding: 18px 52px 0;
-    display: grid;
-    gap: 12px;
+  .badge--java {
+    border-color: rgba(234,88,12,0.45);
+    background: rgba(234,88,12,0.16);
   }
-  .slot {
-    border: 1px solid rgba(31,35,40,0.10);
-    background: rgba(246,248,250,0.7);
-    border-radius: 16px;
-    padding: 12px 14px;
+  .badge--common {
+    border-color: rgba(148,163,184,0.45);
+    background: rgba(148,163,184,0.16);
   }
-  .slot h4 {
-    margin: 0 0 8px;
-    font-size: 14px;
-    letter-spacing: -0.01em;
-    color: rgba(31,35,40,0.78);
-  }
-  .slot .slotBody {
-    font-size: 22px;
-    line-height: 1.45;
-    color: rgba(15,23,42,0.92);
-  }
-  .clamp3 {
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-  .clamp2 {
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-  .body {
-    padding: 22px 52px 0;
-    font-size: 32px;
-    line-height: 1.48;
-    color: #111827;
-  }
-  /* Checklist: fit 10 items in one card (two columns) */
-  .checkGrid {
-    padding: 16px 52px 0;
-  }
-  .checkGrid ol {
+  .card-title {
     margin: 0;
-    padding: 16px 18px 10px 32px;
-    background: rgba(15,23,42,0.08);
-    border: 1px solid rgba(14,165,233,0.18);
-    border-radius: 16px;
-    color: #0b1220;
-  }
-  .checkGrid li {
-    break-inside: avoid;
-    margin: 0 0 10px;
     font-size: 22px;
-    line-height: 1.35;
-    color: #0b1220;
+    line-height: 1.25;
+    font-weight: 800;
   }
-  @media (min-width: 900px) and (orientation: landscape) {
-    body:not(.export) .checkGrid { padding: 12px 28px 0; }
-    /* Match team-rules list size in desktop reading mode */
-    body:not(.export) .checkGrid li { font-size: 20px; margin: 0 0 10px; line-height: 1.35; }
+  .card-body .row {
+    display: grid;
+    grid-template-columns: 112px 1fr;
+    gap: 10px;
+    padding: 10px 0;
+    border-top: 1px solid rgba(148,163,184,0.25);
+    align-items: start;
   }
+  .card-body dt { font-weight: 700; color: rgba(15,23,42,0.75); }
+  .card-body dd { margin: 0; color: rgba(15,23,42,0.9); }
+  .card-body p { margin: 0 0 8px; }
+  .card-body ul, .card-body ol { margin: 6px 0 0 1.1em; }
+  .card-body code { background: rgba(15,23,42,0.06); padding: 2px 6px; border-radius: 8px; }
+  .actions { margin: 0; padding-left: 1.1em; }
+  .card-foot {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(148,163,184,0.25);
+    font-size: 12px;
+    color: rgba(15,23,42,0.7);
+  }
+  .card-foot a { color: inherit; text-decoration: none; }
+  .card-foot a:hover { text-decoration: underline; }
+  .checklist {
+    margin: 0;
+    padding-left: 1.1em;
+    display: grid;
+    gap: 8px;
+  }
+  .checklist li { line-height: 1.35; }
+  .checklist label { display: flex; align-items: center; gap: 8px; }
+  .checklist input { accent-color: #0ea5e9; }
+  .card--checklist .card-title { margin-bottom: 6px; }
+  body.export .page-header { display: none; }
+  body.export .deck { padding-top: 24px; }
+  body.export .card {
+    width: 1080px;
+    height: 1350px;
+    margin: 0 auto 18px;
+  }
+  body.export .card-body .row { grid-template-columns: 140px 1fr; }
   @media (max-width: 720px) {
-    .checkGrid { padding: 12px 18px 0; }
-    .checkGrid li { font-size: 18px; margin: 0 0 10px; line-height: 1.4; }
-  }
-  .body p { margin: 0 0 14px; }
-  .body li { margin: 0 0 10px; }
-  .body ul, .body ol { margin: 10px 0 0 1.2em; }
-  .body code { background: rgba(31,35,40,0.06); padding: 2px 6px; border-radius: 8px; }
-  .foot {
-    margin-top: auto;
-    padding: 22px 52px 28px;
-    border-top: 1px solid rgba(31,35,40,0.10);
-    background: rgba(248,250,252,0.96);
-  }
-  .action {
-    padding: 14px 14px;
-    padding: 14px 14px;
-    border-radius: 16px;
-    border: 1px solid var(--theme-border);
-    background: linear-gradient(120deg, var(--theme-bg), rgba(255,255,255,0.8));
-    font-size: 24px;
-    line-height: 1.45;
-    color: rgba(15,23,42,0.92);
-    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.6);
-  }
-  .action strong { color: var(--theme-color); }
-  .source {
-    font-size: 18px;
-    color: rgba(31,35,40,0.75);
-    margin-top: 14px;
-    word-break: break-all;
-  }
-  .hr {
-    height: 1px;
-    background: rgba(31,35,40,0.10);
-    margin: 10px 0 12px;
-  }
-  @media (max-width: 720px) {
-    .stage { padding: 10px; }
-    /* Mobile: use available screen height, unset fixed aspect ratio to avoid tiny cards */
-    .card {
-      width: calc(100vw - 24px);
-      height: calc(100vh - 80px); /* Fill screen, leaving space for margins */
-      aspect-ratio: auto;
-      border-radius: 20px;
-      /* Flexbox properties ready for when it becomes active */
-      flex-direction: column;
-      overflow-y: auto;
-      overflow-x: hidden;
-      /* Ensure scrollbar is visible */
-      scrollbar-width: thin;
-      scrollbar-color: rgba(255,255,255,0.3) rgba(255,255,255,0.05);
-    }
-    body:not(.export) .card { padding-bottom: 56px; }
-    .card.active {
-      display: flex; /* Only show active card */
-    }
-    /* Allow inner content to expand so card can scroll it */
-    .mid {
-      overflow: visible;
-      flex: 0 0 auto;
-    }
-    .card::-webkit-scrollbar {
-      width: 6px;
-    }
-    .card::-webkit-scrollbar-thumb {
-      background: rgba(0,0,0,0.2); 
-      border-radius: 4px;
-    }
-    .card::-webkit-scrollbar-track {
-      background: transparent;
-    }
-    /* Flex children */
-    .top, .title, .headline, .meta, .source { flex-shrink: 0; }
-    .body, .checkGrid, .slots { flex-shrink: 0; } /* Let them scroll with the card */
-    .foot { flex-shrink: 0; margin-top: auto; } /* Push to bottom if space permits */
-    /* Increase top padding to avoid overlap with fixed buttons (Nav/Links) */
-    .top { padding: 32px 20px 10px; }
-    .title { padding: 0 20px; font-size: 24px; }
-    .headline { padding: 0 20px; font-size: 26px; }
-    .body { padding: 10px 20px 0; font-size: 17px; }
-    
-    .slots { padding: 10px 20px 0; gap: 8px; }
-    .slot { border-radius: 12px; padding: 10px 12px; }
-    .slot h4 { font-size: 12px; margin-bottom: 4px; }
-    .slot .slotBody { font-size: 14px; line-height: 1.4; }
-    
-    .action { font-size: 13px; padding: 10px 12px; border-radius: 12px; margin-top: 4px; }
-    .foot { padding: 10px 20px 16px; }
-    
-    .badge { font-size: 12px; padding: 6px 10px; }
-    .meta { font-size: 12px; max-width: 60%; line-height: 1.2; }
-    .source { font-size: 11px; word-break: break-all; margin-top: 10px; }
-    
-    .nav {
+    .page-header {
       top: auto;
-      bottom: 10px;
-      right: 10px;
-      padding: 6px 10px;
+      bottom: 12px;
+      border-radius: 999px;
+      padding: 6px 8px;
+      width: calc(100% - 24px);
     }
-    .nav button { padding: 4px 8px; font-size: 12px; }
-    .nav .count { min-width: 46px; }
-    .links {
-      top: auto;
-      bottom: 10px;
-      left: 10px;
-      padding: 6px 10px;
-    }
-    .links a { padding: 4px 8px; font-size: 12px; }
-    
-    /* Checklist sizing */
-    .checkGrid { padding: 10px 20px 0; }
-    .checkGrid li { font-size: 15px; margin: 0 0 8px; line-height: 1.35; }
+    .deck { padding: 16px 12px 84px; }
+    .card { border-radius: 16px; padding: 14px; }
+    .card-title { font-size: 18px; }
+    .card-body .row { grid-template-columns: 88px 1fr; }
+    .pager-btn, .report-link { padding: 4px 8px; font-size: 12px; }
+    .pager-indicator { min-width: 52px; }
   }
   </style>
   </head>
   <body>
-    <div class="links" aria-label="링크">
-      <a href="../../devsecnews-2026-01-node-java.html" id="reportLink" aria-label="본문 리포트로 이동">본문 리포트</a>
-    </div>
-    <div class="nav" aria-label="카드 내비게이션">
-      <button type="button" id="prev" aria-label="이전">이전</button>
-      <div class="count" id="count">1/7</div>
-      <button type="button" id="next" aria-label="다음">다음</button>
-    </div>
-    <main class="stage" id="stage">
+    <header class="page-header">
+      <a class="report-link" href="../../devsecnews-2026-01-node-java.html" id="reportLink" aria-label="본문 리포트로 이동">본문 리포트</a>
+      <nav class="pager" aria-label="카드 이동">
+        <button class="pager-btn" type="button" id="prev" aria-label="이전">이전</button>
+        <span class="pager-indicator" aria-live="polite"><span id="count">1</span>/<span id="total">7</span></span>
+        <button class="pager-btn" type="button" id="next" aria-label="다음">다음</button>
+      </nav>
+    </header>
+    <main class="deck" id="stage">
 
-<section class="card summary" data-card-idx="1">
-  <div class="ansi-top">┌─ DEVSECNEWS ─ summary ─┐</div>
-  <div class="top">
-    <div class="badge">요약</div>
-    <div class="meta">DevSecNews 2026-01 — Node.js/Java 보안 요약(개발자용)<br/>Node.js 보안 릴리스 업데이트</div>
-  </div>
-  <div class="mid">
-    <div class="headline">Node.js 보안 릴리스 업데이트</div>
-        <div class="slots">
-          <div class="slot"><h4>한 줄 요약</h4><div class="slotBody clamp2"><p>20/22/24/25 라인 보안 릴리스가 나왔습니다. 권한 모델과 vm 타임아웃 이슈가 핵심입니다.</p>
-</div></div>
-          <div class="slot"><h4>왜 위험</h4><div class="slotBody clamp3"><p>런타임 취약점은 앱 코드 경계 밖에서 바로 노출됩니다.</p>
-</div></div>
-          <div class="slot"><h4>영향</h4><div class="slotBody clamp3"><p>메모리 노출·권한 우회로 이어질 수 있습니다.</p>
-</div></div>
+<section class="card card--summary" data-card="summary" data-index="1" data-domain="node" aria-labelledby="card-1-title">
+  <header class="card-head">
+    
+        <div class="meta">
+          <span class="kicker">DEVSECNEWS · 요약</span>
+          <span class="badge badge--node" data-domain="node">Node.js</span>
         </div>
       
-  </div>
-  <div class="foot">
-    <div class="action"><strong>오늘 조치</strong><br/><p>런타임을 보안 릴리스 버전으로 업데이트합니다.</p>
-</div>
-    <div class="hr"></div><div class="source">[Source] <a href="https://nodejs.org/es/blog/vulnerability/december-2025-security-releases" target="_blank" style="color: inherit;">https://nodejs.org/es/blog/vulnerability/december-2025-security-releases</a></div>
-  </div>
+    <h2 id="card-1-title" class="card-title">Node.js 보안 릴리스 업데이트</h2>
+  </header>
+  <dl class="card-body">
+    <div class="row"><dt>한 줄 요약</dt><dd><p>20/22/24/25 라인 보안 릴리스가 나왔습니다. 권한 모델과 vm 타임아웃 이슈가 핵심입니다.</p>
+</dd></div>
+    <div class="row"><dt>왜 위험</dt><dd><p>런타임 취약점은 앱 코드 경계 밖에서 바로 노출됩니다.</p>
+</dd></div>
+    <div class="row"><dt>영향</dt><dd><p>메모리 노출·권한 우회로 이어질 수 있습니다.</p>
+</dd></div>
+    <div class="row"><dt>오늘 조치</dt><dd><p>런타임을 보안 릴리스 버전으로 업데이트합니다.</p>
+</dd></div>
+  </dl>
+  <footer class="card-foot">
+    <a class="source" href="https://nodejs.org/es/blog/vulnerability/december-2025-security-releases" target="_blank" rel="noopener">Source</a>
+  </footer>
 </section>
 
-<section class="card summary" data-card-idx="2">
-  <div class="ansi-top">┌─ DEVSECNEWS ─ summary ─┐</div>
-  <div class="top">
-    <div class="badge">요약</div>
-    <div class="meta">DevSecNews 2026-01 — Node.js/Java 보안 요약(개발자용)<br/>symlink 우회 경로 검증</div>
-  </div>
-  <div class="mid">
-    <div class="headline">symlink 우회 경로 검증</div>
-        <div class="slots">
-          <div class="slot"><h4>한 줄 요약</h4><div class="slotBody clamp2"><p>권한 모델의 문자열 기반 경로 검증이 우회됩니다. realpath 기준으로 바꿉니다.</p>
-</div></div>
-          <div class="slot"><h4>왜 위험</h4><div class="slotBody clamp3"><p>symlink 체인은 allowlist를 쉽게 탈출합니다.</p>
-</div></div>
-          <div class="slot"><h4>영향</h4><div class="slotBody clamp3"><p>허용 디렉터리 밖 파일 접근이 가능합니다.</p>
-</div></div>
+<section class="card card--summary" data-card="summary" data-index="2" data-domain="node" aria-labelledby="card-2-title">
+  <header class="card-head">
+    
+        <div class="meta">
+          <span class="kicker">DEVSECNEWS · 요약</span>
+          <span class="badge badge--node" data-domain="node">Node.js</span>
         </div>
       
-  </div>
-  <div class="foot">
-    <div class="action"><strong>오늘 조치</strong><br/><p>realpath 기반 allowlist로 경로를 검증합니다.</p>
-</div>
-    <div class="hr"></div><div class="source">[Source] <a href="https://nodejs.org/es/blog/vulnerability/december-2025-security-releases" target="_blank" style="color: inherit;">https://nodejs.org/es/blog/vulnerability/december-2025-security-releases</a></div>
-  </div>
+    <h2 id="card-2-title" class="card-title">symlink 우회 경로 검증</h2>
+  </header>
+  <dl class="card-body">
+    <div class="row"><dt>한 줄 요약</dt><dd><p>권한 모델의 문자열 기반 경로 검증이 우회됩니다. realpath 기준으로 바꿉니다.</p>
+</dd></div>
+    <div class="row"><dt>왜 위험</dt><dd><p>symlink 체인은 allowlist를 쉽게 탈출합니다.</p>
+</dd></div>
+    <div class="row"><dt>영향</dt><dd><p>허용 디렉터리 밖 파일 접근이 가능합니다.</p>
+</dd></div>
+    <div class="row"><dt>오늘 조치</dt><dd><p>realpath 기반 allowlist로 경로를 검증합니다.</p>
+</dd></div>
+  </dl>
+  <footer class="card-foot">
+    <a class="source" href="https://nodejs.org/es/blog/vulnerability/december-2025-security-releases" target="_blank" rel="noopener">Source</a>
+  </footer>
 </section>
 
-<section class="card summary" data-card-idx="3">
-  <div class="ansi-top">┌─ DEVSECNEWS ─ summary ─┐</div>
-  <div class="top">
-    <div class="badge">요약</div>
-    <div class="meta">DevSecNews 2026-01 — Node.js/Java 보안 요약(개발자용)<br/>UDS 우회 차단</div>
-  </div>
-  <div class="mid">
-    <div class="headline">UDS 우회 차단</div>
-        <div class="slots">
-          <div class="slot"><h4>한 줄 요약</h4><div class="slotBody clamp2"><p>UDS 경로 입력을 허용하면 네트워크 차단이 무력화됩니다.</p>
-</div></div>
-          <div class="slot"><h4>왜 위험</h4><div class="slotBody clamp3"><p>로컬 소켓은 내부 서비스 접근 통로입니다.</p>
-</div></div>
-          <div class="slot"><h4>영향</h4><div class="slotBody clamp3"><p>권한 경계를 넘어 내부 소켓에 접근합니다.</p>
-</div></div>
+<section class="card card--summary" data-card="summary" data-index="3" data-domain="node" aria-labelledby="card-3-title">
+  <header class="card-head">
+    
+        <div class="meta">
+          <span class="kicker">DEVSECNEWS · 요약</span>
+          <span class="badge badge--node" data-domain="node">Node.js</span>
         </div>
       
-  </div>
-  <div class="foot">
-    <div class="action"><strong>오늘 조치</strong><br/><p>UDS 경로는 allowlist로 고정합니다.</p>
-</div>
-    <div class="hr"></div><div class="source">[Source] <a href="https://cveawg.mitre.org/api/cve/CVE-2026-21636" target="_blank" style="color: inherit;">https://cveawg.mitre.org/api/cve/CVE-2026-21636</a></div>
-  </div>
+    <h2 id="card-3-title" class="card-title">UDS 우회 차단</h2>
+  </header>
+  <dl class="card-body">
+    <div class="row"><dt>한 줄 요약</dt><dd><p>UDS 경로 입력을 허용하면 네트워크 차단이 무력화됩니다.</p>
+</dd></div>
+    <div class="row"><dt>왜 위험</dt><dd><p>로컬 소켓은 내부 서비스 접근 통로입니다.</p>
+</dd></div>
+    <div class="row"><dt>영향</dt><dd><p>권한 경계를 넘어 내부 소켓에 접근합니다.</p>
+</dd></div>
+    <div class="row"><dt>오늘 조치</dt><dd><p>UDS 경로는 allowlist로 고정합니다.</p>
+</dd></div>
+  </dl>
+  <footer class="card-foot">
+    <a class="source" href="https://cveawg.mitre.org/api/cve/CVE-2026-21636" target="_blank" rel="noopener">Source</a>
+  </footer>
 </section>
 
-<section class="card summary" data-card-idx="4">
-  <div class="ansi-top">┌─ DEVSECNEWS ─ summary ─┐</div>
-  <div class="top">
-    <div class="badge">요약</div>
-    <div class="meta">DevSecNews 2026-01 — Node.js/Java 보안 요약(개발자용)<br/>Struts S2-069(XXE)</div>
-  </div>
-  <div class="mid">
-    <div class="headline">Struts S2-069(XXE)</div>
-        <div class="slots">
-          <div class="slot"><h4>한 줄 요약</h4><div class="slotBody clamp2"><p>XML 파서 기본값이 남아 있으면 XXE가 열립니다.</p>
-</div></div>
-          <div class="slot"><h4>왜 위험</h4><div class="slotBody clamp3"><p>외부 엔티티/DTD가 공격 경로가 됩니다.</p>
-</div></div>
-          <div class="slot"><h4>영향</h4><div class="slotBody clamp3"><p>내부 파일 노출이나 SSRF로 이어집니다.</p>
-</div></div>
+<section class="card card--summary" data-card="summary" data-index="4" data-domain="java" aria-labelledby="card-4-title">
+  <header class="card-head">
+    
+        <div class="meta">
+          <span class="kicker">DEVSECNEWS · 요약</span>
+          <span class="badge badge--java" data-domain="java">Java</span>
         </div>
       
-  </div>
-  <div class="foot">
-    <div class="action"><strong>오늘 조치</strong><br/><p>Struts를 6.1.1 이상으로 업데이트합니다.</p>
-</div>
-    <div class="hr"></div><div class="source">[Source] <a href="https://cwiki.apache.org/confluence/display/WW/S2-069" target="_blank" style="color: inherit;">https://cwiki.apache.org/confluence/display/WW/S2-069</a></div>
-  </div>
+    <h2 id="card-4-title" class="card-title">Struts S2-069(XXE)</h2>
+  </header>
+  <dl class="card-body">
+    <div class="row"><dt>한 줄 요약</dt><dd><p>XML 파서 기본값이 남아 있으면 XXE가 열립니다.</p>
+</dd></div>
+    <div class="row"><dt>왜 위험</dt><dd><p>외부 엔티티/DTD가 공격 경로가 됩니다.</p>
+</dd></div>
+    <div class="row"><dt>영향</dt><dd><p>내부 파일 노출이나 SSRF로 이어집니다.</p>
+</dd></div>
+    <div class="row"><dt>오늘 조치</dt><dd><p>Struts를 6.1.1 이상으로 업데이트합니다.</p>
+</dd></div>
+  </dl>
+  <footer class="card-foot">
+    <a class="source" href="https://cwiki.apache.org/confluence/display/WW/S2-069" target="_blank" rel="noopener">Source</a>
+  </footer>
 </section>
 
-<section class="card summary" data-card-idx="5">
-  <div class="ansi-top">┌─ DEVSECNEWS ─ summary ─┐</div>
-  <div class="top">
-    <div class="badge">요약</div>
-    <div class="meta">DevSecNews 2026-01 — Node.js/Java 보안 요약(개발자용)<br/>JasperReports 역직렬화 경계</div>
-  </div>
-  <div class="mid">
-    <div class="headline">JasperReports 역직렬화 경계</div>
-        <div class="slots">
-          <div class="slot"><h4>한 줄 요약</h4><div class="slotBody clamp2"><p>외부 템플릿/직렬화 입력이 RCE로 이어집니다.</p>
-</div></div>
-          <div class="slot"><h4>왜 위험</h4><div class="slotBody clamp3"><p>역직렬화 입력은 가젯 체인으로 연결됩니다.</p>
-</div></div>
-          <div class="slot"><h4>영향</h4><div class="slotBody clamp3"><p>서비스 계정 권한으로 코드가 실행됩니다.</p>
-</div></div>
+<section class="card card--summary" data-card="summary" data-index="5" data-domain="java" aria-labelledby="card-5-title">
+  <header class="card-head">
+    
+        <div class="meta">
+          <span class="kicker">DEVSECNEWS · 요약</span>
+          <span class="badge badge--java" data-domain="java">Java</span>
         </div>
       
-  </div>
-  <div class="foot">
-    <div class="action"><strong>오늘 조치</strong><br/><p>템플릿 업로드를 차단합니다.</p>
-</div>
-    <div class="hr"></div><div class="source">[Source] <a href="https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability" target="_blank" style="color: inherit;">https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability</a></div>
-  </div>
+    <h2 id="card-5-title" class="card-title">JasperReports 역직렬화 경계</h2>
+  </header>
+  <dl class="card-body">
+    <div class="row"><dt>한 줄 요약</dt><dd><p>외부 템플릿/직렬화 입력이 RCE로 이어집니다.</p>
+</dd></div>
+    <div class="row"><dt>왜 위험</dt><dd><p>역직렬화 입력은 가젯 체인으로 연결됩니다.</p>
+</dd></div>
+    <div class="row"><dt>영향</dt><dd><p>서비스 계정 권한으로 코드가 실행됩니다.</p>
+</dd></div>
+    <div class="row"><dt>오늘 조치</dt><dd><p>템플릿 업로드를 차단합니다.</p>
+</dd></div>
+  </dl>
+  <footer class="card-foot">
+    <a class="source" href="https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability" target="_blank" rel="noopener">Source</a>
+  </footer>
 </section>
 
-<section class="card summary" data-card-idx="6">
-  <div class="ansi-top">┌─ DEVSECNEWS ─ summary ─┐</div>
-  <div class="top">
-    <div class="badge">요약</div>
-    <div class="meta">DevSecNews 2026-01 — Node.js/Java 보안 요약(개발자용)<br/>EOL 확장 즉시 제거</div>
-  </div>
-  <div class="mid">
-    <div class="headline">EOL 확장 즉시 제거</div>
-        <div class="slots">
-          <div class="slot"><h4>한 줄 요약</h4><div class="slotBody clamp2"><p>EOL 개발 도구는 패치가 없습니다. 확장을 즉시 제거합니다.</p>
-</div></div>
-          <div class="slot"><h4>왜 위험</h4><div class="slotBody clamp3"><p>개발자 PC에서 명령 실행으로 이어집니다.</p>
-</div></div>
-          <div class="slot"><h4>영향</h4><div class="slotBody clamp3"><p>로컬 권한으로 임의 명령이 실행됩니다.</p>
-</div></div>
+<section class="card card--summary" data-card="summary" data-index="6" data-domain="java" aria-labelledby="card-6-title">
+  <header class="card-head">
+    
+        <div class="meta">
+          <span class="kicker">DEVSECNEWS · 요약</span>
+          <span class="badge badge--java" data-domain="java">Java</span>
         </div>
       
-  </div>
-  <div class="foot">
-    <div class="action"><strong>오늘 조치</strong><br/><p>확장을 제거하고 워크스페이스 신뢰를 기본 거부로 둡니다.</p>
-</div>
-    <div class="hr"></div><div class="source">[Source] <a href="https://spring.io/security/cve-2026-22718" target="_blank" style="color: inherit;">https://spring.io/security/cve-2026-22718</a></div>
-  </div>
+    <h2 id="card-6-title" class="card-title">EOL 확장 즉시 제거</h2>
+  </header>
+  <dl class="card-body">
+    <div class="row"><dt>한 줄 요약</dt><dd><p>EOL 개발 도구는 패치가 없습니다. 확장을 즉시 제거합니다.</p>
+</dd></div>
+    <div class="row"><dt>왜 위험</dt><dd><p>개발자 PC에서 명령 실행으로 이어집니다.</p>
+</dd></div>
+    <div class="row"><dt>영향</dt><dd><p>로컬 권한으로 임의 명령이 실행됩니다.</p>
+</dd></div>
+    <div class="row"><dt>오늘 조치</dt><dd><p>확장을 제거하고 워크스페이스 신뢰를 기본 거부로 둡니다.</p>
+</dd></div>
+  </dl>
+  <footer class="card-foot">
+    <a class="source" href="https://spring.io/security/cve-2026-22718" target="_blank" rel="noopener">Source</a>
+  </footer>
 </section>
 
-<section class="card checklist" data-card-idx="7">
-  <div class="ansi-top">┌─ DEVSECNEWS ─ checklist ─┐</div>
-  <div class="top">
-    <div class="badge">체크리스트</div>
-    <div class="meta">DevSecNews 2026-01 — Node.js/Java 보안 요약(개발자용)<br/>이번 달 개발자 체크리스트(10)</div>
-  </div>
-  <div class="mid">
-    <div class="title">이번 달 개발자 체크리스트(10)</div><div class="checkGrid"><ol>
-<li>Node.js 런타임을 보안 릴리스 버전으로 업데이트합니다.</li>
-<li>권한 모델 경로 검증은 realpath 기준 allowlist로 바꿉니다.</li>
-<li>vm+timeout 조합으로 유저 코드를 실행하지 않고 격리합니다.</li>
-<li>UDS 경로는 allowlist로 고정합니다.</li>
-<li>Struts를 6.1.1 이상으로 업데이트합니다.</li>
-<li>XML 파서에서 DTD/외부 엔티티를 비활성화합니다.</li>
-<li>JasperReports 외부 템플릿 업로드/로딩 경로를 차단합니다.</li>
-<li>JasperReports 관련 컴포넌트를 최신 패치로 업데이트합니다.</li>
-<li>Spring CLI VSCode 확장을 제거합니다.</li>
-<li>신뢰되지 않은 워크스페이스는 기본 거부로 둡니다.</li>
-</ol>
-</div>
-  </div>
-  <div class="foot">
-    <div class="action"><strong>오늘 조치</strong><br/><p>이번 카드의 항목을 완료 처리합니다.</p>
-</div>
-    <div class="hr"></div><div class="source">[Source] <a href="https://nodejs.org/es/blog/vulnerability/december-2025-security-releases" target="_blank" style="color: inherit;">https://nodejs.org/es/blog/vulnerability/december-2025-security-releases</a></div>
-  </div>
+<section class="card card--checklist" data-card="checklist" data-index="7" data-domain="mixed" aria-labelledby="card-7-title">
+  <header class="card-head">
+    
+        <div class="meta">
+          <span class="kicker">DEVSECNEWS · 체크리스트</span>
+          <span class="badge badge--node" data-domain="node">Node.js</span><span class="badge badge--java" data-domain="java">Java</span>
+        </div>
+      
+    <h2 id="card-7-title" class="card-title">이번 달 개발자 체크리스트(10)</h2>
+  </header>
+  <ol class="checklist"><li><label><input type="checkbox" /> Node.js 런타임을 보안 릴리스 버전으로 업데이트합니다.</label></li><li><label><input type="checkbox" /> 권한 모델 경로 검증은 realpath 기준 allowlist로 바꿉니다.</label></li><li><label><input type="checkbox" /> vm+timeout 조합으로 유저 코드를 실행하지 않고 격리합니다.</label></li><li><label><input type="checkbox" /> UDS 경로는 allowlist로 고정합니다.</label></li><li><label><input type="checkbox" /> Struts를 6.1.1 이상으로 업데이트합니다.</label></li><li><label><input type="checkbox" /> XML 파서에서 DTD/외부 엔티티를 비활성화합니다.</label></li><li><label><input type="checkbox" /> JasperReports 외부 템플릿 업로드/로딩 경로를 차단합니다.</label></li><li><label><input type="checkbox" /> JasperReports 관련 컴포넌트를 최신 패치로 업데이트합니다.</label></li><li><label><input type="checkbox" /> Spring CLI VSCode 확장을 제거합니다.</label></li><li><label><input type="checkbox" /> 신뢰되지 않은 워크스페이스는 기본 거부로 둡니다.</label></li></ol>
+  <footer class="card-foot">
+    <span>이번 카드의 항목을 완료 처리합니다.</span>
+  </footer>
 </section>
     </main>
     <script>
@@ -631,15 +429,28 @@
         const prev = document.getElementById("prev");
         const next = document.getElementById("next");
         const count = document.getElementById("count");
+        const total = document.getElementById("total");
         if (cards.length === 0) return;
 
         let idx = 0;
+        if (total) total.textContent = String(cards.length);
         function set(i, focus) {
           idx = Math.max(0, Math.min(cards.length - 1, i));
           for (let j = 0; j < cards.length; j++) {
-            cards[j].classList.toggle("active", j === idx || document.body.classList.contains("export"));
+            const isExport = document.body.classList.contains("export");
+            const isActive = j === idx || isExport;
+            if (!isExport) {
+              cards[j].hidden = !isActive;
+              cards[j].setAttribute("aria-hidden", isActive ? "false" : "true");
+            } else {
+              cards[j].hidden = false;
+              cards[j].removeAttribute("aria-hidden");
+            }
+            cards[j].classList.toggle("is-active", isActive && !isExport);
           }
-          if (count) count.textContent = String(idx + 1) + "/" + String(cards.length);
+          if (count) count.textContent = String(idx + 1);
+          if (prev) prev.disabled = cards.length <= 1;
+          if (next) next.disabled = cards.length <= 1;
           if (focus && !document.body.classList.contains("export")) {
             try { cards[idx].focus?.(); } catch {}
           }
@@ -682,8 +493,11 @@
           if (dx > 0) set(idx - 1, true); // Swipe Right -> Prev
         }
 
-        // Init
-        set(0, false);
+        // Init (JS-enabled: single-card mode)
+        if (!document.body.classList.contains("export")) {
+          document.body.classList.add("js");
+          set(0, false);
+        }
       })();
     </script>
   </body>

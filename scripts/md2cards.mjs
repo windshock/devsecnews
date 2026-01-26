@@ -182,8 +182,9 @@ function parseCardMetaBlocks(fullMd) {
     const actionMd = String(obj.actionMd || "").trim();
     const source = String(obj.source || "").trim();
     const id = String(obj.id || "").trim();
+    const domain = String(obj.domain || "").trim();
     if (!id || !kind || !header || !title) continue;
-    out.push({ id, kind, header, title, bodyMd, whyMd, impactMd, actionMd, source });
+    out.push({ id, kind, header, title, bodyMd, whyMd, impactMd, actionMd, source, domain });
   }
   return out;
 }
@@ -228,28 +229,32 @@ function buildCardsHtml({ title, cards, reportHref }) {
       color: #0f172a;
     }
     body::before { opacity: 0.05; }
-    .links, .nav {
+    .page-header {
       background: rgba(255,255,255,0.92);
       border: 1px solid rgba(15,23,42,0.12);
     }
-    .links a, .nav button {
+    .report-link, .pager-btn {
       color: #0f172a;
       border: 1px solid rgba(14,165,233,0.25);
       background: rgba(255,255,255,0.95);
     }
-    .nav .count { color: rgba(15,23,42,0.7); }
+    .pager-indicator { color: rgba(15,23,42,0.7); }
   }
   @keyframes slideUpFade {
     from { opacity: 0; transform: translateY(20px) scale(0.98); }
     to { opacity: 1; transform: translateY(0) scale(1); }
   }
-  .links {
+  .page-header {
     position: fixed;
     top: 14px;
-    left: 14px;
+    left: 50%;
+    transform: translateX(-50%);
     z-index: 20;
-    display: inline-flex;
-    gap: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    width: min(920px, calc(100% - 32px));
     align-items: center;
     background: rgba(10,15,23,0.92);
     border: 1px solid rgba(148,163,184,0.25);
@@ -257,7 +262,7 @@ function buildCardsHtml({ title, cards, reportHref }) {
     padding: 8px 10px;
     backdrop-filter: blur(10px);
   }
-  .links a {
+  .report-link {
     display: inline-flex;
     align-items: center;
     gap: 6px;
@@ -270,29 +275,13 @@ function buildCardsHtml({ title, cards, reportHref }) {
     font-size: 12px;
     line-height: 1;
   }
-  .links a:hover { border-color: rgba(34,211,238,0.55); }
-  .stage {
-    height: 100vh;
-    display: grid;
-    place-items: center;
-    padding: 16px;
-    box-sizing: border-box;
-  }
-  .nav {
-    position: fixed;
-    top: 14px;
-    right: 14px;
-    z-index: 20;
+  .report-link:hover { border-color: rgba(34,211,238,0.55); }
+  .pager {
     display: inline-flex;
     gap: 8px;
     align-items: center;
-    background: rgba(10,15,23,0.92);
-    border: 1px solid rgba(148,163,184,0.25);
-    border-radius: 999px;
-    padding: 8px 10px;
-    backdrop-filter: blur(10px);
   }
-  .nav button {
+  .pager-btn {
     appearance: none;
     border: 1px solid rgba(34,211,238,0.3);
     background: rgba(2,6,23,0.7);
@@ -302,320 +291,142 @@ function buildCardsHtml({ title, cards, reportHref }) {
     cursor: pointer;
     color: #e2e8f0;
   }
-  .nav .count {
+  .pager-btn:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+  .pager-indicator {
     font-size: 12px;
     color: rgba(226,232,240,0.7);
-    min-width: 54px;
+    min-width: 56px;
     text-align: center;
   }
-  .ansi-top {
-    font-family: "JetBrains Mono", "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
-    font-size: 12px;
-    color: #7dd3fc;
-    background: rgba(2,6,23,0.85);
-    border-bottom: 1px solid rgba(34,211,238,0.35);
-    padding: 8px 16px;
-    letter-spacing: 0.4px;
-    text-transform: uppercase;
+  .deck {
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 92px 16px 28px;
+    display: grid;
+    gap: 16px;
   }
-  .ansi-top span { color: rgba(244,114,182,0.9); }
   .card {
-    width: min(1080px, calc(100vw - 32px));
-    height: min(1350px, calc(100vh - 32px));
-    aspect-ratio: 1080 / 1350;
+    border: 1px solid rgba(148,163,184,0.3);
+    border-radius: 20px;
+    padding: 16px;
     background:
-      radial-gradient(circle at 12% 10%, rgba(34,211,238,0.08) 0%, transparent 45%),
-      radial-gradient(circle at 88% 80%, rgba(244,114,182,0.06) 0%, transparent 45%),
-      linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
-    border-radius: 28px;
-    border: 1px solid rgba(34,211,238,0.25);
-    /* Dynamic Theme Variables */
-    --theme-color: #0ea5e9;
-    --theme-bg: rgba(14,165,233,0.12);
-    --theme-border: rgba(14,165,233,0.28);
-    box-shadow: 0 18px 60px rgba(2,6,23,0.55);
-    overflow: hidden;
-    position: relative;
+      radial-gradient(circle at 10% 0%, rgba(34,211,238,0.08) 0%, transparent 45%),
+      radial-gradient(circle at 90% 100%, rgba(244,114,182,0.06) 0%, transparent 45%),
+      linear-gradient(180deg, rgba(248,250,252,0.98) 0%, rgba(241,245,249,0.98) 100%);
+    box-shadow: 0 18px 60px rgba(2,6,23,0.4);
+    color: #0b1220;
+  }
+  .card[hidden] { display: none; }
+  .card.is-active { animation: slideUpFade 0.5s cubic-bezier(0.2, 0.8, 0.2, 1); }
+  .card-head { margin-bottom: 12px; }
+  .meta {
     display: flex;
-    flex-direction: column;
-    display: none; /* single-card view */
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+    margin-bottom: 6px;
   }
-  .card.active {
-    display: flex;
-    animation: slideUpFade 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
-  }
-  
-  /* Theme overrides by card kind */
-  .card.checklist {
-    --theme-color: #a855f7;
-    --theme-bg: rgba(168,85,247,0.12);
-    --theme-border: rgba(168,85,247,0.28);
-  }
-  .card.rules {
-    --theme-color: #f59e0b;
-    --theme-bg: rgba(245,158,11,0.14);
-    --theme-border: rgba(245,158,11,0.32);
-  }
-  .card.warning {
-    --theme-color: #f43f5e;
-    --theme-bg: rgba(244,63,94,0.12);
-    --theme-border: rgba(244,63,94,0.28);
-  }
-
-  /* Desktop reading: use a shorter, wide card (16:9) in landscape */
-  @media (min-width: 900px) and (orientation: landscape) {
-    body:not(.export) .card {
-      width: min(1200px, calc(100vw - 32px));
-      height: min(820px, calc(100vh - 32px));
-      aspect-ratio: 4 / 3;
-      border-radius: 22px;
-    }
-    body:not(.export) .top { padding: 22px 28px 10px; }
-    body:not(.export) .title { padding: 0 28px; font-size: 30px; }
-    body:not(.export) .headline { padding: 0 28px; font-size: 36px; }
-    body:not(.export) .slots { padding: 12px 28px 0; }
-    body:not(.export) .body { padding: 12px 28px 0; font-size: 20px; }
-    body:not(.export) .action { font-size: 14px; padding: 10px 12px; border-radius: 12px; }
-    body:not(.export) .foot { padding: 14px 28px 18px; }
-    body:not(.export) .source { font-size: 12px; }
-    body:not(.export) .badge { font-size: 13px; padding: 8px 10px; }
-    body:not(.export) .meta { font-size: 12px; }
-  }
-  /* Export mode for PNG: fixed canvas */
-  body.export .stage { height: auto; display: block; padding: 24px; }
-  body.export .links { display: none; }
-  body.export .card {
-    display: block;
-    width: 1080px;
-    height: 1350px;
-    aspect-ratio: auto;
-    margin: 0 auto 18px;
-  }
-  .mid {
-    flex: 1;
-    overflow: hidden;
-  }
-  .top {
-    padding: 40px 52px 14px;
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 18px;
+  .kicker {
+    margin: 0;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(15,23,42,0.6);
+    font-family: "JetBrains Mono", "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
   }
   .badge {
     display: inline-flex;
     align-items: center;
-    gap: 10px;
-    padding: 10px 14px;
     border-radius: 999px;
-    padding: 10px 14px;
-    border-radius: 999px;
-    background: var(--theme-bg);
-    border: 1px solid var(--theme-border);
-    color: var(--theme-color);
+    padding: 2px 8px;
+    font-size: 11px;
     font-weight: 700;
-    font-size: 16px;
-    font-family: "JetBrains Mono", "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
-    text-shadow: 0 0 12px rgba(14,165,233,0.25);
-  }
-  .meta {
-    text-align: right;
-    color: rgba(15,23,42,0.65);
-    font-size: 18px;
-    line-height: 1.3;
-  }
-  .title {
-    padding: 0 52px;
-    font-size: 42px;
-    font-weight: 800;
-    letter-spacing: -0.02em;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    border: 1px solid rgba(14,165,233,0.35);
+    background: rgba(14,165,233,0.12);
     color: #0b1220;
   }
-  .headline {
-    padding: 0 52px;
-    font-size: 48px;
-    font-weight: 900;
-    letter-spacing: -0.03em;
-    color: #0b1220;
-    line-height: 1.12;
+  .badge--node {
+    border-color: rgba(14,165,233,0.45);
+    background: rgba(14,165,233,0.14);
   }
-  .slots {
-    padding: 18px 52px 0;
-    display: grid;
-    gap: 12px;
+  .badge--java {
+    border-color: rgba(234,88,12,0.45);
+    background: rgba(234,88,12,0.16);
   }
-  .slot {
-    border: 1px solid rgba(31,35,40,0.10);
-    background: rgba(246,248,250,0.7);
-    border-radius: 16px;
-    padding: 12px 14px;
+  .badge--common {
+    border-color: rgba(148,163,184,0.45);
+    background: rgba(148,163,184,0.16);
   }
-  .slot h4 {
-    margin: 0 0 8px;
-    font-size: 14px;
-    letter-spacing: -0.01em;
-    color: rgba(31,35,40,0.78);
-  }
-  .slot .slotBody {
-    font-size: 22px;
-    line-height: 1.45;
-    color: rgba(15,23,42,0.92);
-  }
-  .clamp3 {
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-  .clamp2 {
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-  .body {
-    padding: 22px 52px 0;
-    font-size: 32px;
-    line-height: 1.48;
-    color: #111827;
-  }
-  /* Checklist: fit 10 items in one card (two columns) */
-  .checkGrid {
-    padding: 16px 52px 0;
-  }
-  .checkGrid ol {
+  .card-title {
     margin: 0;
-    padding: 16px 18px 10px 32px;
-    background: rgba(15,23,42,0.08);
-    border: 1px solid rgba(14,165,233,0.18);
-    border-radius: 16px;
-    color: #0b1220;
-  }
-  .checkGrid li {
-    break-inside: avoid;
-    margin: 0 0 10px;
     font-size: 22px;
-    line-height: 1.35;
-    color: #0b1220;
+    line-height: 1.25;
+    font-weight: 800;
   }
-  @media (min-width: 900px) and (orientation: landscape) {
-    body:not(.export) .checkGrid { padding: 12px 28px 0; }
-    /* Match team-rules list size in desktop reading mode */
-    body:not(.export) .checkGrid li { font-size: 20px; margin: 0 0 10px; line-height: 1.35; }
+  .card-body .row {
+    display: grid;
+    grid-template-columns: 112px 1fr;
+    gap: 10px;
+    padding: 10px 0;
+    border-top: 1px solid rgba(148,163,184,0.25);
+    align-items: start;
   }
+  .card-body dt { font-weight: 700; color: rgba(15,23,42,0.75); }
+  .card-body dd { margin: 0; color: rgba(15,23,42,0.9); }
+  .card-body p { margin: 0 0 8px; }
+  .card-body ul, .card-body ol { margin: 6px 0 0 1.1em; }
+  .card-body code { background: rgba(15,23,42,0.06); padding: 2px 6px; border-radius: 8px; }
+  .actions { margin: 0; padding-left: 1.1em; }
+  .card-foot {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(148,163,184,0.25);
+    font-size: 12px;
+    color: rgba(15,23,42,0.7);
+  }
+  .card-foot a { color: inherit; text-decoration: none; }
+  .card-foot a:hover { text-decoration: underline; }
+  .checklist {
+    margin: 0;
+    padding-left: 1.1em;
+    display: grid;
+    gap: 8px;
+  }
+  .checklist li { line-height: 1.35; }
+  .checklist label { display: flex; align-items: center; gap: 8px; }
+  .checklist input { accent-color: #0ea5e9; }
+  .card--checklist .card-title { margin-bottom: 6px; }
+  body.export .page-header { display: none; }
+  body.export .deck { padding-top: 24px; }
+  body.export .card {
+    width: 1080px;
+    height: 1350px;
+    margin: 0 auto 18px;
+  }
+  body.export .card-body .row { grid-template-columns: 140px 1fr; }
   @media (max-width: 720px) {
-    .checkGrid { padding: 12px 18px 0; }
-    .checkGrid li { font-size: 18px; margin: 0 0 10px; line-height: 1.4; }
-  }
-  .body p { margin: 0 0 14px; }
-  .body li { margin: 0 0 10px; }
-  .body ul, .body ol { margin: 10px 0 0 1.2em; }
-  .body code { background: rgba(31,35,40,0.06); padding: 2px 6px; border-radius: 8px; }
-  .foot {
-    margin-top: auto;
-    padding: 22px 52px 28px;
-    border-top: 1px solid rgba(31,35,40,0.10);
-    background: rgba(248,250,252,0.96);
-  }
-  .action {
-    padding: 14px 14px;
-    padding: 14px 14px;
-    border-radius: 16px;
-    border: 1px solid var(--theme-border);
-    background: linear-gradient(120deg, var(--theme-bg), rgba(255,255,255,0.8));
-    font-size: 24px;
-    line-height: 1.45;
-    color: rgba(15,23,42,0.92);
-    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.6);
-  }
-  .action strong { color: var(--theme-color); }
-  .source {
-    font-size: 18px;
-    color: rgba(31,35,40,0.75);
-    margin-top: 14px;
-    word-break: break-all;
-  }
-  .hr {
-    height: 1px;
-    background: rgba(31,35,40,0.10);
-    margin: 10px 0 12px;
-  }
-  @media (max-width: 720px) {
-    .stage { padding: 10px; }
-    /* Mobile: use available screen height, unset fixed aspect ratio to avoid tiny cards */
-    .card {
-      width: calc(100vw - 24px);
-      height: calc(100vh - 80px); /* Fill screen, leaving space for margins */
-      aspect-ratio: auto;
-      border-radius: 20px;
-      /* Flexbox properties ready for when it becomes active */
-      flex-direction: column;
-      overflow-y: auto;
-      overflow-x: hidden;
-      /* Ensure scrollbar is visible */
-      scrollbar-width: thin;
-      scrollbar-color: rgba(255,255,255,0.3) rgba(255,255,255,0.05);
-    }
-    body:not(.export) .card { padding-bottom: 56px; }
-    .card.active {
-      display: flex; /* Only show active card */
-    }
-    /* Allow inner content to expand so card can scroll it */
-    .mid {
-      overflow: visible;
-      flex: 0 0 auto;
-    }
-    .card::-webkit-scrollbar {
-      width: 6px;
-    }
-    .card::-webkit-scrollbar-thumb {
-      background: rgba(0,0,0,0.2); 
-      border-radius: 4px;
-    }
-    .card::-webkit-scrollbar-track {
-      background: transparent;
-    }
-    /* Flex children */
-    .top, .title, .headline, .meta, .source { flex-shrink: 0; }
-    .body, .checkGrid, .slots { flex-shrink: 0; } /* Let them scroll with the card */
-    .foot { flex-shrink: 0; margin-top: auto; } /* Push to bottom if space permits */
-    /* Increase top padding to avoid overlap with fixed buttons (Nav/Links) */
-    .top { padding: 32px 20px 10px; }
-    .title { padding: 0 20px; font-size: 24px; }
-    .headline { padding: 0 20px; font-size: 26px; }
-    .body { padding: 10px 20px 0; font-size: 17px; }
-    
-    .slots { padding: 10px 20px 0; gap: 8px; }
-    .slot { border-radius: 12px; padding: 10px 12px; }
-    .slot h4 { font-size: 12px; margin-bottom: 4px; }
-    .slot .slotBody { font-size: 14px; line-height: 1.4; }
-    
-    .action { font-size: 13px; padding: 10px 12px; border-radius: 12px; margin-top: 4px; }
-    .foot { padding: 10px 20px 16px; }
-    
-    .badge { font-size: 12px; padding: 6px 10px; }
-    .meta { font-size: 12px; max-width: 60%; line-height: 1.2; }
-    .source { font-size: 11px; word-break: break-all; margin-top: 10px; }
-    
-    .nav {
+    .page-header {
       top: auto;
-      bottom: 10px;
-      right: 10px;
-      padding: 6px 10px;
+      bottom: 12px;
+      border-radius: 999px;
+      padding: 6px 8px;
+      width: calc(100% - 24px);
     }
-    .nav button { padding: 4px 8px; font-size: 12px; }
-    .nav .count { min-width: 46px; }
-    .links {
-      top: auto;
-      bottom: 10px;
-      left: 10px;
-      padding: 6px 10px;
-    }
-    .links a { padding: 4px 8px; font-size: 12px; }
-    
-    /* Checklist sizing */
-    .checkGrid { padding: 10px 20px 0; }
-    .checkGrid li { font-size: 15px; margin: 0 0 8px; line-height: 1.35; }
+    .deck { padding: 16px 12px 84px; }
+    .card { border-radius: 16px; padding: 14px; }
+    .card-title { font-size: 18px; }
+    .card-body .row { grid-template-columns: 88px 1fr; }
+    .pager-btn, .report-link { padding: 4px 8px; font-size: 12px; }
+    .pager-indicator { min-width: 52px; }
   }
   `;
 
@@ -625,43 +436,78 @@ function buildCardsHtml({ title, cards, reportHref }) {
       const whyHtml = marked.parse(c.whyMd || "");
       const impactHtml = marked.parse(c.impactMd || "");
       const actionHtml = c.actionMd ? marked.parse(c.actionMd) : "";
-      const srcHtml = c.source
-        ? `<div class="hr"></div><div class="source">[Source] <a href="${escapeHtml(c.source)}" target="_blank" style="color: inherit;">${escapeHtml(
-          c.source
-        )}</a></div>`
-        : "";
-
-      const isSummary = c.kind === "summary";
-      const summaryBody = bodyHtml ? `<div class="slotBody clamp2">${bodyHtml}</div>` : "";
-      const whyBody = whyHtml ? `<div class="slotBody clamp3">${whyHtml}</div>` : "";
-      const impactBody = impactHtml ? `<div class="slotBody clamp3">${impactHtml}</div>` : "";
-      const slotsHtml = `
-        <div class="slots">
-          <div class="slot"><h4>한 줄 요약</h4>${summaryBody}</div>
-          <div class="slot"><h4>왜 위험</h4>${whyBody}</div>
-          <div class="slot"><h4>영향</h4>${impactBody}</div>
+      const titleText = deriveCardTitle(c, i, cards.length);
+      const cardId = `card-${i + 1}`;
+      const domainInfo = getDomainMeta(c);
+      const badgesHtml = domainInfo.badges
+        .map((b) => `<span class="badge badge--${escapeHtml(b)}" data-domain="${escapeHtml(b)}">${badgeLabel(b)}</span>`)
+        .join("");
+      const metaHtml = `
+        <div class="meta">
+          <span class="kicker">DEVSECNEWS · ${escapeHtml(c.header)}</span>
+          ${badgesHtml}
         </div>
       `;
+      const sourceHtml = c.source
+        ? `<a class="source" href="${escapeHtml(c.source)}" target="_blank" rel="noopener">Source</a>`
+        : "";
+      const actionBlock = actionHtml
+        ? `<div class="row"><dt>오늘 조치</dt><dd>${actionHtml}</dd></div>`
+        : "";
+
+      if (c.kind === "checklist") {
+        const items = parseNumbered(c.bodyMd || "");
+        const listItems = items
+          .map((item) => `<li><label><input type="checkbox" /> ${escapeHtml(item)}</label></li>`)
+          .join("");
+        return `
+<section class="card card--checklist" data-card="${escapeHtml(c.kind)}" data-index="${i + 1}" data-domain="${escapeHtml(domainInfo.domain)}" aria-labelledby="${cardId}-title">
+  <header class="card-head">
+    ${metaHtml}
+    <h2 id="${cardId}-title" class="card-title">${escapeHtml(titleText)}</h2>
+  </header>
+  <ol class="checklist">${listItems}</ol>
+  <footer class="card-foot">
+    <span>${c.actionMd ? escapeHtml(stripMarkdown(c.actionMd)) : ""}</span>
+  </footer>
+</section>`;
+      }
+
+      if (c.kind === "summary") {
+        const summaryHtml = bodyHtml ? `<div class="row"><dt>한 줄 요약</dt><dd>${bodyHtml}</dd></div>` : "";
+        const whyBlock = whyHtml ? `<div class="row"><dt>왜 위험</dt><dd>${whyHtml}</dd></div>` : "";
+        const impactBlock = impactHtml ? `<div class="row"><dt>영향</dt><dd>${impactHtml}</dd></div>` : "";
+        return `
+<section class="card card--summary" data-card="${escapeHtml(c.kind)}" data-index="${i + 1}" data-domain="${escapeHtml(domainInfo.domain)}" aria-labelledby="${cardId}-title">
+  <header class="card-head">
+    ${metaHtml}
+    <h2 id="${cardId}-title" class="card-title">${escapeHtml(titleText)}</h2>
+  </header>
+  <dl class="card-body">
+    ${summaryHtml}
+    ${whyBlock}
+    ${impactBlock}
+    ${actionBlock}
+  </dl>
+  <footer class="card-foot">
+    ${sourceHtml}
+  </footer>
+</section>`;
+      }
 
       return `
-<section class="card ${escapeHtml(c.kind)}" data-card-idx="${i + 1}">
-  <div class="ansi-top">┌─ DEVSECNEWS ─ ${escapeHtml(c.kind)} ─┐</div>
-  <div class="top">
-    <div class="badge">${escapeHtml(c.header)}</div>
-    <div class="meta">${escapeHtml(title)}<br/>${escapeHtml(c.title)}</div>
+<section class="card" data-card="${escapeHtml(c.kind)}" data-index="${i + 1}" data-domain="${escapeHtml(domainInfo.domain)}" aria-labelledby="${cardId}-title">
+  <header class="card-head">
+    ${metaHtml}
+    <h2 id="${cardId}-title" class="card-title">${escapeHtml(titleText)}</h2>
+  </header>
+  <div class="card-body">
+    ${bodyHtml}
   </div>
-  <div class="mid">
-    ${isSummary
-          ? `<div class="headline">${escapeHtml(c.title)}</div>${slotsHtml}`
-          : c.kind === "checklist"
-            ? `<div class="title">${escapeHtml(c.title)}</div><div class="checkGrid">${bodyHtml}</div>`
-            : `<div class="title">${escapeHtml(c.header)}</div><div class="body">${bodyHtml}</div>`
-        }
-  </div>
-  <div class="foot">
-    ${c.actionMd ? `<div class="action"><strong>오늘 조치</strong><br/>${actionHtml}</div>` : ""}
-    ${srcHtml}
-  </div>
+  <footer class="card-foot">
+    <span>${c.actionMd ? escapeHtml(stripMarkdown(c.actionMd)) : ""}</span>
+    ${sourceHtml}
+  </footer>
 </section>`;
     })
     .join("\n");
@@ -675,15 +521,15 @@ function buildCardsHtml({ title, cards, reportHref }) {
     <style>${css}</style>
   </head>
   <body>
-    <div class="links" aria-label="링크">
-      <a href="${escapeHtml(reportHref || "../../devsecnews-2026-01-node-java.html")}" id="reportLink" aria-label="본문 리포트로 이동">본문 리포트</a>
-    </div>
-    <div class="nav" aria-label="카드 내비게이션">
-      <button type="button" id="prev" aria-label="이전">이전</button>
-      <div class="count" id="count">1/${cards.length}</div>
-      <button type="button" id="next" aria-label="다음">다음</button>
-    </div>
-    <main class="stage" id="stage">
+    <header class="page-header">
+      <a class="report-link" href="${escapeHtml(reportHref || "../../devsecnews-2026-01-node-java.html")}" id="reportLink" aria-label="본문 리포트로 이동">본문 리포트</a>
+      <nav class="pager" aria-label="카드 이동">
+        <button class="pager-btn" type="button" id="prev" aria-label="이전">이전</button>
+        <span class="pager-indicator" aria-live="polite"><span id="count">1</span>/<span id="total">${cards.length}</span></span>
+        <button class="pager-btn" type="button" id="next" aria-label="다음">다음</button>
+      </nav>
+    </header>
+    <main class="deck" id="stage">
 ${cardsHtml}
     </main>
     <script>
@@ -694,15 +540,28 @@ ${cardsHtml}
         const prev = document.getElementById("prev");
         const next = document.getElementById("next");
         const count = document.getElementById("count");
+        const total = document.getElementById("total");
         if (cards.length === 0) return;
 
         let idx = 0;
+        if (total) total.textContent = String(cards.length);
         function set(i, focus) {
           idx = Math.max(0, Math.min(cards.length - 1, i));
           for (let j = 0; j < cards.length; j++) {
-            cards[j].classList.toggle("active", j === idx || document.body.classList.contains("export"));
+            const isExport = document.body.classList.contains("export");
+            const isActive = j === idx || isExport;
+            if (!isExport) {
+              cards[j].hidden = !isActive;
+              cards[j].setAttribute("aria-hidden", isActive ? "false" : "true");
+            } else {
+              cards[j].hidden = false;
+              cards[j].removeAttribute("aria-hidden");
+            }
+            cards[j].classList.toggle("is-active", isActive && !isExport);
           }
-          if (count) count.textContent = String(idx + 1) + "/" + String(cards.length);
+          if (count) count.textContent = String(idx + 1);
+          if (prev) prev.disabled = cards.length <= 1;
+          if (next) next.disabled = cards.length <= 1;
           if (focus && !document.body.classList.contains("export")) {
             try { cards[idx].focus?.(); } catch {}
           }
@@ -745,8 +604,11 @@ ${cardsHtml}
           if (dx > 0) set(idx - 1, true); // Swipe Right -> Prev
         }
 
-        // Init
-        set(0, false);
+        // Init (JS-enabled: single-card mode)
+        if (!document.body.classList.contains("export")) {
+          document.body.classList.add("js");
+          set(0, false);
+        }
       })();
     </script>
   </body>
@@ -766,6 +628,101 @@ function splitActionSentence(body) {
   // If the "action" is suspiciously short or there's effectively only one sentence, skip.
   if (!action || summary.length < 8) return { summary: s, action: "" };
   return { summary, action };
+}
+
+function deriveCardTitle(card, index, total) {
+  const raw = String(card.title || "").trim();
+  if (raw && !raw.startsWith("Summary ")) return raw;
+  if (card.kind === "summary") {
+    const plain = stripMarkdown(card.bodyMd || "");
+    const trimmed = truncateText(plain, 48);
+    if (trimmed) return trimmed;
+    return `요약 ${index + 1}/${total}`;
+  }
+  if (card.kind === "checklist") return "이번 달 개발자 체크리스트(10)";
+  if (card.kind === "rules") return "패턴→팀 규칙(5)";
+  return raw || `${card.header || "카드"} ${index + 1}/${total}`;
+}
+
+function getDomainMeta(card) {
+  if (card.kind === "checklist") {
+    return { domain: "mixed", badges: ["node", "java"] };
+  }
+  const preferred = normalizeDomain(card.domain);
+  const inferred = preferred || inferDomain(card);
+  const domain = inferred || "common";
+  return { domain, badges: [domain] };
+}
+
+function normalizeDomain(raw) {
+  const v = String(raw || "").trim().toLowerCase();
+  if (v === "node" || v === "nodejs" || v === "node.js") return "node";
+  if (v === "java") return "java";
+  if (v === "common") return "common";
+  return "";
+}
+
+function inferDomain(card) {
+  const text = [
+    card.title,
+    card.bodyMd,
+    card.whyMd,
+    card.impactMd,
+    card.actionMd,
+    card.source,
+  ]
+    .map((x) => String(x || ""))
+    .join(" ")
+    .toLowerCase();
+
+  if (
+    text.includes("node.js") ||
+    text.includes("nodejs") ||
+    text.includes("nodejs.org") ||
+    text.includes("cve-2025-5513") ||
+    text.includes("cve-2026-21636")
+  ) {
+    return "node";
+  }
+  if (
+    text.includes("struts") ||
+    text.includes("spring") ||
+    text.includes("jaspersoft") ||
+    text.includes("jasperreports") ||
+    text.includes("skyve") ||
+    text.includes("apache.org/confluence/display/ww") ||
+    text.includes("mail-archive.com/mod_mbox/struts") ||
+    text.includes("cve-2025-68493") ||
+    text.includes("cve-2025-10492") ||
+    text.includes("cve-2026-22718") ||
+    /\bjava\b/.test(text)
+  ) {
+    return "java";
+  }
+  return "";
+}
+
+function badgeLabel(domain) {
+  if (domain === "node") return "Node.js";
+  if (domain === "java") return "Java";
+  if (domain === "common") return "Common";
+  return domain.toUpperCase();
+}
+
+function stripMarkdown(text) {
+  return String(text || "")
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
+    .replace(/`{1,3}[^`]+`{1,3}/g, "")
+    .replace(/[*_~>#-]/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function truncateText(text, maxLen) {
+  const s = String(text || "").trim();
+  if (!s) return "";
+  if (s.length <= maxLen) return s;
+  return s.slice(0, Math.max(0, maxLen - 1)).trim() + "…";
 }
 
 function escapeHtml(s) {

@@ -84,9 +84,6 @@ const css = `
     from { opacity: 0; transform: translateY(20px) scale(0.98); }
     to { opacity: 1; transform: translateY(0) scale(1); }
   }
-  .report-wrap {
-    animation: slideUpFade 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
-  }
   :root {
     --bg-body: #0a0f17;
     --text-body: #e6edf3;
@@ -140,27 +137,19 @@ const css = `
       background: linear-gradient(180deg, #f8fafc 0%, #eef2f7 100%);
       box-shadow: 0 12px 26px rgba(15,23,42,0.12);
       border: 1px solid rgba(15,23,42,0.12);
-      border-top: 0;
-      border-radius: 0 0 20px 20px;
+      border-radius: 20px;
     }
-    .hero {
+    .page-header {
       background: rgba(255,255,255,0.9);
       border: 1px solid rgba(14,165,233,0.2);
-      border-bottom: 0;
-      border-radius: 20px 20px 0 0;
     }
-    .nav-pill {
+    .tool-btn {
       background: rgba(255,255,255,0.92);
       border: 1px solid rgba(15,23,42,0.12);
     }
-    .nav-btn {
-      color: #0f172a;
-      border: 1px solid rgba(14,165,233,0.25);
-      background: rgba(255,255,255,0.95);
-      height: 30px;
-    }
-    .nav-center { color: #0ea5e9; }
-    .ansi-line { color: #0ea5e9; text-shadow: none; }
+    .tool-btn { color: #0f172a; }
+    .hero-title { color: #0f172a; }
+    .hero-meta { color: #64748b; }
   }
 
   body {
@@ -191,24 +180,105 @@ const css = `
     opacity: 0.12;
     mix-blend-mode: soft-light;
   }
-  main { max-width: 1080px; margin: 0 auto; padding: 72px 16px 60px; position: relative; }
-  .hero {
-    margin: 0;
-    padding: 8px 14px;
-    border-radius: 20px 20px 0 0;
+  .page {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 64px 16px 60px;
+    display: grid;
+    gap: 16px;
+  }
+  .page-header {
+    border-radius: 20px;
     border: 1px solid rgba(34,211,238,0.25);
-    border-bottom: 0;
     background: rgba(2,6,23,0.85);
     box-shadow: 0 10px 24px rgba(0,0,0,0.3);
+    padding: 16px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
   }
-  .ansi-line {
+  .hero {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .hero-title {
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: #e2e8f0;
+  }
+  .hero-meta {
+    font-size: 13px;
+    color: var(--text-muted);
     font-family: "JetBrains Mono", "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+  }
+  .tool-btn {
+    appearance: none;
+    border: 1px solid rgba(34,211,238,0.3);
+    background: rgba(2,6,23,0.7);
+    color: #e2e8f0;
+    border-radius: 999px;
+    padding: 0 14px;
     font-size: 12px;
-    color: #7dd3fc;
-    text-shadow: 0 0 10px rgba(34,211,238,0.35);
+    cursor: pointer;
     white-space: nowrap;
-    overflow: hidden;
-    line-height: 1;
+    height: 32px;
+    line-height: 32px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 84px;
+  }
+  .tool-btn:active { transform: translateY(1px); }
+  .tool-hint {
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+  .layout {
+    display: grid;
+    grid-template-columns: minmax(220px, 280px) 1fr;
+    gap: 16px;
+    align-items: start;
+  }
+  .toc {
+    position: sticky;
+    top: 16px;
+    border: 1px solid var(--border-color);
+    border-radius: 14px;
+    background: var(--surface);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    padding: 12px 14px;
+    max-height: calc(100vh - 120px);
+    overflow: auto;
+  }
+  .toc h4 {
+    margin: 0 0 8px;
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+  .toc a {
+    display: block;
+    color: var(--text-body);
+    text-decoration: none;
+    font-size: 13px;
+    padding: 4px 2px;
+  }
+  .toc a:hover { color: var(--highlight-text); }
+  .toc .toc-l2 { padding-left: 8px; }
+  .toc .toc-l3 { padding-left: 16px; }
+  body[data-toc="closed"] .toc { display: none; }
+  body[data-toc="closed"] .layout { grid-template-columns: 1fr; }
+  .article {
+    min-width: 0;
   }
   .markdown-body {
     box-sizing: border-box;
@@ -217,9 +287,10 @@ const css = `
     background: linear-gradient(180deg, #f8fafc 0%, #eef2f7 100%);
     border: 1px solid rgba(15,23,42,0.12);
     border-top: 0;
-    border-radius: 0 0 20px 20px;
+    border-radius: 20px;
     padding: 18px;
     box-shadow: 0 18px 40px rgba(2,6,23,0.18);
+    animation: slideUpFade 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
   }
   .markdown-body a { color: #0ea5e9; }
   .markdown-body code, .markdown-body pre code { color: #0b1220; }
@@ -272,91 +343,77 @@ const css = `
     background: transparent;
   }
   a { word-break: break-all; color: var(--highlight-text); }
-  .topbar {
-    position: fixed;
-    top: 14px;
-    left: 14px;
-    right: 14px;
-    z-index: 30;
-    background: transparent;
+  .source-link {
+    color: var(--highlight-text);
+    font-weight: 600;
   }
-  .ansi-topbar {
-    font-family: "JetBrains Mono", "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
-    font-size: 12px;
-    color: #7dd3fc;
-    letter-spacing: 0.4px;
+  .summary-grid {
+    display: grid;
+    gap: 12px;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    margin: 10px 0 18px;
   }
-  .topbar-inner {
-    max-width: 1080px;
-    margin: 0 auto;
-    display: flex;
-    gap: 10px;
-    align-items: center;
-    justify-content: space-between;
-  }
-  .nav-pill {
-    display: inline-flex;
-    gap: 8px;
-    align-items: center;
-    background: rgba(10,15,23,0.92);
+  body.js .summary-list { display: none; }
+  .summary-item {
     border: 1px solid rgba(148,163,184,0.25);
-    border-radius: 999px;
-    padding: 8px 10px;
-    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    padding: 10px 12px;
+    background: rgba(248,250,252,0.9);
   }
-  .nav-btn {
-    appearance: none;
-    border: 1px solid rgba(34,211,238,0.3);
-    background: rgba(2,6,23,0.7);
-    color: #e2e8f0;
-    border-radius: 999px;
-    padding: 0 12px;
-    font-size: 12px;
-    cursor: pointer;
-    white-space: nowrap;
-    height: 30px;
-    line-height: 30px;
+  .summary-item h5 {
+    margin: 0 0 6px;
+    font-size: 13px;
+    color: rgba(15,23,42,0.7);
+  }
+  .summary-item p {
+    margin: 0;
+    font-size: 14px;
+    color: rgba(15,23,42,0.9);
+  }
+  .summary-item a {
     display: inline-flex;
     align-items: center;
-    justify-content: center;
-    min-width: 64px;
-  }
-  .hint {
+    gap: 6px;
     font-size: 12px;
-    color: var(--text-muted);
-    white-space: nowrap;
+    margin-top: 6px;
+    color: var(--highlight-text);
   }
-  .tocPanel {
-    position: fixed;
-    right: 16px;
-    top: 64px;
-    z-index: 30;
-    width: 260px;
-    max-height: calc(100vh - 96px);
-    overflow: auto;
-    border: 1px solid var(--border-color);
+  .summary-item a + a { margin-left: 8px; }
+  .callout {
+    border: 1px solid rgba(34,197,94,0.25);
+    background: rgba(34,197,94,0.08);
     border-radius: 12px;
-    background: var(--surface);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-    padding: 10px 12px;
-    display: none;
+    padding: 12px 14px;
+    margin: 12px 0 16px;
   }
-  body[data-toc="open"] .tocPanel { display: block; }
-  .tocPanel h4 {
-    margin: 0 0 8px;
-    font-size: 13px;
-    color: var(--text-muted);
+  .callout .callout-title {
+    font-weight: 700;
+    color: #15803d;
+    margin-bottom: 6px;
+    display: inline-flex;
+    gap: 6px;
+    align-items: center;
   }
-  .tocPanel a {
-    display: block;
-    color: var(--text-body);
+  .callout pre,
+  .callout code {
+    background: rgba(255,255,255,0.92);
+    color: #111827;
+    border: 1px solid rgba(15,23,42,0.12);
+  }
+  .callout pre code { color: inherit; }
+  .callout pre code {
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+  .checklist a.jump-link {
+    color: inherit;
     text-decoration: none;
-    font-size: 13px;
-    padding: 4px 2px;
+    border-bottom: 1px dashed rgba(14,165,233,0.5);
   }
-  .tocPanel a:hover { color: var(--highlight-text); }
-  .tocPanel .toc-l2 { padding-left: 8px; }
-  .tocPanel .toc-l3 { padding-left: 16px; }
+  .checklist { padding-left: 1.2em; }
+  .checklist a.jump-link:hover {
+    color: var(--highlight-text);
+  }
   /* Code copy button */
   .codeblock {
     position: relative;
@@ -402,29 +459,19 @@ const css = `
 
   /* Responsive (mobile-first adjustments) */
   @media (max-width: 720px) {
-    main { padding: 16px 16px 96px; }
-    .topbar {
-      position: fixed;
-      bottom: 10px;
-      left: 10px;
-      right: 10px;
-      top: auto;
-      background: transparent;
-      z-index: 30;
+    .page { padding: 16px 12px 84px; }
+    .layout { grid-template-columns: 1fr; }
+    .toc {
+      position: static;
+      max-height: none;
+      order: 2;
     }
-    .topbar-inner { flex-wrap: wrap; }
+    body[data-toc="closed"] .toc { display: none; }
+    .page-header { position: sticky; top: 10px; z-index: 20; }
+    .hero-title { font-size: 22px; }
+    .tool-btn { min-width: 70px; height: 30px; }
     .markdown-body { font-size: 16px; line-height: 1.6; }
     .markdown-body h1 { font-size: 1.6em; }
-    
-    .tocPanel {
-      right: 10px;
-      left: 10px;
-      width: auto;
-      top: 80px;
-      max-height: 55vh;
-    }
-    
-    
     /* Tables: horizontal scroll */
     .markdown-body table { display: block; width: 100%; overflow-x: auto; white-space: nowrap; -webkit-overflow-scrolling: touch; }
     .copyBtn { top: 6px; right: 6px; opacity: 1; padding: 6px 10px; }
@@ -452,11 +499,25 @@ const css = `
     .markdown-body th {
       color: #0b1220;
     }
-    .markdown-body code,
-    .markdown-body pre code {
+    .markdown-body code { color: #0b1220; }
+    .markdown-body pre {
       color: #0b1220;
+      background: #f8fafc;
+      border-color: rgba(15,23,42,0.12);
+    }
+    .markdown-body pre code { color: inherit; }
+    .markdown-body pre code .hljs,
+    .markdown-body pre code .hljs * {
+      color: inherit;
     }
     .markdown-body a { color: #0ea5e9; }
+    .callout pre,
+    .callout code {
+      background: rgba(255,255,255,0.95);
+      color: #111827;
+      border-color: rgba(15,23,42,0.12);
+    }
+    .callout pre code { color: inherit; }
   }
 `;
 
@@ -471,26 +532,26 @@ const html = `<!doctype html>
     <style>${css}</style>
   </head>
   <body data-view="all">
-    <div class="topbar ansi-topbar">
-      <div class="topbar-inner" aria-label="상단 내비게이션">
-        <div class="nav-pill nav-left">
-          <button type="button" class="nav-btn" id="view-toggle" aria-label="보기 모드">보기: 전체</button>
+    <div class="page">
+      <header class="page-header">
+        <div class="hero">
+          <div class="hero-meta" id="hero-meta">DevSecNews Report</div>
+          <div class="hero-title" id="hero-title">${escapeHtml(title)}</div>
         </div>
-        <div class="nav-pill nav-right">
-          <button type="button" class="nav-btn" id="tts-toggle" aria-label="읽기">읽기</button>
-          <button type="button" class="nav-btn" id="toc-toggle" aria-label="목차">목차</button>
+        <div class="toolbar" aria-label="상단 내비게이션">
+          <button type="button" class="tool-btn" id="view-toggle" aria-label="보기 모드">보기: 전체</button>
+          <button type="button" class="tool-btn" id="tts-toggle" aria-label="읽기">읽기</button>
+          <button type="button" class="tool-btn" id="toc-toggle" aria-label="목차">목차</button>
+          <span class="tool-hint">목차는 접어서 읽을 수 있습니다.</span>
         </div>
-      </div>
-    </div>
-    <div class="tocPanel" id="toc-panel" aria-label="목차">
-      <h4>목차</h4>
-      <div id="toc-list"></div>
-    </div>
-    <main>
-      <div class="hero ansi-bar">
-        <div class="ansi-line">┌─ DEVSECNEWS ─ REPORT ───────────────────────────────────────┐</div>
-      </div>
-        <article class="markdown-body">
+      </header>
+      <div class="layout">
+        <aside class="toc" id="toc-panel" aria-label="목차">
+          <h4>목차</h4>
+          <div id="toc-list"></div>
+        </aside>
+        <main class="article">
+          <article class="markdown-body">
 <section class="view-summary" data-view-section="summary">
 ${htmlPrelude}
 </section>
@@ -503,9 +564,10 @@ ${htmlJava}
 <section class="view-rest" data-view-section="rest">
 ${htmlRest}
 </section>
-      </article>
+          </article>
+        </main>
       </div>
-    </main>
+    </div>
     <script>
       (function () {
         const KEY = "devsecnews:view";
@@ -513,6 +575,8 @@ ${htmlRest}
         const tocToggle = document.getElementById("toc-toggle");
         const tocPanel = document.getElementById("toc-panel");
         const tocList = document.getElementById("toc-list");
+        const heroTitle = document.getElementById("hero-title");
+        const heroMeta = document.getElementById("hero-meta");
 
         function setView(v, persist) {
           if (!["summary","all","node","java"].includes(v)) v = "all";
@@ -570,7 +634,7 @@ ${htmlRest}
             a.textContent = it.text;
             a.className = it.level === "h2" ? "toc-l2" : (it.level === "h3" ? "toc-l3" : "");
             a.addEventListener("click", () => {
-              document.body.dataset.toc = "";
+              if (window.innerWidth <= 720) document.body.dataset.toc = "closed";
             });
             tocList.appendChild(a);
           }
@@ -578,9 +642,144 @@ ${htmlRest}
 
         if (tocToggle && tocPanel) {
           tocToggle.addEventListener("click", () => {
-            const open = document.body.dataset.toc === "open";
-            document.body.dataset.toc = open ? "" : "open";
+            const closed = document.body.dataset.toc === "closed";
+            document.body.dataset.toc = closed ? "" : "closed";
           });
+        }
+
+        function initHero() {
+          if (!heroTitle) return;
+          const firstH1 = document.querySelector(".markdown-body h1");
+          if (firstH1 && firstH1.textContent) {
+            heroTitle.textContent = firstH1.textContent.trim();
+            firstH1.remove();
+          }
+          if (heroMeta) {
+            heroMeta.textContent = "DevSecNews · Report";
+          }
+        }
+
+        function domainFromUrl(href) {
+          try {
+            const u = new URL(href);
+            return u.hostname.replace(/^www\\./, "");
+          } catch {
+            return href;
+          }
+        }
+
+        function isInReferences(el) {
+          const section = el.closest("section");
+          if (!section) return false;
+          const heads = Array.from(section.querySelectorAll("h1,h2,h3"));
+          let last = null;
+          for (const h of heads) {
+            if (h.compareDocumentPosition(el) & Node.DOCUMENT_POSITION_FOLLOWING) break;
+            last = h;
+          }
+          return !!(last && /참고자료/.test(last.textContent || ""));
+        }
+
+        function formatSourceLinks() {
+          const anchors = Array.from(document.querySelectorAll('.markdown-body a[href^="http"]'));
+          for (const a of anchors) {
+            if (isInReferences(a)) continue;
+            const href = a.getAttribute("href") || "";
+            const text = (a.textContent || "").trim();
+            if (text === href) {
+              a.textContent = domainFromUrl(href);
+              a.classList.add("source-link");
+            }
+            const parent = a.parentNode;
+            if (!parent) continue;
+            for (const node of Array.from(parent.childNodes)) {
+              if (node.nodeType !== Node.TEXT_NODE) continue;
+              if (node.textContent && node.textContent.includes("[Source]")) {
+                node.textContent = node.textContent.replace("[Source]", "Source").replace(/\\s{2,}/g, " ");
+              }
+            }
+          }
+        }
+
+        function buildSummaryGrid() {
+          const summary = document.querySelector(".view-summary");
+          if (!summary) return;
+          const heading = Array.from(summary.querySelectorAll("h1,h2,h3")).find((x) =>
+            (x.textContent || "").includes("(1) Summary")
+          );
+          if (!heading) return;
+          const list = heading.nextElementSibling && heading.nextElementSibling.tagName === "UL"
+            ? heading.nextElementSibling
+            : null;
+          if (!list) return;
+          const nodeHeading = document.querySelector(".view-node h1, .view-node h2, .view-node h3");
+          const javaHeading = document.querySelector(".view-java h1, .view-java h2, .view-java h3");
+          const items = Array.from(list.querySelectorAll("li"));
+          const grid = document.createElement("div");
+          grid.className = "summary-grid";
+          for (const li of items) {
+            const clone = li.cloneNode(true);
+            const link = clone.querySelector('a[href^="http"]');
+            clone.querySelectorAll("a").forEach((a) => a.remove());
+            let text = (clone.textContent || "").replace("[Source]", "").trim();
+            if (!text) continue;
+            const item = document.createElement("div");
+            item.className = "summary-item";
+            const h5 = document.createElement("h5");
+            h5.textContent = "요약";
+            const p = document.createElement("p");
+            p.textContent = text;
+            item.appendChild(h5);
+            item.appendChild(p);
+            if (link && link.getAttribute("href")) {
+              const a = document.createElement("a");
+              a.href = link.getAttribute("href");
+              a.target = "_blank";
+              a.rel = "noopener";
+              a.textContent = "Source · " + domainFromUrl(a.href);
+              item.appendChild(a);
+            }
+            const jump = document.createElement("a");
+            let target = null;
+            if (/node\\.?js/i.test(text) && nodeHeading && nodeHeading.id) target = nodeHeading.id;
+            if (/java/i.test(text) && javaHeading && javaHeading.id) target = javaHeading.id;
+            if (target) {
+              jump.href = "#" + target;
+              jump.textContent = "자세히";
+              item.appendChild(jump);
+            }
+            grid.appendChild(item);
+          }
+          list.classList.add("summary-list");
+          list.hidden = true;
+          list.setAttribute("aria-hidden", "true");
+          // Remove the list entirely in JS-enabled mode to prevent duplicate rendering.
+          list.remove();
+          heading.insertAdjacentElement("afterend", grid);
+        }
+
+        function buildCallouts() {
+          const headings = Array.from(document.querySelectorAll(".markdown-body h2, .markdown-body h3"));
+          for (const h of headings) {
+            const text = (h.textContent || "").trim();
+            if (!/영향 여부 자가진단/.test(text)) continue;
+            const parent = h.parentNode;
+            if (!parent) continue;
+            const callout = document.createElement("div");
+            callout.className = "callout";
+            const title = document.createElement("div");
+            title.className = "callout-title";
+            title.textContent = "✅ 빠른 확인";
+            callout.appendChild(title);
+            parent.insertBefore(callout, h);
+            callout.appendChild(h);
+            let cur = callout.nextElementSibling;
+            while (cur && !/^H[1-3]$/.test(cur.tagName)) {
+              const next = cur.nextElementSibling;
+              callout.appendChild(cur);
+              cur = next;
+            }
+          }
         }
 
         // Code block: add copy buttons
@@ -657,6 +856,7 @@ ${htmlRest}
             ? h.nextElementSibling
             : summary.querySelector("ol");
           if (!ol) return;
+          ol.classList.add("checklist");
 
           // Add a tiny hint once.
           if (!summary.querySelector(".jumpHint")) {
@@ -668,31 +868,40 @@ ${htmlRest}
 
           const items = Array.from(ol.querySelectorAll("li"));
           for (const li of items) {
-            li.style.cursor = "pointer";
-            li.addEventListener("click", () => {
-              // Use the first external source URL inside the checklist item.
-              const a = li.querySelector('a[href^="http"]');
-              if (!a) return;
-              const href = a.getAttribute("href");
-              if (!href) return;
-
-              // Show full doc so target is visible, then scroll.
-              setView("all", true);
-
-              // Find same href elsewhere (skip the one inside the checklist item).
-              const links = Array.from(document.querySelectorAll('a[href="' + href.replace(/"/g, '\\"') + '"]'));
-              let target = null;
-              for (const l of links) {
-                if (li.contains(l)) continue;
-                target = l;
-                break;
+            const link = li.querySelector('a[href^="http"]');
+            if (!link) continue;
+            const href = link.getAttribute("href");
+            if (!href) continue;
+            const links = Array.from(document.querySelectorAll('a[href="' + href.replace(/"/g, '\\"') + '"]'));
+            let target = null;
+            for (const l of links) {
+              if (li.contains(l)) continue;
+              target = l;
+              break;
+            }
+            if (!target) continue;
+            const heading = target.closest("section")?.querySelector("h1,h2,h3") || target.closest("h1,h2,h3");
+            if (!heading || !heading.id) continue;
+            const clone = li.cloneNode(true);
+            clone.querySelectorAll("a").forEach((a) => a.remove());
+            let text = (clone.textContent || "").replace("[Source]", "").trim();
+            if (!text) continue;
+            li.innerHTML = "";
+            const jump = document.createElement("a");
+            jump.href = "#" + heading.id;
+            jump.className = "jump-link";
+            jump.textContent = text;
+            jump.addEventListener("click", (e) => {
+              if (typeof setView === "function") {
+                e.preventDefault();
+                setView("all", true);
+                setTimeout(() => {
+                  const target = document.getElementById(heading.id);
+                  if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
+                }, 80);
               }
-              if (!target) return;
-
-              // Scroll to nearest heading for context.
-              const heading = target.closest("section")?.querySelector("h1,h2,h3") || target.closest("h1,h2,h3");
-              (heading || target).scrollIntoView({ behavior: "smooth", block: "start" });
             });
+            li.appendChild(jump);
           }
         })();
 
@@ -965,6 +1174,12 @@ ${htmlRest}
           const saved = localStorage.getItem(KEY);
           if (saved) setView(saved, false);
         } catch {}
+        document.body.classList.add("js");
+        initHero();
+        buildSummaryGrid();
+        buildCallouts();
+        formatSourceLinks();
+        if (window.innerWidth <= 720) document.body.dataset.toc = "closed";
         buildToc();
       })();
     </script>

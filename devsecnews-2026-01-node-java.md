@@ -2,12 +2,12 @@
 
 # (1) Summary
 
-- Node.js는 20/22/24/25 라인 보안 릴리스를 배포했습니다. 이번 달은 권한 모델과 `vm` 타임아웃 취약점이 핵심이니 런타임을 보안 릴리스 버전으로 업데이트합니다. [Source] https://nodejs.org/es/blog/vulnerability/december-2025-security-releases (2026-01-13)
-- 권한 모델의 symlink 우회(CVE-2025-55130)는 문자열 경로 검증을 깨뜨립니다. 허용 경로는 `realpath(심볼릭 링크 해소 경로)` 기준 allowlist로 검증합니다. [Source] https://nodejs.org/es/blog/vulnerability/december-2025-security-releases (2026-01-13)
-- 권한 모델의 UDS(로컬 소켓) 우회(CVE-2026-21636)는 네트워크 차단을 무력화합니다. 소켓 경로는 입력에서 직접 받지 않고 allowlist로 고정합니다. [Source] https://cveawg.mitre.org/api/cve/CVE-2026-21636 (날짜 미표기)
-- Struts S2-069(XXE, CVE-2025-68493)는 XML 파서 기본값이 공격 통로가 됩니다. Struts를 6.1.1 이상으로 업데이트합니다. XML 파서에서 DTD/외부 엔티티를 비활성화합니다. [Source] https://cwiki.apache.org/confluence/display/WW/S2-069 (2025-12-19)
-- JasperReports 역직렬화(CVE-2025-10492)는 외부 템플릿/직렬화 입력이 곧 RCE로 이어집니다. 템플릿 업로드를 차단합니다. 필요하면 격리된 렌더러로 분리합니다. [Source] https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability (2026-01-12)
-- EOL 개발 도구 확장(CVE-2026-22718)은 패치가 없습니다. 확장을 제거합니다. 워크스페이스 신뢰를 기본 거부로 둡니다. [Source] https://spring.io/security/cve-2026-22718 (2026-01-13)
+- Node.js는 20/22/24/25 라인 보안 릴리스를 배포했습니다. 이번 달은 권한 모델과 `vm` 타임아웃 이슈가 핵심이어서 런타임을 보안 릴리스 버전으로 업데이트해야 합니다. [Source] https://nodejs.org/es/blog/vulnerability/december-2025-security-releases (2026-01-13)
+- 권한 모델의 symlink 우회(CVE-2025-55130)는 문자열 경로 검증을 깨뜨립니다. 그래서 허용 경로는 `realpath(심볼릭 링크 해소 경로)` 기준 allowlist로 검증해야 합니다. [Source] https://nodejs.org/es/blog/vulnerability/december-2025-security-releases (2026-01-13)
+- 권한 모델의 UDS(로컬 소켓) 우회(CVE-2026-21636)는 네트워크 차단을 무력화합니다. 소켓 경로는 입력에서 직접 받지 말고 allowlist로 고정해야 합니다. [Source] https://cveawg.mitre.org/api/cve/CVE-2026-21636 (날짜 미표기)
+- Struts S2-069(XXE, CVE-2025-68493)는 XML 파서 기본값이 공격 통로가 됩니다. Struts를 6.1.1 이상으로 올리고, XML 파서에서 DTD/외부 엔티티를 비활성화해야 합니다. [Source] https://cwiki.apache.org/confluence/display/WW/S2-069 (2025-12-19)
+- JasperReports 역직렬화(CVE-2025-10492)는 외부 템플릿/직렬화 입력이 곧 RCE로 이어집니다. 템플릿 업로드는 차단하고, 필요하면 격리된 렌더러로 분리해야 합니다. [Source] https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability (2026-01-12)
+- EOL 개발 도구 확장(CVE-2026-22718)은 패치가 없습니다. 확장을 제거하고 워크스페이스 신뢰는 기본 거부로 둬야 합니다. [Source] https://spring.io/security/cve-2026-22718 (2026-01-13)
 
 <!--CARD
 {"id":"summary-1","kind":"summary","header":"요약","title":"Node.js 보안 릴리스 업데이트","bodyMd":"20/22/24/25 라인 보안 릴리스가 나왔습니다. 권한 모델과 vm 타임아웃 이슈가 핵심입니다.","whyMd":"런타임 취약점은 앱 코드 경계 밖에서 바로 노출됩니다.","impactMd":"메모리 노출·권한 우회로 이어질 수 있습니다.","actionMd":"런타임을 보안 릴리스 버전으로 업데이트합니다.","source":"https://nodejs.org/es/blog/vulnerability/december-2025-security-releases"}
@@ -30,16 +30,16 @@
 
 # (5) 이번 달 개발자 체크리스트
 
-1. Node.js 런타임을 보안 릴리스 버전으로 업데이트합니다. [Source] https://nodejs.org/es/blog/vulnerability/december-2025-security-releases (2026-01-13)
-2. 권한 모델 경로 검증은 `realpath(심볼릭 링크 해소 경로)` 기준 allowlist로 바꿉니다. [Source] https://nodejs.org/es/blog/vulnerability/december-2025-security-releases (2026-01-13)
-3. `vm`+`timeout` 조합으로 유저 코드를 실행하지 않습니다. 필요한 경우 별도 프로세스/컨테이너로 격리합니다. [Source] https://nodejs.org/es/blog/vulnerability/december-2025-security-releases (2026-01-13)
-4. UDS(로컬 소켓) 경로는 입력에서 직접 받지 않고 allowlist로 고정합니다. [Source] https://cveawg.mitre.org/api/cve/CVE-2026-21636 (날짜 미표기)
-5. Struts를 6.1.1 이상으로 업데이트합니다. [Source] https://cwiki.apache.org/confluence/display/WW/S2-069 (2025-12-19)
-6. XML 파서에서 DTD/외부 엔티티를 비활성화합니다. [Source] https://cwiki.apache.org/confluence/display/WW/S2-069 (2025-12-19)
-7. JasperReports 외부 템플릿 업로드/로딩 경로를 차단합니다. [Source] https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability (2026-01-12)
-8. JasperReports 관련 컴포넌트를 최신 패치 버전으로 업데이트합니다. [Source] https://community.jaspersoft.com/advisories/jaspersoft-security-advisory-september-16-2025-jaspersoft-library-cve-2025-10492-r6 (2025-09-16)
-9. Spring CLI VSCode 확장을 제거합니다. [Source] https://spring.io/security/cve-2026-22718 (2026-01-13)
-10. 신뢰되지 않은 워크스페이스는 기본 거부로 둡니다. [Source] https://spring.io/security/cve-2026-22718 (2026-01-13)
+1. Node.js 런타임을 보안 릴리스 버전으로 업데이트해야 합니다. [Source] https://nodejs.org/es/blog/vulnerability/december-2025-security-releases (2026-01-13)
+2. 권한 모델 경로 검증은 `realpath(심볼릭 링크 해소 경로)` 기준 allowlist로 바꿔야 합니다. [Source] https://nodejs.org/es/blog/vulnerability/december-2025-security-releases (2026-01-13)
+3. `vm`+`timeout` 조합으로 유저 코드를 실행하지 말고, 필요하면 별도 프로세스/컨테이너로 격리하세요. [Source] https://nodejs.org/es/blog/vulnerability/december-2025-security-releases (2026-01-13)
+4. UDS(로컬 소켓) 경로는 입력에서 직접 받지 말고 allowlist로 고정해야 합니다. [Source] https://cveawg.mitre.org/api/cve/CVE-2026-21636 (날짜 미표기)
+5. Struts는 6.1.1 이상으로 올려야 합니다. [Source] https://cwiki.apache.org/confluence/display/WW/S2-069 (2025-12-19)
+6. XML 파서에서 DTD/외부 엔티티를 비활성화해야 합니다. [Source] https://cwiki.apache.org/confluence/display/WW/S2-069 (2025-12-19)
+7. JasperReports 외부 템플릿 업로드/로딩 경로는 차단하세요. [Source] https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability (2026-01-12)
+8. JasperReports 관련 컴포넌트는 최신 패치 버전으로 올려야 합니다. [Source] https://community.jaspersoft.com/advisories/jaspersoft-security-advisory-september-16-2025-jaspersoft-library-cve-2025-10492-r6 (2025-09-16)
+9. Spring CLI VSCode 확장은 제거하세요. [Source] https://spring.io/security/cve-2026-22718 (2026-01-13)
+10. 신뢰되지 않은 워크스페이스는 기본 거부로 둬야 합니다. [Source] https://spring.io/security/cve-2026-22718 (2026-01-13)
 
 <!--CARD
 {"id":"checklist-1","kind":"checklist","header":"체크리스트","title":"이번 달 개발자 체크리스트(10)","bodyMd":"1. Node.js 런타임을 보안 릴리스 버전으로 업데이트합니다.\n2. 권한 모델 경로 검증은 realpath 기준 allowlist로 바꿉니다.\n3. vm+timeout 조합으로 유저 코드를 실행하지 않고 격리합니다.\n4. UDS 경로는 allowlist로 고정합니다.\n5. Struts를 6.1.1 이상으로 업데이트합니다.\n6. XML 파서에서 DTD/외부 엔티티를 비활성화합니다.\n7. JasperReports 외부 템플릿 업로드/로딩 경로를 차단합니다.\n8. JasperReports 관련 컴포넌트를 최신 패치로 업데이트합니다.\n9. Spring CLI VSCode 확장을 제거합니다.\n10. 신뢰되지 않은 워크스페이스는 기본 거부로 둡니다.","actionMd":"이번 카드의 항목을 완료 처리합니다.","source":"https://nodejs.org/es/blog/vulnerability/december-2025-security-releases"}
