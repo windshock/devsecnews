@@ -211,13 +211,30 @@
   .card-foot a:hover { text-decoration: underline; }
   .checklist {
     margin: 0;
-    padding-left: 1.1em;
+    padding-left: 0;
     display: grid;
     gap: 8px;
+    list-style: none;
+    counter-reset: checklist;
   }
-  .checklist li { line-height: 1.35; }
-  .checklist label { display: flex; align-items: center; gap: 8px; }
-  .checklist input { accent-color: #0ea5e9; }
+  .checklist li {
+    line-height: 1.35;
+    counter-increment: checklist;
+    display: grid;
+    grid-template-columns: 24px 20px 1fr;
+    gap: 8px;
+    align-items: start;
+  }
+  .checklist li::before {
+    content: counter(checklist) ".";
+    font-weight: 600;
+    color: rgba(15,23,42,0.7);
+    text-align: right;
+    padding-top: 2px;
+  }
+  .checklist label { display: contents; }
+  .checklist input { grid-column: 2; margin-top: 2px; accent-color: #0ea5e9; }
+  .check-text { grid-column: 3; }
   .card--checklist .card-title { margin-bottom: 6px; }
   body.export .page-header { display: none; }
   body.export .deck { padding-top: 24px; }
@@ -415,7 +432,7 @@
       
     <h2 id="card-7-title" class="card-title">이번 달 개발자 체크리스트(10)</h2>
   </header>
-  <ol class="checklist"><li><label><input type="checkbox" /> Node.js 런타임을 보안 릴리스 버전으로 업데이트합니다.</label></li><li><label><input type="checkbox" /> 권한 모델 경로 검증은 realpath 기준 allowlist로 바꿉니다.</label></li><li><label><input type="checkbox" /> vm+timeout 조합으로 유저 코드를 실행하지 않고 격리합니다.</label></li><li><label><input type="checkbox" /> UDS 경로는 allowlist로 고정합니다.</label></li><li><label><input type="checkbox" /> Struts를 6.1.1 이상으로 업데이트합니다.</label></li><li><label><input type="checkbox" /> XML 파서에서 DTD/외부 엔티티를 비활성화합니다.</label></li><li><label><input type="checkbox" /> JasperReports 외부 템플릿 업로드/로딩 경로를 차단합니다.</label></li><li><label><input type="checkbox" /> JasperReports 관련 컴포넌트를 최신 패치로 업데이트합니다.</label></li><li><label><input type="checkbox" /> Spring CLI VSCode 확장을 제거합니다.</label></li><li><label><input type="checkbox" /> 신뢰되지 않은 워크스페이스는 기본 거부로 둡니다.</label></li></ol>
+  <ol class="checklist"><li><label><input type="checkbox" /><span class="check-text">Node.js 런타임을 보안 릴리스 버전으로 업데이트합니다.</span></label></li><li><label><input type="checkbox" /><span class="check-text">권한 모델 경로 검증은 realpath 기준 allowlist로 바꿉니다.</span></label></li><li><label><input type="checkbox" /><span class="check-text">vm+timeout 조합으로 유저 코드를 실행하지 않고 격리합니다.</span></label></li><li><label><input type="checkbox" /><span class="check-text">UDS 경로는 allowlist로 고정합니다.</span></label></li><li><label><input type="checkbox" /><span class="check-text">Struts를 6.1.1 이상으로 업데이트합니다.</span></label></li><li><label><input type="checkbox" /><span class="check-text">XML 파서에서 DTD/외부 엔티티를 비활성화합니다.</span></label></li><li><label><input type="checkbox" /><span class="check-text">JasperReports 외부 템플릿 업로드/로딩 경로를 차단합니다.</span></label></li><li><label><input type="checkbox" /><span class="check-text">JasperReports 관련 컴포넌트를 최신 패치로 업데이트합니다.</span></label></li><li><label><input type="checkbox" /><span class="check-text">Spring CLI VSCode 확장을 제거합니다.</span></label></li><li><label><input type="checkbox" /><span class="check-text">신뢰되지 않은 워크스페이스는 기본 거부로 둡니다.</span></label></li></ol>
   <footer class="card-foot">
     <span>이번 카드의 항목을 완료 처리합니다.</span>
   </footer>

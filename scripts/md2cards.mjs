@@ -397,13 +397,30 @@ function buildCardsHtml({ title, cards, reportHref }) {
   .card-foot a:hover { text-decoration: underline; }
   .checklist {
     margin: 0;
-    padding-left: 1.1em;
+    padding-left: 0;
     display: grid;
     gap: 8px;
+    list-style: none;
+    counter-reset: checklist;
   }
-  .checklist li { line-height: 1.35; }
-  .checklist label { display: flex; align-items: center; gap: 8px; }
-  .checklist input { accent-color: #0ea5e9; }
+  .checklist li {
+    line-height: 1.35;
+    counter-increment: checklist;
+    display: grid;
+    grid-template-columns: 24px 20px 1fr;
+    gap: 8px;
+    align-items: start;
+  }
+  .checklist li::before {
+    content: counter(checklist) ".";
+    font-weight: 600;
+    color: rgba(15,23,42,0.7);
+    text-align: right;
+    padding-top: 2px;
+  }
+  .checklist label { display: contents; }
+  .checklist input { grid-column: 2; margin-top: 2px; accent-color: #0ea5e9; }
+  .check-text { grid-column: 3; }
   .card--checklist .card-title { margin-bottom: 6px; }
   body.export .page-header { display: none; }
   body.export .deck { padding-top: 24px; }
@@ -458,7 +475,7 @@ function buildCardsHtml({ title, cards, reportHref }) {
       if (c.kind === "checklist") {
         const items = parseNumbered(c.bodyMd || "");
         const listItems = items
-          .map((item) => `<li><label><input type="checkbox" /> ${escapeHtml(item)}</label></li>`)
+          .map((item) => `<li><label><input type="checkbox" /><span class="check-text">${escapeHtml(item)}</span></label></li>`)
           .join("");
         return `
 <section class="card card--checklist" data-card="${escapeHtml(c.kind)}" data-index="${i + 1}" data-domain="${escapeHtml(domainInfo.domain)}" aria-labelledby="${cardId}-title">
