@@ -21,6 +21,37 @@ npm run build:html
 - `devsecnews-YYYY-MM-node.html`
 - `devsecnews-YYYY-MM-java.html`
 
+## 월간 제작 워크플로우(조사 → MD → 빌드 → 배포)
+
+이 프로젝트는 “프롬프트로 조사해 MD를 만들고, 스크립트로 산출물 생성” 흐름을 전제로 합니다.
+
+1) 월호 선택
+
+```bash
+export DEVSECNEWS_MONTH=2025-12
+```
+
+2) 조사 + MD 작성(수동/AI 단계)
+- 프롬프트: `prompts/devsecnews-security-researcher-skill.md`
+- 산출물: `devsecnews-YYYY-MM-node-java.md`
+- 규칙 요약:
+  - URL은 Markdown 링크로 감싸지 않고 “문자열 그대로” 씁니다.
+  - 본문/표/참고자료의 URL 문자열은 완전히 동일해야 합니다.
+  - 기존 월호 MD가 있으면 “증분 업데이트”만 허용합니다.
+
+3) 검증 + 빌드
+
+```bash
+npm run verify -- --month "$DEVSECNEWS_MONTH"
+npm run build:cards -- --month "$DEVSECNEWS_MONTH"
+```
+
+4) 배포(GitHub Pages용 docs 갱신)
+
+```bash
+npm run deploy -- --month "$DEVSECNEWS_MONTH"
+```
+
 ## 월호 설정(필수)
 
 기본값은 `2026-01`입니다. 다른 월호로 작업하려면 아래 중 하나를 사용합니다.

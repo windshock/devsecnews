@@ -1,5 +1,8 @@
 import process from "node:process";
 
+export const CONTENT_DIR = "content";
+export const DIST_DIR = "dist";
+
 export function parseArgs(argv) {
   const flags = {};
   const positionals = [];
@@ -36,9 +39,17 @@ export function defaultBaseName(month) {
 }
 
 export function defaultInput(month) {
-  return `${defaultBaseName(month)}.md`;
+  return `${CONTENT_DIR}/${defaultBaseName(month)}.md`;
 }
 
 export function defaultCardsHtml(month) {
   return `cards/${defaultBaseName(month)}/cards.html`;
+}
+
+export function defaultHtml(month) {
+  return `${DIST_DIR}/${defaultBaseName(month)}.html`;
+}
+
+export function defaultSplitMd(month, kind) {
+  return `${CONTENT_DIR}/devsecnews-${month}-${kind}.md`;
 }

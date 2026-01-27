@@ -3,6 +3,24 @@
 ## 개요
 이 프로젝트는 월간 리포트 Markdown을 기준으로 리포트 HTML과 카드뉴스(HTML/PNG)를 생성하고, `docs/` 폴더로 배포합니다.
 
+## 제작 워크플로우(조사 단계 포함)
+
+```
+[prompt: prompts/devsecnews-security-researcher-skill.md]
+            |
+            |  (research + authoring; manual/AI step)
+            v
+[devsecnews-YYYY-MM-node-java.md]
+            |
+            |  (verify)
+            v
+[URL/참고자료 일치 검증]
+            |
+            |  (build + deploy)
+            v
+[docs/* GitHub Pages]
+```
+
 ## 데이터 흐름
 
 ```

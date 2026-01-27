@@ -1939,22 +1939,22 @@ code.hljs {
 <li>EOL 개발 도구 확장(CVE-2026-22718)은 패치가 없습니다. 확장을 제거하고 워크스페이스 신뢰는 기본 거부로 둬야 합니다. [Source] <a href="https://spring.io/security/cve-2026-22718">https://spring.io/security/cve-2026-22718</a> (2026-01-13)</li>
 </ul>
 <!--CARD
-{"id":"summary-1","kind":"summary","header":"요약","title":"Node.js 보안 릴리스 업데이트","bodyMd":"20/22/24/25 라인 보안 릴리스가 나왔습니다. 권한 모델과 vm 타임아웃 이슈가 핵심입니다.","whyMd":"런타임 취약점은 앱 코드 경계 밖에서 바로 노출됩니다.","impactMd":"메모리 노출·권한 우회로 이어질 수 있습니다.","actionMd":"런타임을 보안 릴리스 버전으로 업데이트합니다.","source":"https://nodejs.org/es/blog/vulnerability/december-2025-security-releases"}
+{"id":"summary-1","kind":"summary","header":"요약","title":"Node.js 보안 릴리스 업데이트","bodyMd":"20/22/24/25 라인 보안 릴리스가 나왔습니다. 권한 모델과 vm 타임아웃 이슈가 핵심입니다.","whyMd":"런타임 취약점은 앱 코드 경계 밖에서 바로 노출됩니다.","impactMd":"메모리 노출·권한 우회로 이어질 수 있습니다.","actionMd":"런타임을 보안 릴리스 버전으로 업데이트합니다.","source":"https://nodejs.org/es/blog/vulnerability/december-2025-security-releases "}
 -->
 <!--CARD
-{"id":"summary-2","kind":"summary","header":"요약","title":"symlink 우회 경로 검증","bodyMd":"권한 모델의 문자열 기반 경로 검증이 우회됩니다. realpath 기준으로 바꿉니다.","whyMd":"symlink 체인은 allowlist를 쉽게 탈출합니다.","impactMd":"허용 디렉터리 밖 파일 접근이 가능합니다.","actionMd":"realpath 기반 allowlist로 경로를 검증합니다.","source":"https://nodejs.org/es/blog/vulnerability/december-2025-security-releases"}
+{"id":"summary-2","kind":"summary","header":"요약","title":"symlink 우회 경로 검증","bodyMd":"권한 모델의 문자열 기반 경로 검증이 우회됩니다. realpath 기준으로 바꿉니다.","whyMd":"symlink 체인은 allowlist를 쉽게 탈출합니다.","impactMd":"허용 디렉터리 밖 파일 접근이 가능합니다.","actionMd":"realpath 기반 allowlist로 경로를 검증합니다.","source":"https://nodejs.org/es/blog/vulnerability/december-2025-security-releases "}
 -->
 <!--CARD
-{"id":"summary-3","kind":"summary","header":"요약","title":"UDS 우회 차단","bodyMd":"UDS 경로 입력을 허용하면 네트워크 차단이 무력화됩니다.","whyMd":"로컬 소켓은 내부 서비스 접근 통로입니다.","impactMd":"권한 경계를 넘어 내부 소켓에 접근합니다.","actionMd":"UDS 경로는 allowlist로 고정합니다.","source":"https://cveawg.mitre.org/api/cve/CVE-2026-21636"}
+{"id":"summary-3","kind":"summary","header":"요약","title":"UDS 우회 차단","bodyMd":"UDS 경로 입력을 허용하면 네트워크 차단이 무력화됩니다.","whyMd":"로컬 소켓은 내부 서비스 접근 통로입니다.","impactMd":"권한 경계를 넘어 내부 소켓에 접근합니다.","actionMd":"UDS 경로는 allowlist로 고정합니다.","source":"https://cveawg.mitre.org/api/cve/CVE-2026-21636 "}
 -->
 <!--CARD
-{"id":"summary-4","kind":"summary","header":"요약","title":"Struts S2-069(XXE)","bodyMd":"XML 파서 기본값이 남아 있으면 XXE가 열립니다.","whyMd":"외부 엔티티/DTD가 공격 경로가 됩니다.","impactMd":"내부 파일 노출이나 SSRF로 이어집니다.","actionMd":"Struts를 6.1.1 이상으로 업데이트합니다.","source":"https://cwiki.apache.org/confluence/display/WW/S2-069"}
+{"id":"summary-4","kind":"summary","header":"요약","title":"Struts S2-069(XXE)","bodyMd":"XML 파서 기본값이 남아 있으면 XXE가 열립니다.","whyMd":"외부 엔티티/DTD가 공격 경로가 됩니다.","impactMd":"내부 파일 노출이나 SSRF로 이어집니다.","actionMd":"Struts를 6.1.1 이상으로 업데이트합니다.","source":"https://cwiki.apache.org/confluence/display/WW/S2-069 "}
 -->
 <!--CARD
-{"id":"summary-5","kind":"summary","header":"요약","title":"JasperReports 역직렬화 경계","bodyMd":"외부 템플릿/직렬화 입력이 RCE로 이어집니다.","whyMd":"역직렬화 입력은 가젯 체인으로 연결됩니다.","impactMd":"서비스 계정 권한으로 코드가 실행됩니다.","actionMd":"템플릿 업로드를 차단합니다.","source":"https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability"}
+{"id":"summary-5","kind":"summary","header":"요약","title":"JasperReports 역직렬화 경계","bodyMd":"외부 템플릿/직렬화 입력이 RCE로 이어집니다.","whyMd":"역직렬화 입력은 가젯 체인으로 연결됩니다.","impactMd":"서비스 계정 권한으로 코드가 실행됩니다.","actionMd":"템플릿 업로드를 차단합니다.","source":"https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability "}
 -->
 <!--CARD
-{"id":"summary-6","kind":"summary","header":"요약","title":"EOL 확장 즉시 제거","bodyMd":"EOL 개발 도구는 패치가 없습니다. 확장을 즉시 제거합니다.","whyMd":"개발자 PC에서 명령 실행으로 이어집니다.","impactMd":"로컬 권한으로 임의 명령이 실행됩니다.","actionMd":"확장을 제거하고 워크스페이스 신뢰를 기본 거부로 둡니다.","source":"https://spring.io/security/cve-2026-22718"}
+{"id":"summary-6","kind":"summary","header":"요약","title":"EOL 확장 즉시 제거","bodyMd":"EOL 개발 도구는 패치가 없습니다. 확장을 즉시 제거합니다.","whyMd":"개발자 PC에서 명령 실행으로 이어집니다.","impactMd":"로컬 권한으로 임의 명령이 실행됩니다.","actionMd":"확장을 제거하고 워크스페이스 신뢰를 기본 거부로 둡니다.","source":"https://spring.io/security/cve-2026-22718 "}
 -->
 
 <h1 id="5-이번-달-개발자-체크리스트">(5) 이번 달 개발자 체크리스트</h1><ol>
@@ -1970,7 +1970,7 @@ code.hljs {
 <li>신뢰되지 않은 워크스페이스는 기본 거부로 둬야 합니다. [Source] <a href="https://spring.io/security/cve-2026-22718">https://spring.io/security/cve-2026-22718</a> (2026-01-13)</li>
 </ol>
 <!--CARD
-{"id":"checklist-1","kind":"checklist","header":"체크리스트","title":"이번 달 개발자 체크리스트(10)","bodyMd":"1. Node.js 런타임을 보안 릴리스 버전으로 업데이트합니다.\n2. 권한 모델 경로 검증은 realpath 기준 allowlist로 바꿉니다.\n3. vm+timeout 조합으로 유저 코드를 실행하지 않고 격리합니다.\n4. UDS 경로는 allowlist로 고정합니다.\n5. Struts를 6.1.1 이상으로 업데이트합니다.\n6. XML 파서에서 DTD/외부 엔티티를 비활성화합니다.\n7. JasperReports 외부 템플릿 업로드/로딩 경로를 차단합니다.\n8. JasperReports 관련 컴포넌트를 최신 패치로 업데이트합니다.\n9. Spring CLI VSCode 확장을 제거합니다.\n10. 신뢰되지 않은 워크스페이스는 기본 거부로 둡니다.","actionMd":"이번 카드의 항목을 완료 처리합니다.","source":"https://nodejs.org/es/blog/vulnerability/december-2025-security-releases"}
+{"id":"checklist-1","kind":"checklist","header":"체크리스트","title":"이번 달 개발자 체크리스트(10)","bodyMd":"1. Node.js 런타임을 보안 릴리스 버전으로 업데이트합니다.\n2. 권한 모델 경로 검증은 realpath 기준 allowlist로 바꿉니다.\n3. vm+timeout 조합으로 유저 코드를 실행하지 않고 격리합니다.\n4. UDS 경로는 allowlist로 고정합니다.\n5. Struts를 6.1.1 이상으로 업데이트합니다.\n6. XML 파서에서 DTD/외부 엔티티를 비활성화합니다.\n7. JasperReports 외부 템플릿 업로드/로딩 경로를 차단합니다.\n8. JasperReports 관련 컴포넌트를 최신 패치로 업데이트합니다.\n9. Spring CLI VSCode 확장을 제거합니다.\n10. 신뢰되지 않은 워크스페이스는 기본 거부로 둡니다.","actionMd":"이번 카드의 항목을 완료 처리합니다.","source":"https://nodejs.org/es/blog/vulnerability/december-2025-security-releases "}
 -->
 
 
@@ -2150,9 +2150,9 @@ code --list-extensions | grep -Ei <span class="hljs-string">&quot;spring|cli&quo
 </code></pre>
 <p>안전한 대안:</p>
 <pre><code class="language-java"><span class="hljs-type">DocumentBuilderFactory</span> <span class="hljs-variable">f</span> <span class="hljs-operator">=</span> DocumentBuilderFactory.newInstance();
-f.setFeature(<span class="hljs-string">&quot;http://apache.org/xml/features/disallow-doctype-decl&quot;</span>, <span class="hljs-literal">true</span>);
-f.setFeature(<span class="hljs-string">&quot;http://xml.org/sax/features/external-general-entities&quot;</span>, <span class="hljs-literal">false</span>);
-f.setFeature(<span class="hljs-string">&quot;http://xml.org/sax/features/external-parameter-entities&quot;</span>, <span class="hljs-literal">false</span>);
+f.setFeature(<span class="hljs-string">&quot;http:apache.org/xml/features/disallow-doctype-decl&quot;</span>, <span class="hljs-literal">true</span>);
+f.setFeature(<span class="hljs-string">&quot;http:xml.org/sax/features/external-general-entities&quot;</span>, <span class="hljs-literal">false</span>);
+f.setFeature(<span class="hljs-string">&quot;http:xml.org/sax/features/external-parameter-entities&quot;</span>, <span class="hljs-literal">false</span>);
 </code></pre>
 <p>팀 규칙으로 고정합니다.
 [Source] <a href="https://cwiki.apache.org/confluence/display/WW/S2-069">https://cwiki.apache.org/confluence/display/WW/S2-069</a> (2025-12-19)</p>

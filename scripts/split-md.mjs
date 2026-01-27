@@ -1,5 +1,6 @@
 import fs from "node:fs";
-import { parseArgs, getMonth, defaultInput } from "./cli.mjs";
+import path from "node:path";
+import { parseArgs, getMonth, defaultInput, defaultSplitMd, CONTENT_DIR } from "./cli.mjs";
 
 function usageAndExit() {
   console.error(
@@ -20,6 +21,7 @@ if (!fs.existsSync(input)) {
 }
 
 const md = fs.readFileSync(input, "utf8");
+fs.mkdirSync(CONTENT_DIR, { recursive: true });
 
 // We split by top-level numbered headings used in this repo.
 const idxNode = md.indexOf("# (2) Node.js");
@@ -44,17 +46,20 @@ const javaSection = idxCommon !== -1 ? md.slice(idxJava, idxCommon) : md.slice(i
 const nodeDoc = header + nodeSection;
 const javaDoc = header + javaSection;
 
-writeWithRefs(`devsecnews-${month}-node.md`, nodeDoc);
-writeWithRefs(`devsecnews-${month}-java.md`, javaDoc);
+const nodeOut = defaultSplitMd(month, "node");
+const javaOut = defaultSplitMd(month, "java");
+writeWithRefs(nodeOut, nodeDoc);
+writeWithRefs(javaOut, javaDoc);
 
-console.log(`wrote: devsecnews-${month}-node.md`);
-console.log(`wrote: devsecnews-${month}-java.md`);
+console.log(`wrote: ${nodeOut}`);
+console.log(`wrote: ${javaOut}`);
 
 function writeWithRefs(outFile, contentWithoutRefs) {
   const urls = extractUrls(contentWithoutRefs);
   const refs = formatRefs(urls);
 
   const out = stripExistingRefs(contentWithoutRefs).trimEnd() + "\n\n" + refs + "\n";
+  fs.mkdirSync(path.dirname(outFile), { recursive: true });
   fs.writeFileSync(outFile, out, "utf8");
 }
 

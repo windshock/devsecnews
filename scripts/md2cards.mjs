@@ -103,7 +103,7 @@ if (metaCards.length) {
 const html = buildCardsHtml({
   title: titleLine,
   cards,
-  reportHref: `../../${baseName}.html`,
+  reportHref: `../../dist/${baseName}.html`,
 });
 
 const outFile = path.join(outDir, "cards.html");

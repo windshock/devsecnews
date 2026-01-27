@@ -4,11 +4,11 @@ import process from "node:process";
 import hljs from "highlight.js";
 import { marked } from "marked";
 import { markedHighlight } from "marked-highlight";
-import { parseArgs, getMonth, defaultInput } from "./cli.mjs";
+import { parseArgs, getMonth, defaultInput, defaultHtml, DIST_DIR } from "./cli.mjs";
 
 function usageAndExit() {
   console.error(
-    "Usage:\n  node scripts/md2html.mjs <input.md> [output.html]\n  node scripts/md2html.mjs --month YYYY-MM\n\nExamples:\n  node scripts/md2html.mjs devsecnews-2026-01-node-java.md\n  node scripts/md2html.mjs in.md out.html\n  node scripts/md2html.mjs --month 2026-01"
+    "Usage:\n  node scripts/md2html.mjs <input.md> [output.html]\n  node scripts/md2html.mjs --month YYYY-MM\n\nExamples:\n  node scripts/md2html.mjs content/devsecnews-2026-01-node-java.md\n  node scripts/md2html.mjs in.md dist/out.html\n  node scripts/md2html.mjs --month 2026-01"
   );
   process.exit(2);
 }
@@ -18,10 +18,12 @@ if (flags.help) usageAndExit();
 
 const month = getMonth(flags);
 const input = flags.input ?? positionals[0] ?? defaultInput(month);
-const output =
-  flags.output ??
-  positionals[1] ??
-  path.basename(input, path.extname(input)) + ".html";
+const inferredBase = path.basename(input, path.extname(input));
+const defaultOut =
+  input === defaultInput(month)
+    ? defaultHtml(month)
+    : path.join(DIST_DIR, `${inferredBase}.html`);
+const output = flags.output ?? positionals[1] ?? defaultOut;
 
 if (!input.endsWith(".md")) usageAndExit();
 if (!fs.existsSync(input)) {

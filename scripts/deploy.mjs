@@ -2,7 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import process from "node:process";
 import { execSync } from "node:child_process";
-import { parseArgs, getMonth, defaultBaseName } from "./cli.mjs";
+import { parseArgs, getMonth, defaultBaseName, defaultHtml } from "./cli.mjs";
 
 function usageAndExit() {
   console.error("Usage:\n  node scripts/deploy.mjs --month YYYY-MM");
@@ -20,7 +20,7 @@ run(`node scripts/build-cards.mjs --month ${month}`);
 const docsDir = path.join("docs");
 const cardsSrc = path.join("cards", baseName);
 const cardsDest = path.join(docsDir, "cards", baseName);
-const htmlSrc = `${baseName}.html`;
+const htmlSrc = defaultHtml(month);
 const htmlDest = path.join(docsDir, `${baseName}.html`);
 
 if (!fs.existsSync(htmlSrc)) {

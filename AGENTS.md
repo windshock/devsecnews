@@ -25,6 +25,13 @@
 - `npm run verify` (URL/참고자료 일치 검사)
 - `npm run deploy` (docs/ 배포 + latest/index 갱신)
 
+## 월간 제작 워크플로우(중요)
+1) 월호 설정: `DEVSECNEWS_MONTH=YYYY-MM`
+2) 조사/작성: `prompts/devsecnews-security-researcher-skill.md`로 `devsecnews-YYYY-MM-node-java.md` 생성/증분 업데이트
+3) 검증: `npm run verify -- --month YYYY-MM`
+4) 빌드: `npm run build:cards -- --month YYYY-MM`
+5) 배포: `npm run deploy -- --month YYYY-MM`
+
 ## 스크립트 요약
 - `scripts/md2html.mjs`: MD → 리포트 HTML
 - `scripts/md2cards.mjs`: MD → 카드 HTML

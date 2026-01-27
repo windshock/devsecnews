@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>DevSecNews 2026-01 — Node.js/Java 보안 요약(개발자용) cards</title>
+    <title>DevSecNews 2025-12 — Node.js/Java 보안 요약(개발자용) cards</title>
     <style>
   :root { color-scheme: dark; }
   body {
@@ -263,7 +263,7 @@
   </head>
   <body>
     <header class="page-header">
-      <a class="report-link" href="../../dist/devsecnews-2026-01-node-java.html" id="reportLink" aria-label="본문 리포트로 이동">본문 리포트</a>
+      <a class="report-link" href="../../dist/devsecnews-2025-12-node-java.html" id="reportLink" aria-label="본문 리포트로 이동">본문 리포트</a>
       <nav class="pager" aria-label="카드 이동">
         <button class="pager-btn" type="button" id="prev" aria-label="이전">이전</button>
         <span class="pager-indicator" aria-live="polite"><span id="count">1</span>/<span id="total">7</span></span>
@@ -280,20 +280,20 @@
           <span class="badge badge--node" data-domain="node">Node.js</span>
         </div>
       
-    <h2 id="card-1-title" class="card-title">Node.js 보안 릴리스 업데이트</h2>
+    <h2 id="card-1-title" class="card-title">Node.js 보안 릴리스 우선 적용</h2>
   </header>
   <dl class="card-body">
-    <div class="row"><dt>한 줄 요약</dt><dd><p>20/22/24/25 라인 보안 릴리스가 나왔습니다. 권한 모델과 vm 타임아웃 이슈가 핵심입니다.</p>
+    <div class="row"><dt>한 줄 요약</dt><dd><p>2025-12-15 보안 릴리스가 핵심입니다. 권한 모델과 vm 타임아웃 이슈를 먼저 봅니다.</p>
 </dd></div>
-    <div class="row"><dt>왜 위험</dt><dd><p>런타임 취약점은 앱 코드 경계 밖에서 바로 노출됩니다.</p>
+    <div class="row"><dt>왜 위험</dt><dd><p>런타임 취약점은 앱 코드 경계를 바로 넘어옵니다.</p>
 </dd></div>
-    <div class="row"><dt>영향</dt><dd><p>메모리 노출·권한 우회로 이어질 수 있습니다.</p>
+    <div class="row"><dt>영향</dt><dd><p>권한 우회·정보 노출로 이어질 수 있습니다.</p>
 </dd></div>
-    <div class="row"><dt>오늘 조치</dt><dd><p>런타임을 보안 릴리스 버전으로 업데이트합니다.</p>
+    <div class="row"><dt>오늘 조치</dt><dd><p>런타임을 보안 릴리스 버전으로 업데이트해야 합니다.</p>
 </dd></div>
   </dl>
   <footer class="card-foot">
-    <a class="source" href="https://nodejs.org/es/blog/vulnerability/december-2025-security-releases" target="_blank" rel="noopener">Source</a>
+    <a class="source" href="https://nodejs.org/ko/blog/vulnerability/december-2025-security-releases" target="_blank" rel="noopener">Source</a>
   </footer>
 </section>
 
@@ -305,20 +305,20 @@
           <span class="badge badge--node" data-domain="node">Node.js</span>
         </div>
       
-    <h2 id="card-2-title" class="card-title">symlink 우회 경로 검증</h2>
+    <h2 id="card-2-title" class="card-title">symlink 우회는 realpath로 끊기</h2>
   </header>
   <dl class="card-body">
-    <div class="row"><dt>한 줄 요약</dt><dd><p>권한 모델의 문자열 기반 경로 검증이 우회됩니다. realpath 기준으로 바꿉니다.</p>
+    <div class="row"><dt>한 줄 요약</dt><dd><p>문자열 경로 검증은 symlink 체인에서 깨집니다. realpath 기준 allowlist로 바꿉니다.</p>
 </dd></div>
-    <div class="row"><dt>왜 위험</dt><dd><p>symlink 체인은 allowlist를 쉽게 탈출합니다.</p>
+    <div class="row"><dt>왜 위험</dt><dd><p>상대 경로 + symlink 조합이 경계를 탈출합니다.</p>
 </dd></div>
     <div class="row"><dt>영향</dt><dd><p>허용 디렉터리 밖 파일 접근이 가능합니다.</p>
 </dd></div>
-    <div class="row"><dt>오늘 조치</dt><dd><p>realpath 기반 allowlist로 경로를 검증합니다.</p>
+    <div class="row"><dt>오늘 조치</dt><dd><p>허용 경로는 realpath 기준 allowlist로 고정해야 합니다.</p>
 </dd></div>
   </dl>
   <footer class="card-foot">
-    <a class="source" href="https://nodejs.org/es/blog/vulnerability/december-2025-security-releases" target="_blank" rel="noopener">Source</a>
+    <a class="source" href="https://cveawg.mitre.org/api/cve/CVE-2025-55130" target="_blank" rel="noopener">Source</a>
   </footer>
 </section>
 
@@ -330,16 +330,16 @@
           <span class="badge badge--node" data-domain="node">Node.js</span>
         </div>
       
-    <h2 id="card-3-title" class="card-title">UDS 우회 차단</h2>
+    <h2 id="card-3-title" class="card-title">UDS 우회는 입력 경로 차단</h2>
   </header>
   <dl class="card-body">
-    <div class="row"><dt>한 줄 요약</dt><dd><p>UDS 경로 입력을 허용하면 네트워크 차단이 무력화됩니다.</p>
+    <div class="row"><dt>한 줄 요약</dt><dd><p>UDS 경로를 입력에서 받으면 네트워크 차단이 무력화됩니다.</p>
 </dd></div>
-    <div class="row"><dt>왜 위험</dt><dd><p>로컬 소켓은 내부 서비스 접근 통로입니다.</p>
+    <div class="row"><dt>왜 위험</dt><dd><p>로컬 소켓은 내부 서비스로 가는 지름길입니다.</p>
 </dd></div>
     <div class="row"><dt>영향</dt><dd><p>권한 경계를 넘어 내부 소켓에 접근합니다.</p>
 </dd></div>
-    <div class="row"><dt>오늘 조치</dt><dd><p>UDS 경로는 allowlist로 고정합니다.</p>
+    <div class="row"><dt>오늘 조치</dt><dd><p>UDS 경로는 코드 상수 allowlist로 고정해야 합니다.</p>
 </dd></div>
   </dl>
   <footer class="card-foot">
@@ -355,16 +355,16 @@
           <span class="badge badge--java" data-domain="java">Java</span>
         </div>
       
-    <h2 id="card-4-title" class="card-title">Struts S2-069(XXE)</h2>
+    <h2 id="card-4-title" class="card-title">Struts S2-069는 XML 기본값 문제</h2>
   </header>
   <dl class="card-body">
-    <div class="row"><dt>한 줄 요약</dt><dd><p>XML 파서 기본값이 남아 있으면 XXE가 열립니다.</p>
+    <div class="row"><dt>한 줄 요약</dt><dd><p>2025-12-19 공지된 Struts 보안 이슈입니다. XML 외부 엔티티가 핵심 통로입니다.</p>
 </dd></div>
-    <div class="row"><dt>왜 위험</dt><dd><p>외부 엔티티/DTD가 공격 경로가 됩니다.</p>
+    <div class="row"><dt>왜 위험</dt><dd><p>DTD/외부 엔티티가 열려 있으면 외부 입력이 곧 내부 조회가 됩니다.</p>
 </dd></div>
-    <div class="row"><dt>영향</dt><dd><p>내부 파일 노출이나 SSRF로 이어집니다.</p>
+    <div class="row"><dt>영향</dt><dd><p>정보 노출·SSRF로 이어질 수 있습니다.</p>
 </dd></div>
-    <div class="row"><dt>오늘 조치</dt><dd><p>Struts를 6.1.1 이상으로 업데이트합니다.</p>
+    <div class="row"><dt>오늘 조치</dt><dd><p>Struts를 6.1.1 이상으로 업데이트해야 합니다.</p>
 </dd></div>
   </dl>
   <footer class="card-foot">
@@ -372,53 +372,53 @@
   </footer>
 </section>
 
-<section class="card card--summary" data-card="summary" data-index="5" data-domain="java" aria-labelledby="card-5-title">
+<section class="card card--summary" data-card="summary" data-index="5" data-domain="common" aria-labelledby="card-5-title">
   <header class="card-head">
     
         <div class="meta">
           <span class="kicker">DEVSECNEWS · 요약</span>
-          <span class="badge badge--java" data-domain="java">Java</span>
+          <span class="badge badge--common" data-domain="common">Common</span>
         </div>
       
-    <h2 id="card-5-title" class="card-title">JasperReports 역직렬화 경계</h2>
+    <h2 id="card-5-title" class="card-title">Solr extraction 경계는 파싱 격리로 막기</h2>
   </header>
   <dl class="card-body">
-    <div class="row"><dt>한 줄 요약</dt><dd><p>외부 템플릿/직렬화 입력이 RCE로 이어집니다.</p>
+    <div class="row"><dt>한 줄 요약</dt><dd><p>2025-12-09 공지된 Solr extraction 모듈 XXE 이슈입니다.</p>
 </dd></div>
-    <div class="row"><dt>왜 위험</dt><dd><p>역직렬화 입력은 가젯 체인으로 연결됩니다.</p>
+    <div class="row"><dt>왜 위험</dt><dd><p>문서 파싱은 복잡하고 신뢰되지 않은 입력에 취약합니다.</p>
 </dd></div>
-    <div class="row"><dt>영향</dt><dd><p>서비스 계정 권한으로 코드가 실행됩니다.</p>
+    <div class="row"><dt>영향</dt><dd><p>파일 노출·내부 데이터 접근으로 이어질 수 있습니다.</p>
 </dd></div>
-    <div class="row"><dt>오늘 조치</dt><dd><p>템플릿 업로드를 차단합니다.</p>
+    <div class="row"><dt>오늘 조치</dt><dd><p>파싱은 격리된 워커로 분리해야 합니다.</p>
 </dd></div>
   </dl>
   <footer class="card-foot">
-    <a class="source" href="https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability" target="_blank" rel="noopener">Source</a>
+    <a class="source" href="https://solr.apache.org/security.html" target="_blank" rel="noopener">Source</a>
   </footer>
 </section>
 
-<section class="card card--summary" data-card="summary" data-index="6" data-domain="java" aria-labelledby="card-6-title">
+<section class="card card--summary" data-card="summary" data-index="6" data-domain="common" aria-labelledby="card-6-title">
   <header class="card-head">
     
         <div class="meta">
           <span class="kicker">DEVSECNEWS · 요약</span>
-          <span class="badge badge--java" data-domain="java">Java</span>
+          <span class="badge badge--common" data-domain="common">Common</span>
         </div>
       
-    <h2 id="card-6-title" class="card-title">EOL 확장 즉시 제거</h2>
+    <h2 id="card-6-title" class="card-title">네트워킹 릴리스는 보안 경계 업데이트로 취급</h2>
   </header>
   <dl class="card-body">
-    <div class="row"><dt>한 줄 요약</dt><dd><p>EOL 개발 도구는 패치가 없습니다. 확장을 즉시 제거합니다.</p>
+    <div class="row"><dt>한 줄 요약</dt><dd><p>2025-12-16 HttpComponents 릴리스는 HTTP/2 핵심 경계에 영향을 줍니다.</p>
 </dd></div>
-    <div class="row"><dt>왜 위험</dt><dd><p>개발자 PC에서 명령 실행으로 이어집니다.</p>
+    <div class="row"><dt>왜 위험</dt><dd><p>프로토콜 경계 이슈는 기능이 아니라 보안 경계 문제입니다.</p>
 </dd></div>
-    <div class="row"><dt>영향</dt><dd><p>로컬 권한으로 임의 명령이 실행됩니다.</p>
+    <div class="row"><dt>영향</dt><dd><p>요청 처리 경계가 흔들리면 보안 제어도 같이 흔들립니다.</p>
 </dd></div>
-    <div class="row"><dt>오늘 조치</dt><dd><p>확장을 제거하고 워크스페이스 신뢰를 기본 거부로 둡니다.</p>
+    <div class="row"><dt>오늘 조치</dt><dd><p>HTTP 클라이언트/코어 버전은 빠르게 따라가야 합니다.</p>
 </dd></div>
   </dl>
   <footer class="card-foot">
-    <a class="source" href="https://spring.io/security/cve-2026-22718" target="_blank" rel="noopener">Source</a>
+    <a class="source" href="https://hc.apache.org/news.html" target="_blank" rel="noopener">Source</a>
   </footer>
 </section>
 
@@ -432,7 +432,7 @@
       
     <h2 id="card-7-title" class="card-title">이번 달 개발자 체크리스트(10)</h2>
   </header>
-  <ol class="checklist"><li><label><input type="checkbox" /><span class="check-text">Node.js 런타임을 보안 릴리스 버전으로 업데이트합니다.</span></label></li><li><label><input type="checkbox" /><span class="check-text">권한 모델 경로 검증은 realpath 기준 allowlist로 바꿉니다.</span></label></li><li><label><input type="checkbox" /><span class="check-text">vm+timeout 조합으로 유저 코드를 실행하지 않고 격리합니다.</span></label></li><li><label><input type="checkbox" /><span class="check-text">UDS 경로는 allowlist로 고정합니다.</span></label></li><li><label><input type="checkbox" /><span class="check-text">Struts를 6.1.1 이상으로 업데이트합니다.</span></label></li><li><label><input type="checkbox" /><span class="check-text">XML 파서에서 DTD/외부 엔티티를 비활성화합니다.</span></label></li><li><label><input type="checkbox" /><span class="check-text">JasperReports 외부 템플릿 업로드/로딩 경로를 차단합니다.</span></label></li><li><label><input type="checkbox" /><span class="check-text">JasperReports 관련 컴포넌트를 최신 패치로 업데이트합니다.</span></label></li><li><label><input type="checkbox" /><span class="check-text">Spring CLI VSCode 확장을 제거합니다.</span></label></li><li><label><input type="checkbox" /><span class="check-text">신뢰되지 않은 워크스페이스는 기본 거부로 둡니다.</span></label></li></ol>
+  <ol class="checklist"><li><label><input type="checkbox" /><span class="check-text">Node.js 런타임을 보안 릴리스 버전으로 업데이트해야 합니다.</span></label></li><li><label><input type="checkbox" /><span class="check-text">권한 모델 경로 검증은 realpath 기준 allowlist로 바꿔야 합니다.</span></label></li><li><label><input type="checkbox" /><span class="check-text">vm+timeout 조합으로 유저 코드를 실행하지 말고 격리하세요.</span></label></li><li><label><input type="checkbox" /><span class="check-text">UDS 경로는 코드 상수 allowlist로 고정해야 합니다.</span></label></li><li><label><input type="checkbox" /><span class="check-text">Struts는 6.1.1 이상으로 올려야 합니다.</span></label></li><li><label><input type="checkbox" /><span class="check-text">XML 파서에서 DTD/외부 엔티티를 비활성화해야 합니다.</span></label></li><li><label><input type="checkbox" /><span class="check-text">Solr extraction 모듈은 파싱을 격리된 워커로 분리해야 합니다.</span></label></li><li><label><input type="checkbox" /><span class="check-text">Solr 파싱 실패/예외는 보안 이벤트로 기록하고 재시도를 제한해야 합니다.</span></label></li><li><label><input type="checkbox" /><span class="check-text">HttpComponents Core/Client 릴리스는 경계 업데이트로 보고 따라가야 합니다.</span></label></li><li><label><input type="checkbox" /><span class="check-text">HTTP/2 경계 이슈는 프로토콜 스택 버전 고정 정책으로 승격해야 합니다.</span></label></li></ol>
   <footer class="card-foot">
     <span>이번 카드의 항목을 완료 처리합니다.</span>
   </footer>

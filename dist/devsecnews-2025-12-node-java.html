@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>devsecnews-2026-01-node-java.md</title>
+    <title>devsecnews-2025-12-node-java.md</title>
     <style>
   @keyframes slideUpFade {
     from { opacity: 0; transform: translateY(20px) scale(0.98); }
@@ -1913,7 +1913,7 @@ code.hljs {
       <header class="page-header">
         <div class="hero">
           <div class="hero-meta" id="hero-meta">DevSecNews Report</div>
-          <div class="hero-title" id="hero-title">devsecnews-2026-01-node-java.md</div>
+          <div class="hero-title" id="hero-title">devsecnews-2025-12-node-java.md</div>
         </div>
         <div class="toolbar" aria-label="상단 내비게이션">
           <button type="button" class="tool-btn" id="view-toggle" aria-label="보기 모드">보기: 전체</button>
@@ -1930,47 +1930,47 @@ code.hljs {
         <main class="article">
           <article class="markdown-body">
 <section class="view-summary" data-view-section="summary">
-<h1 id="devsecnews-2026-01-nodejsjava-보안-요약개발자용">DevSecNews 2026-01 — Node.js/Java 보안 요약(개발자용)</h1><h1 id="1-summary">(1) Summary</h1><ul>
-<li>Node.js는 20/22/24/25 라인 보안 릴리스를 배포했습니다. 이번 달은 권한 모델과 <code>vm</code> 타임아웃 이슈가 핵심이어서 런타임을 보안 릴리스 버전으로 업데이트해야 합니다. [Source] <a href="https://nodejs.org/es/blog/vulnerability/december-2025-security-releases">https://nodejs.org/es/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)</li>
-<li>권한 모델의 symlink 우회(CVE-2025-55130)는 문자열 경로 검증을 깨뜨립니다. 그래서 허용 경로는 <code>realpath(심볼릭 링크 해소 경로)</code> 기준 allowlist로 검증해야 합니다. [Source] <a href="https://nodejs.org/es/blog/vulnerability/december-2025-security-releases">https://nodejs.org/es/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)</li>
-<li>권한 모델의 UDS(로컬 소켓) 우회(CVE-2026-21636)는 네트워크 차단을 무력화합니다. 소켓 경로는 입력에서 직접 받지 말고 allowlist로 고정해야 합니다. [Source] <a href="https://cveawg.mitre.org/api/cve/CVE-2026-21636">https://cveawg.mitre.org/api/cve/CVE-2026-21636</a> (날짜 미표기)</li>
-<li>Struts S2-069(XXE, CVE-2025-68493)는 XML 파서 기본값이 공격 통로가 됩니다. Struts를 6.1.1 이상으로 올리고, XML 파서에서 DTD/외부 엔티티를 비활성화해야 합니다. [Source] <a href="https://cwiki.apache.org/confluence/display/WW/S2-069">https://cwiki.apache.org/confluence/display/WW/S2-069</a> (2025-12-19)</li>
-<li>JasperReports 역직렬화(CVE-2025-10492)는 외부 템플릿/직렬화 입력이 곧 RCE로 이어집니다. 템플릿 업로드는 차단하고, 필요하면 격리된 렌더러로 분리해야 합니다. [Source] <a href="https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability">https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability</a> (2026-01-12)</li>
-<li>EOL 개발 도구 확장(CVE-2026-22718)은 패치가 없습니다. 확장을 제거하고 워크스페이스 신뢰는 기본 거부로 둬야 합니다. [Source] <a href="https://spring.io/security/cve-2026-22718">https://spring.io/security/cve-2026-22718</a> (2026-01-13)</li>
+<h1 id="devsecnews-2025-12-nodejsjava-보안-요약개발자용">DevSecNews 2025-12 — Node.js/Java 보안 요약(개발자용)</h1><h1 id="1-summary">(1) Summary</h1><ul>
+<li>Node.js는 2025-12-15 보안 릴리스를 예고했습니다. 권한 모델 우회와 <code>vm</code> 타임아웃 기반 메모리 노출을 우선순위로 잡고 런타임을 보안 릴리스 버전으로 올려야 합니다. [Source] <a href="https://nodejs.org/ko/blog/vulnerability/december-2025-security-releases">https://nodejs.org/ko/blog/vulnerability/december-2025-security-releases</a> (2025-12-15)</li>
+<li>권한 모델의 symlink 우회(CVE-2025-55130)는 문자열 경로 검증을 깨뜨립니다. 파일 접근 경계는 <code>realpath(심볼릭 링크 해소 경로)</code> 기준 allowlist로 고정해야 합니다. [Source] <a href="https://cveawg.mitre.org/api/cve/CVE-2025-55130">https://cveawg.mitre.org/api/cve/CVE-2025-55130</a> (날짜 미표기)</li>
+<li>권한 모델의 UDS(로컬 소켓) 우회(CVE-2026-21636)는 네트워크 차단을 무력화합니다. 소켓 경로는 입력에서 직접 받지 말고 코드 상수 allowlist로 박아야 합니다. [Source] <a href="https://cveawg.mitre.org/api/cve/CVE-2026-21636">https://cveawg.mitre.org/api/cve/CVE-2026-21636</a> (날짜 미표기)</li>
+<li>Struts S2-069(XXE, CVE-2025-68493)은 2025-12-19 공지된 보안 이슈입니다. Struts를 6.1.1 이상으로 올리고 XML 외부 엔티티를 즉시 차단해야 합니다. [Source] <a href="https://cwiki.apache.org/confluence/display/WW/S2-069">https://cwiki.apache.org/confluence/display/WW/S2-069</a> (2025-12-19)</li>
+<li>Apache Solr는 2025-12-09에 extraction 모듈의 XXE 이슈를 공지했습니다. SolrCell/Tika 경계에서는 파싱을 격리 실행으로 분리하고 업로드 입력을 제한해야 합니다. [Source] <a href="https://solr.apache.org/security.html">https://solr.apache.org/security.html</a> (2025-12-09)</li>
+<li>Apache HttpComponents는 2025-12-16 HTTP/2 지원과 핵심 네트워킹 개선을 포함한 릴리스를 공지했습니다. HTTP 클라이언트/코어 버전은 기능 릴리스가 아니라 보안 경계 업데이트로 취급하고 바로 따라가야 합니다. [Source] <a href="https://hc.apache.org/news.html">https://hc.apache.org/news.html</a> (2025-12-16)</li>
 </ul>
 <!--CARD
-{"id":"summary-1","kind":"summary","header":"요약","title":"Node.js 보안 릴리스 업데이트","bodyMd":"20/22/24/25 라인 보안 릴리스가 나왔습니다. 권한 모델과 vm 타임아웃 이슈가 핵심입니다.","whyMd":"런타임 취약점은 앱 코드 경계 밖에서 바로 노출됩니다.","impactMd":"메모리 노출·권한 우회로 이어질 수 있습니다.","actionMd":"런타임을 보안 릴리스 버전으로 업데이트합니다.","source":"https://nodejs.org/es/blog/vulnerability/december-2025-security-releases "}
+{"id":"summary-1","kind":"summary","header":"요약","domain":"node","title":"Node.js 보안 릴리스 우선 적용","bodyMd":"2025-12-15 보안 릴리스가 핵심입니다. 권한 모델과 vm 타임아웃 이슈를 먼저 봅니다.","whyMd":"런타임 취약점은 앱 코드 경계를 바로 넘어옵니다.","impactMd":"권한 우회·정보 노출로 이어질 수 있습니다.","actionMd":"런타임을 보안 릴리스 버전으로 업데이트해야 합니다.","source":"https://nodejs.org/ko/blog/vulnerability/december-2025-security-releases "}
 -->
 <!--CARD
-{"id":"summary-2","kind":"summary","header":"요약","title":"symlink 우회 경로 검증","bodyMd":"권한 모델의 문자열 기반 경로 검증이 우회됩니다. realpath 기준으로 바꿉니다.","whyMd":"symlink 체인은 allowlist를 쉽게 탈출합니다.","impactMd":"허용 디렉터리 밖 파일 접근이 가능합니다.","actionMd":"realpath 기반 allowlist로 경로를 검증합니다.","source":"https://nodejs.org/es/blog/vulnerability/december-2025-security-releases "}
+{"id":"summary-2","kind":"summary","header":"요약","domain":"node","title":"symlink 우회는 realpath로 끊기","bodyMd":"문자열 경로 검증은 symlink 체인에서 깨집니다. realpath 기준 allowlist로 바꿉니다.","whyMd":"상대 경로 + symlink 조합이 경계를 탈출합니다.","impactMd":"허용 디렉터리 밖 파일 접근이 가능합니다.","actionMd":"허용 경로는 realpath 기준 allowlist로 고정해야 합니다.","source":"https://cveawg.mitre.org/api/cve/CVE-2025-55130 "}
 -->
 <!--CARD
-{"id":"summary-3","kind":"summary","header":"요약","title":"UDS 우회 차단","bodyMd":"UDS 경로 입력을 허용하면 네트워크 차단이 무력화됩니다.","whyMd":"로컬 소켓은 내부 서비스 접근 통로입니다.","impactMd":"권한 경계를 넘어 내부 소켓에 접근합니다.","actionMd":"UDS 경로는 allowlist로 고정합니다.","source":"https://cveawg.mitre.org/api/cve/CVE-2026-21636 "}
+{"id":"summary-3","kind":"summary","header":"요약","domain":"node","title":"UDS 우회는 입력 경로 차단","bodyMd":"UDS 경로를 입력에서 받으면 네트워크 차단이 무력화됩니다.","whyMd":"로컬 소켓은 내부 서비스로 가는 지름길입니다.","impactMd":"권한 경계를 넘어 내부 소켓에 접근합니다.","actionMd":"UDS 경로는 코드 상수 allowlist로 고정해야 합니다.","source":"https://cveawg.mitre.org/api/cve/CVE-2026-21636 "}
 -->
 <!--CARD
-{"id":"summary-4","kind":"summary","header":"요약","title":"Struts S2-069(XXE)","bodyMd":"XML 파서 기본값이 남아 있으면 XXE가 열립니다.","whyMd":"외부 엔티티/DTD가 공격 경로가 됩니다.","impactMd":"내부 파일 노출이나 SSRF로 이어집니다.","actionMd":"Struts를 6.1.1 이상으로 업데이트합니다.","source":"https://cwiki.apache.org/confluence/display/WW/S2-069 "}
+{"id":"summary-4","kind":"summary","header":"요약","domain":"java","title":"Struts S2-069는 XML 기본값 문제","bodyMd":"2025-12-19 공지된 Struts 보안 이슈입니다. XML 외부 엔티티가 핵심 통로입니다.","whyMd":"DTD/외부 엔티티가 열려 있으면 외부 입력이 곧 내부 조회가 됩니다.","impactMd":"정보 노출·SSRF로 이어질 수 있습니다.","actionMd":"Struts를 6.1.1 이상으로 업데이트해야 합니다.","source":"https://cwiki.apache.org/confluence/display/WW/S2-069 "}
 -->
 <!--CARD
-{"id":"summary-5","kind":"summary","header":"요약","title":"JasperReports 역직렬화 경계","bodyMd":"외부 템플릿/직렬화 입력이 RCE로 이어집니다.","whyMd":"역직렬화 입력은 가젯 체인으로 연결됩니다.","impactMd":"서비스 계정 권한으로 코드가 실행됩니다.","actionMd":"템플릿 업로드를 차단합니다.","source":"https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability "}
+{"id":"summary-5","kind":"summary","header":"요약","domain":"java","title":"Solr extraction 경계는 파싱 격리로 막기","bodyMd":"2025-12-09 공지된 Solr extraction 모듈 XXE 이슈입니다.","whyMd":"문서 파싱은 복잡하고 신뢰되지 않은 입력에 취약합니다.","impactMd":"파일 노출·내부 데이터 접근으로 이어질 수 있습니다.","actionMd":"파싱은 격리된 워커로 분리해야 합니다.","source":"https://solr.apache.org/security.html "}
 -->
 <!--CARD
-{"id":"summary-6","kind":"summary","header":"요약","title":"EOL 확장 즉시 제거","bodyMd":"EOL 개발 도구는 패치가 없습니다. 확장을 즉시 제거합니다.","whyMd":"개발자 PC에서 명령 실행으로 이어집니다.","impactMd":"로컬 권한으로 임의 명령이 실행됩니다.","actionMd":"확장을 제거하고 워크스페이스 신뢰를 기본 거부로 둡니다.","source":"https://spring.io/security/cve-2026-22718 "}
+{"id":"summary-6","kind":"summary","header":"요약","domain":"common","title":"네트워킹 릴리스는 보안 경계 업데이트로 취급","bodyMd":"2025-12-16 HttpComponents 릴리스는 HTTP/2 핵심 경계에 영향을 줍니다.","whyMd":"프로토콜 경계 이슈는 기능이 아니라 보안 경계 문제입니다.","impactMd":"요청 처리 경계가 흔들리면 보안 제어도 같이 흔들립니다.","actionMd":"HTTP 클라이언트/코어 버전은 빠르게 따라가야 합니다.","source":"https://hc.apache.org/news.html "}
 -->
 
 <h1 id="5-이번-달-개발자-체크리스트">(5) 이번 달 개발자 체크리스트</h1><ol>
-<li>Node.js 런타임을 보안 릴리스 버전으로 업데이트해야 합니다. [Source] <a href="https://nodejs.org/es/blog/vulnerability/december-2025-security-releases">https://nodejs.org/es/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)</li>
-<li>권한 모델 경로 검증은 <code>realpath(심볼릭 링크 해소 경로)</code> 기준 allowlist로 바꿔야 합니다. [Source] <a href="https://nodejs.org/es/blog/vulnerability/december-2025-security-releases">https://nodejs.org/es/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)</li>
-<li><code>vm</code>+<code>timeout</code> 조합으로 유저 코드를 실행하지 말고, 필요하면 별도 프로세스/컨테이너로 격리하세요. [Source] <a href="https://nodejs.org/es/blog/vulnerability/december-2025-security-releases">https://nodejs.org/es/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)</li>
-<li>UDS(로컬 소켓) 경로는 입력에서 직접 받지 말고 allowlist로 고정해야 합니다. [Source] <a href="https://cveawg.mitre.org/api/cve/CVE-2026-21636">https://cveawg.mitre.org/api/cve/CVE-2026-21636</a> (날짜 미표기)</li>
+<li>Node.js 런타임을 보안 릴리스 버전으로 업데이트해야 합니다. [Source] <a href="https://nodejs.org/ko/blog/vulnerability/december-2025-security-releases">https://nodejs.org/ko/blog/vulnerability/december-2025-security-releases</a> (2025-12-15)</li>
+<li>권한 모델 경로 검증은 <code>realpath(심볼릭 링크 해소 경로)</code> 기준 allowlist로 바꿔야 합니다. [Source] <a href="https://cveawg.mitre.org/api/cve/CVE-2025-55130">https://cveawg.mitre.org/api/cve/CVE-2025-55130</a> (날짜 미표기)</li>
+<li><code>vm</code>+<code>timeout</code> 조합으로 유저 코드를 실행하지 말고, 필요하면 별도 프로세스/컨테이너로 격리하세요. [Source] <a href="https://cveawg.mitre.org/api/cve/CVE-2025-55131">https://cveawg.mitre.org/api/cve/CVE-2025-55131</a> (날짜 미표기)</li>
+<li>UDS(로컬 소켓) 경로는 입력에서 직접 받지 말고 코드 상수 allowlist로 고정해야 합니다. [Source] <a href="https://cveawg.mitre.org/api/cve/CVE-2026-21636">https://cveawg.mitre.org/api/cve/CVE-2026-21636</a> (날짜 미표기)</li>
 <li>Struts는 6.1.1 이상으로 올려야 합니다. [Source] <a href="https://cwiki.apache.org/confluence/display/WW/S2-069">https://cwiki.apache.org/confluence/display/WW/S2-069</a> (2025-12-19)</li>
 <li>XML 파서에서 DTD/외부 엔티티를 비활성화해야 합니다. [Source] <a href="https://cwiki.apache.org/confluence/display/WW/S2-069">https://cwiki.apache.org/confluence/display/WW/S2-069</a> (2025-12-19)</li>
-<li>JasperReports 외부 템플릿 업로드/로딩 경로는 차단하세요. [Source] <a href="https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability">https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability</a> (2026-01-12)</li>
-<li>JasperReports 관련 컴포넌트는 최신 패치 버전으로 올려야 합니다. [Source] <a href="https://community.jaspersoft.com/advisories/jaspersoft-security-advisory-september-16-2025-jaspersoft-library-cve-2025-10492-r6">https://community.jaspersoft.com/advisories/jaspersoft-security-advisory-september-16-2025-jaspersoft-library-cve-2025-10492-r6</a> (2025-09-16)</li>
-<li>Spring CLI VSCode 확장은 제거하세요. [Source] <a href="https://spring.io/security/cve-2026-22718">https://spring.io/security/cve-2026-22718</a> (2026-01-13)</li>
-<li>신뢰되지 않은 워크스페이스는 기본 거부로 둬야 합니다. [Source] <a href="https://spring.io/security/cve-2026-22718">https://spring.io/security/cve-2026-22718</a> (2026-01-13)</li>
+<li>Solr extraction 모듈을 쓰면 업로드 입력을 제한하고, 파싱은 격리된 워커로 분리해야 합니다. [Source] <a href="https://solr.apache.org/security.html">https://solr.apache.org/security.html</a> (2025-12-09)</li>
+<li>SolrCell/Tika 경계에서는 파싱 실패/예외를 보안 이벤트로 기록하고 재시도를 제한해야 합니다. [Source] <a href="https://solr.apache.org/security.html">https://solr.apache.org/security.html</a> (2025-12-09)</li>
+<li>HttpComponents Core/Client 릴리스는 기능 업데이트가 아니라 경계 업데이트로 보고 빠르게 따라가야 합니다. [Source] <a href="https://hc.apache.org/news.html">https://hc.apache.org/news.html</a> (2025-12-16)</li>
+<li>HTTP/2 경계 이슈는 애플리케이션 코드가 아니라 프로토콜 스택에서 먼저 해결해야 합니다. 클라이언트/코어 버전 고정을 팀 정책으로 승격해야 합니다. [Source] <a href="https://hc.apache.org/news.html">https://hc.apache.org/news.html</a> (2025-12-16)</li>
 </ol>
 <!--CARD
-{"id":"checklist-1","kind":"checklist","header":"체크리스트","title":"이번 달 개발자 체크리스트(10)","bodyMd":"1. Node.js 런타임을 보안 릴리스 버전으로 업데이트합니다.\n2. 권한 모델 경로 검증은 realpath 기준 allowlist로 바꿉니다.\n3. vm+timeout 조합으로 유저 코드를 실행하지 않고 격리합니다.\n4. UDS 경로는 allowlist로 고정합니다.\n5. Struts를 6.1.1 이상으로 업데이트합니다.\n6. XML 파서에서 DTD/외부 엔티티를 비활성화합니다.\n7. JasperReports 외부 템플릿 업로드/로딩 경로를 차단합니다.\n8. JasperReports 관련 컴포넌트를 최신 패치로 업데이트합니다.\n9. Spring CLI VSCode 확장을 제거합니다.\n10. 신뢰되지 않은 워크스페이스는 기본 거부로 둡니다.","actionMd":"이번 카드의 항목을 완료 처리합니다.","source":"https://nodejs.org/es/blog/vulnerability/december-2025-security-releases "}
+{"id":"checklist-1","kind":"checklist","header":"체크리스트","title":"이번 달 개발자 체크리스트(10)","bodyMd":"1. Node.js 런타임을 보안 릴리스 버전으로 업데이트해야 합니다.\n2. 권한 모델 경로 검증은 realpath 기준 allowlist로 바꿔야 합니다.\n3. vm+timeout 조합으로 유저 코드를 실행하지 말고 격리하세요.\n4. UDS 경로는 코드 상수 allowlist로 고정해야 합니다.\n5. Struts는 6.1.1 이상으로 올려야 합니다.\n6. XML 파서에서 DTD/외부 엔티티를 비활성화해야 합니다.\n7. Solr extraction 모듈은 파싱을 격리된 워커로 분리해야 합니다.\n8. Solr 파싱 실패/예외는 보안 이벤트로 기록하고 재시도를 제한해야 합니다.\n9. HttpComponents Core/Client 릴리스는 경계 업데이트로 보고 따라가야 합니다.\n10. HTTP/2 경계 이슈는 프로토콜 스택 버전 고정 정책으로 승격해야 합니다.","actionMd":"이번 카드의 항목을 완료 처리합니다.","source":"https://nodejs.org/ko/blog/vulnerability/december-2025-security-releases "}
 -->
 
 
@@ -1989,110 +1989,109 @@ code.hljs {
 </thead>
 <tbody><tr>
 <td>CVE-2025-55131</td>
-<td>Node.js v20/v22/v24/v25 (Active release lines)</td>
+<td>Node.js 20.x, 22.x, 24.x, 25.x (<code>vm</code> + <code>timeout</code> 경로)</td>
 <td>C/I</td>
 <td>확인 불가</td>
-<td>Node.js를 보안 릴리스 버전으로 업데이트하고 <code>vm</code>+<code>timeout</code> 조합을 격리/제거합니다.</td>
-<td><a href="https://nodejs.org/es/blog/vulnerability/december-2025-security-releases">https://nodejs.org/es/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)<br><a href="https://cveawg.mitre.org/api/cve/CVE-2025-55131">https://cveawg.mitre.org/api/cve/CVE-2025-55131</a> (날짜 미표기)</td>
+<td><code>vm</code> + <code>timeout</code> 조합을 보안 경계로 쓰지 말고, 유저 코드는 별도 프로세스/컨테이너로 격리해야 합니다.</td>
+<td><a href="https://nodejs.org/ko/blog/vulnerability/december-2025-security-releases">https://nodejs.org/ko/blog/vulnerability/december-2025-security-releases</a> (2025-12-15)<br><a href="https://cveawg.mitre.org/api/cve/CVE-2025-55131">https://cveawg.mitre.org/api/cve/CVE-2025-55131</a> (날짜 미표기)</td>
 </tr>
 <tr>
 <td>CVE-2025-55130</td>
-<td>Node.js permission model 사용 시(v20/v22/v24/v25)</td>
+<td>Node.js permission model 사용 시</td>
 <td>C/I</td>
 <td>확인 불가</td>
-<td>Node.js를 업데이트하고 허용 경로를 realpath 기준 allowlist로 검증하며 symlink 체인을 차단합니다.</td>
-<td><a href="https://nodejs.org/es/blog/vulnerability/december-2025-security-releases">https://nodejs.org/es/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)<br><a href="https://cveawg.mitre.org/api/cve/CVE-2025-55130">https://cveawg.mitre.org/api/cve/CVE-2025-55130</a> (날짜 미표기)</td>
+<td>경로 검증은 문자열 비교를 버리고 <code>realpath</code> 기준 allowlist로 고정해야 합니다.</td>
+<td><a href="https://nodejs.org/ko/blog/vulnerability/december-2025-security-releases">https://nodejs.org/ko/blog/vulnerability/december-2025-security-releases</a> (2025-12-15)<br><a href="https://cveawg.mitre.org/api/cve/CVE-2025-55130">https://cveawg.mitre.org/api/cve/CVE-2025-55130</a> (날짜 미표기)</td>
 </tr>
 <tr>
 <td>CVE-2026-21636</td>
-<td>Node.js v25 <code>--permission</code> 사용 시</td>
+<td>Node.js 25.x permission model 사용 시 (UDS)</td>
 <td>C/I</td>
 <td>확인 불가</td>
-<td><code>--permission</code>을 보안 경계로 쓰지 않고 UDS 경로 allowlist 및 OS 격리로 보완합니다.</td>
-<td><a href="https://nodejs.org/es/blog/vulnerability/december-2025-security-releases">https://nodejs.org/es/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)<br><a href="https://cveawg.mitre.org/api/cve/CVE-2026-21636">https://cveawg.mitre.org/api/cve/CVE-2026-21636</a> (날짜 미표기)</td>
+<td>UDS 경로를 입력에서 직접 받지 말고 코드 상수 allowlist로 고정해야 합니다.</td>
+<td><a href="https://nodejs.org/ko/blog/vulnerability/december-2025-security-releases">https://nodejs.org/ko/blog/vulnerability/december-2025-security-releases</a> (2025-12-15)<br><a href="https://cveawg.mitre.org/api/cve/CVE-2026-21636">https://cveawg.mitre.org/api/cve/CVE-2026-21636</a> (날짜 미표기)</td>
 </tr>
 <tr>
 <td>CVE-2025-55132</td>
-<td>Node.js v20/v22/v24/v25 (permission model 사용 시)</td>
+<td>Node.js permission model 사용 시 (<code>fs.futimes</code>)</td>
 <td>I</td>
 <td>확인 불가</td>
-<td><code>fs.futimes()</code> 사용 여부를 점검하고 보안 의미로 타임스탬프를 신뢰하지 않도록 설계를 바꿉니다.</td>
-<td><a href="https://nodejs.org/es/blog/vulnerability/december-2025-security-releases">https://nodejs.org/es/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)<br><a href="https://cveawg.mitre.org/api/cve/CVE-2025-55132">https://cveawg.mitre.org/api/cve/CVE-2025-55132</a> (날짜 미표기)</td>
+<td><code>futimes()</code>로 의미 있는 보안 판단을 하지 말고, 타임스탬프는 감사/보안 근거에서 제외해야 합니다.</td>
+<td><a href="https://nodejs.org/ko/blog/vulnerability/december-2025-security-releases">https://nodejs.org/ko/blog/vulnerability/december-2025-security-releases</a> (2025-12-15)<br><a href="https://cveawg.mitre.org/api/cve/CVE-2025-55132">https://cveawg.mitre.org/api/cve/CVE-2025-55132</a> (날짜 미표기)</td>
 </tr>
 </tbody></table>
-<h2 id="22-항목별-설명">(2.2) 항목별 설명</h2><h3 id="nodejs-보안-릴리스-active-release-lines">Node.js 보안 릴리스 (Active release lines)</h3><p>Node.js가 여러 취약점을 패치한 보안 릴리스를 내놨습니다. 런타임을 최신 보안 버전으로 업데이트합니다. [Source] <a href="https://nodejs.org/es/blog/vulnerability/december-2025-security-releases">https://nodejs.org/es/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)</p>
-<h3 id="영향-여부-자가진단-빠른-확인">영향 여부 자가진단 (빠른 확인)</h3><p>지금 쓰고 있는 런타임 버전과 권한 모델 옵션을 켜뒀는지 확인합니다.</p>
+<h2 id="22-항목별-설명">(2.2) 항목별 설명</h2><h3 id="december-2025-보안-릴리스는-권한-모델-경계를-시험한-달입니다">December 2025 보안 릴리스는 “권한 모델 경계”를 시험한 달입니다</h3><p>권한 모델을 보안 경계로 선언한 순간, 우회 경로(symlink, UDS, <code>futimes</code>)가 곧 공격 표면이 됩니다. 권한 모델 옵션은 곧 정책 코드이므로 버전 업데이트와 테스트를 한 세트로 묶어야 합니다. [Source] <a href="https://nodejs.org/ko/blog/vulnerability/december-2025-security-releases">https://nodejs.org/ko/blog/vulnerability/december-2025-security-releases</a> (2025-12-15)</p>
+<h3 id="영향-여부-자가진단-빠른-확인">영향 여부 자가진단 (빠른 확인)</h3><p>지금 런타임 버전과 권한 모델 옵션 사용 여부를 먼저 확인합니다.</p>
 <pre><code class="language-bash">node -v
-ps aux | grep -E <span class="hljs-string">&quot;node .*--permission|node .*--allow-fs-&quot;</span> | grep -v grep || <span class="hljs-literal">true</span>
+ps aux | grep -E <span class="hljs-string">&quot;node .*--permission|node .*--allow-fs-|node .*--allow-net&quot;</span> | grep -v grep || <span class="hljs-literal">true</span>
 </code></pre>
-<p>설정된 게 있다면 보안 릴리스 버전으로 업데이트합니다.</p>
-<h3 id="cve-2025-55131-vmtimeout-쓰면-메모리-샐-수-있음">CVE-2025-55131: <code>vm</code>+<code>timeout</code> 쓰면 메모리 샐 수 있음</h3><p><code>vm</code> 모듈에서 <code>timeout</code>으로 실행을 강제로 끊으면, 버퍼 초기화가 제대로 안 돼서 이전 메모리에 있던 데이터가 노출될 수 있습니다. <code>vm</code>으로 유저 코드를 돌리는 건 위험하니 별도 프로세스나 컨테이너로 격리합니다. [Source] <a href="https://nodejs.org/es/blog/vulnerability/december-2025-security-releases">https://nodejs.org/es/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)
-[Source] <a href="https://cveawg.mitre.org/api/cve/CVE-2025-55131">https://cveawg.mitre.org/api/cve/CVE-2025-55131</a> (날짜 미표기)</p>
-<h3 id="cve-2025-55130-권한-모델-symlink로-우회-가능">CVE-2025-55130: 권한 모델, symlink로 우회 가능</h3><p><code>--allow-fs-read</code> 같은 옵션만 믿으면 안 됩니다. 입력 경로와 symlink 조합으로 권한 밖의 파일에 접근할 수 있습니다. 허용 경로는 반드시 <code>realpath(심볼릭 링크 해소 경로)</code> 기준으로 검증합니다. [Source] <a href="https://nodejs.org/es/blog/vulnerability/december-2025-security-releases">https://nodejs.org/es/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)
-[Source] <a href="https://cveawg.mitre.org/api/cve/CVE-2025-55130">https://cveawg.mitre.org/api/cve/CVE-2025-55130</a> (날짜 미표기)</p>
-<h3 id="cve-2026-21636-네트워크-막아도-uds로컬-소켓는-뚫림">CVE-2026-21636: 네트워크 막아도 UDS(로컬 소켓)는 뚫림</h3><p><code>--permission</code>으로 네트워크를 막아도 UDS 연결은 열릴 수 있습니다. UDS 경로는 입력에서 직접 받지 말고 allowlist로 고정합니다. [Source] <a href="https://nodejs.org/es/blog/vulnerability/december-2025-security-releases">https://nodejs.org/es/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)
-[Source] <a href="https://cveawg.mitre.org/api/cve/CVE-2026-21636">https://cveawg.mitre.org/api/cve/CVE-2026-21636</a> (날짜 미표기)</p>
-<h3 id="cve-2025-55132-fsfutimes로-타임스탬프-조작">CVE-2025-55132: <code>fs.futimes()</code>로 타임스탬프 조작</h3><p>읽기 권한만 있어도 파일 타임스탬프를 바꿀 수 있습니다. 타임스탬프를 보안 신호로 쓰고 있다면 설계를 바꿉니다. [Source] <a href="https://nodejs.org/es/blog/vulnerability/december-2025-security-releases">https://nodejs.org/es/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)
-[Source] <a href="https://cveawg.mitre.org/api/cve/CVE-2025-55132">https://cveawg.mitre.org/api/cve/CVE-2025-55132</a> (날짜 미표기)</p>
-<h2 id="23-이번-달-취약-개발-패턴-top-5">(2.3) 이번 달 취약 개발 패턴 Top 5</h2><h3 id="1-permission-모델을-켰으니-안전이라는-가정">1) “permission 모델을 켰으니 안전”이라는 가정</h3><p>공격자는 symlink/UDS 같은 우회 경로로 “권한 옵션의 의도”와 다른 접근을 만듭니다. 허용 경로/소켓 경로를 allowlist로 고정합니다. 런타임을 업데이트합니다.</p>
+<p>권한 모델을 보안 경계로 쓰고 있다면 보안 릴리스 버전으로 올리고 우회 경로 테스트를 추가해야 합니다. [Source] <a href="https://nodejs.org/ko/blog/vulnerability/december-2025-security-releases">https://nodejs.org/ko/blog/vulnerability/december-2025-security-releases</a> (2025-12-15)</p>
+<h3 id="cve-2025-55131-vm-timeout-조합은-메모리-경계를-흐립니다">CVE-2025-55131: <code>vm</code> + <code>timeout</code> 조합은 메모리 경계를 흐립니다</h3><p><code>vm</code>에서 <code>timeout</code>으로 실행을 강제 중단하면 버퍼가 0으로 채워지지 않는 경로가 열립니다. 유저 코드를 <code>vm</code>으로 직접 실행하는 설계는 폐기하고, 격리된 실행 단위로 분리해야 합니다. [Source] <a href="https://cveawg.mitre.org/api/cve/CVE-2025-55131">https://cveawg.mitre.org/api/cve/CVE-2025-55131</a> (날짜 미표기)</p>
+<h3 id="cve-2025-55130-symlink-우회는-문자열-경계를-부숩니다">CVE-2025-55130: symlink 우회는 “문자열 경계”를 부숩니다</h3><p>허용 경로를 문자열로 비교하면 symlink 체인에서 경계가 무너집니다. 파일 경계는 <code>realpath</code>로 먼저 해소한 뒤 allowlist로 고정해야 합니다. [Source] <a href="https://cveawg.mitre.org/api/cve/CVE-2025-55130">https://cveawg.mitre.org/api/cve/CVE-2025-55130</a> (날짜 미표기)</p>
+<h3 id="cve-2026-21636-uds는-네트워크-차단을-우회하는-로컬-통로입니다">CVE-2026-21636: UDS는 네트워크 차단을 우회하는 로컬 통로입니다</h3><p><code>--allow-net</code>이 꺼져 있어도 UDS는 로컬 서비스로 붙을 수 있습니다. <code>socketPath</code> 같은 옵션을 입력에서 직접 받지 말고, 코드 상수 allowlist로 고정해야 합니다. [Source] <a href="https://cveawg.mitre.org/api/cve/CVE-2026-21636">https://cveawg.mitre.org/api/cve/CVE-2026-21636</a> (날짜 미표기)</p>
+<h3 id="cve-2025-55132-타임스탬프는-보안-판단-근거로-쓰면-안-됩니다">CVE-2025-55132: 타임스탬프는 보안 판단 근거로 쓰면 안 됩니다</h3><p><code>futimes()</code>는 읽기 권한만 있어도 타임스탬프를 바꿀 수 있는 경로가 있었습니다. 타임스탬프 기반 보안 판단(최근 수정 여부 판단 등)은 설계에서 제거해야 합니다. [Source] <a href="https://cveawg.mitre.org/api/cve/CVE-2025-55132">https://cveawg.mitre.org/api/cve/CVE-2025-55132</a> (날짜 미표기)</p>
+<h2 id="23-이번-달-취약-개발-패턴-top-5">(2.3) 이번 달 취약 개발 패턴 Top 5</h2><h3 id="패턴-1-권한-모델-옵션을-보안-경계-선언으로-끝내기">패턴 1) 권한 모델 옵션을 “보안 경계 선언”으로 끝내기</h3><p>왜 위험한지: 옵션은 선언이고, 경계는 우회 경로에서 깨집니다. 경계를 선언만 하고 우회 경로 테스트를 빼면 보안 경계가 문서에만 존재하게 됩니다.</p>
 <p>안 좋은 예:</p>
-<pre><code class="language-js"><span class="hljs-comment">// permission model을 켠 상태에서 입력을 그대로 신뢰</span>
-fs.<span class="hljs-title function_">readFileSync</span>(userInput.<span class="hljs-property">path</span>, <span class="hljs-string">&quot;utf8&quot;</span>)
+<pre><code class="language-js"><span class="hljs-comment">// 옵션을 켰으니 안전하다고 가정</span>
+<span class="hljs-title function_">spawn</span>(<span class="hljs-string">&quot;node&quot;</span>, [<span class="hljs-string">&quot;--permission&quot;</span>, <span class="hljs-string">&quot;app.js&quot;</span>]);
 </code></pre>
 <p>안전한 대안:</p>
-<pre><code class="language-js"><span class="hljs-keyword">import</span> path <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;node:path&quot;</span>
+<pre><code class="language-js"><span class="hljs-comment">// 옵션 + 우회 경로 테스트를 같이 고정</span>
+<span class="hljs-keyword">const</span> allowed = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Set</span>([<span class="hljs-string">&quot;/srv/app/data&quot;</span>]);
+<span class="hljs-keyword">function</span> <span class="hljs-title function_">isAllowed</span>(<span class="hljs-params">p</span>) {
+  <span class="hljs-keyword">const</span> rp = fs.<span class="hljs-title function_">realpathSync</span>(p);
+  <span class="hljs-keyword">return</span> allowed.<span class="hljs-title function_">has</span>(rp);
+}
+</code></pre>
+<p>옵션은 정책 코드로 취급하고, 우회 경로 테스트를 릴리스 체크리스트에 고정해야 합니다. [Source] <a href="https://nodejs.org/ko/blog/vulnerability/december-2025-security-releases">https://nodejs.org/ko/blog/vulnerability/december-2025-security-releases</a> (2025-12-15)</p>
+<h3 id="패턴-2-파일-경계를-문자열로-비교하기">패턴 2) 파일 경계를 문자열로 비교하기</h3><p>왜 위험한지: symlink 체인은 문자열 경계를 쉽게 탈출합니다. 경로는 해소하고 비교해야 경계가 됩니다.</p>
+<p>안 좋은 예:</p>
+<pre><code class="language-js"><span class="hljs-keyword">if</span> (userPath.<span class="hljs-title function_">startsWith</span>(<span class="hljs-string">&quot;/srv/app/data&quot;</span>)) {
+  fs.<span class="hljs-title function_">readFileSync</span>(userPath);
+}
+</code></pre>
+<p>안전한 대안:</p>
+<pre><code class="language-js"><span class="hljs-keyword">const</span> base = fs.<span class="hljs-title function_">realpathSync</span>(<span class="hljs-string">&quot;/srv/app/data&quot;</span>);
+<span class="hljs-keyword">const</span> target = fs.<span class="hljs-title function_">realpathSync</span>(userPath);
+<span class="hljs-keyword">if</span> (target === base || target.<span class="hljs-title function_">startsWith</span>(base + path.<span class="hljs-property">sep</span>)) {
+  fs.<span class="hljs-title function_">readFileSync</span>(target);
+}
+</code></pre>
+<p>허용 경로 비교는 <code>realpath</code> 이후 allowlist로 고정해야 합니다. [Source] <a href="https://cveawg.mitre.org/api/cve/CVE-2025-55130">https://cveawg.mitre.org/api/cve/CVE-2025-55130</a> (날짜 미표기)</p>
+<h3 id="패턴-3-vm을-유저-코드-실행-경계로-쓰기">패턴 3) <code>vm</code>을 유저 코드 실행 경계로 쓰기</h3><p>왜 위험한지: <code>vm</code>은 격리 경계가 아니라 실행 도구입니다. 타임아웃/리소스 경계까지 책임지지 않습니다.</p>
+<p>안 좋은 예:</p>
+<pre><code class="language-js">vm.<span class="hljs-title function_">runInNewContext</span>(code, sandbox, { <span class="hljs-attr">timeout</span>: <span class="hljs-number">1000</span> });
+</code></pre>
+<p>안전한 대안:</p>
+<pre><code class="language-bash"><span class="hljs-comment"># 유저 코드는 별도 프로세스/컨테이너에서 실행</span>
+node worker.js
+</code></pre>
+<p>유저 코드 실행은 런타임 옵션이 아니라 격리 단위로 설계해야 합니다. [Source] <a href="https://cveawg.mitre.org/api/cve/CVE-2025-55131">https://cveawg.mitre.org/api/cve/CVE-2025-55131</a> (날짜 미표기)</p>
+<h3 id="패턴-4-네트워크-차단을-tcphttp로만-가정하기">패턴 4) 네트워크 차단을 TCP/HTTP로만 가정하기</h3><p>왜 위험한지: 로컬 소켓은 네트워크 차단 정책의 사각지대가 되기 쉽습니다. 내부 서비스는 UDS로 더 자주 열려 있습니다.</p>
+<p>안 좋은 예:</p>
+<pre><code class="language-js"><span class="hljs-comment">// 외부 입력이 socketPath로 그대로 들어옴</span>
+net.<span class="hljs-title function_">connect</span>({ <span class="hljs-attr">socketPath</span>: userInput });
+</code></pre>
+<p>안전한 대안:</p>
+<pre><code class="language-js"><span class="hljs-keyword">const</span> sockets = {
+  <span class="hljs-attr">metrics</span>: <span class="hljs-string">&quot;/var/run/metrics.sock&quot;</span>,
+};
+net.<span class="hljs-title function_">connect</span>({ <span class="hljs-attr">socketPath</span>: sockets.<span class="hljs-property">metrics</span> });
+</code></pre>
+<p>UDS 경로는 외부 입력에서 분리하고 코드 상수로 고정해야 합니다. [Source] <a href="https://cveawg.mitre.org/api/cve/CVE-2026-21636">https://cveawg.mitre.org/api/cve/CVE-2026-21636</a> (날짜 미표기)</p>
+<h3 id="패턴-5-타임스탬프를-보안-근거로-삼기">패턴 5) 타임스탬프를 보안 근거로 삼기</h3><p>왜 위험한지: 타임스탬프는 변경 비용이 낮고 우회 경로가 자주 발견됩니다. 감사 로그와 보안 판단 근거는 분리해야 합니다.</p>
+<p>안 좋은 예:</p>
+<pre><code class="language-js"><span class="hljs-keyword">if</span> (stat.<span class="hljs-property">mtimeMs</span> &gt; lastSeen) {
+  <span class="hljs-title function_">trustThisFile</span>();
+}
+</code></pre>
+<p>안전한 대안:</p>
+<pre><code class="language-js"><span class="hljs-comment">// 보안 판단은 서명/해시/출처 기반으로 고정</span>
+<span class="hljs-title function_">verifySignature</span>(file);
+</code></pre>
+<p>타임스탬프는 관측 지표로만 쓰고 보안 판단 근거에서 제외해야 합니다. [Source] <a href="https://cveawg.mitre.org/api/cve/CVE-2025-55132">https://cveawg.mitre.org/api/cve/CVE-2025-55132</a> (날짜 미표기)</p>
+<h2 id="24-운영-참고선택">(2.4) 운영 참고(선택)</h2><p>(비워 둠)</p>
 
-<span class="hljs-keyword">const</span> <span class="hljs-variable constant_">ROOT</span> = <span class="hljs-string">&quot;/srv/app/data&quot;</span>
-<span class="hljs-keyword">const</span> p = path.<span class="hljs-title function_">resolve</span>(<span class="hljs-variable constant_">ROOT</span>, userInput.<span class="hljs-property">path</span>)
-<span class="hljs-keyword">if</span> (!p.<span class="hljs-title function_">startsWith</span>(<span class="hljs-variable constant_">ROOT</span> + path.<span class="hljs-property">sep</span>)) <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Error</span>(<span class="hljs-string">&quot;blocked&quot;</span>)
-fs.<span class="hljs-title function_">readFileSync</span>(p, <span class="hljs-string">&quot;utf8&quot;</span>)
-</code></pre>
-<p>팀 규칙으로 고정합니다.
-[Source] <a href="https://nodejs.org/es/blog/vulnerability/december-2025-security-releases">https://nodejs.org/es/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)</p>
-<h3 id="2-symlinkrealpath를-고려하지-않은-경로-검증">2) symlink/realpath를 고려하지 않은 “경로 검증”</h3><p>공격자는 문자열 기반 경로 체크를 우회해 허용 디렉터리 밖 파일에 접근합니다. <code>realpath(심볼릭 링크 해소 경로)</code> 기준 allowlist 검증을 적용합니다.</p>
-<p>안 좋은 예:</p>
-<pre><code class="language-js"><span class="hljs-keyword">if</span> (!userInput.<span class="hljs-property">path</span>.<span class="hljs-title function_">startsWith</span>(<span class="hljs-string">&quot;/srv/app/data/&quot;</span>)) <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Error</span>(<span class="hljs-string">&quot;blocked&quot;</span>)
-fs.<span class="hljs-title function_">readFileSync</span>(userInput.<span class="hljs-property">path</span>, <span class="hljs-string">&quot;utf8&quot;</span>)
-</code></pre>
-<p>안전한 대안:</p>
-<pre><code class="language-js"><span class="hljs-keyword">const</span> real = fs.<span class="hljs-title function_">realpathSync</span>(userInput.<span class="hljs-property">path</span>)
-<span class="hljs-keyword">if</span> (!real.<span class="hljs-title function_">startsWith</span>(<span class="hljs-string">&quot;/srv/app/data/&quot;</span>)) <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Error</span>(<span class="hljs-string">&quot;blocked&quot;</span>)
-fs.<span class="hljs-title function_">readFileSync</span>(real, <span class="hljs-string">&quot;utf8&quot;</span>)
-</code></pre>
-<p>팀 규칙으로 고정합니다.
-[Source] <a href="https://cveawg.mitre.org/api/cve/CVE-2025-55130">https://cveawg.mitre.org/api/cve/CVE-2025-55130</a> (날짜 미표기)</p>
-<h3 id="3-vm에서-유저-코드를-돌리고-timeout으로-끊기">3) <code>vm</code>에서 유저 코드를 돌리고 timeout으로 끊기</h3><p>공격자는 타이밍 경합으로 버퍼 초기화/정리 타이밍을 흔들어 정보 노출을 유도합니다. 유저 코드는 별도 프로세스/컨테이너로 격리합니다. 결과는 IPC로만 받습니다.</p>
-<p>안 좋은 예:</p>
-<pre><code class="language-js">vm.<span class="hljs-title function_">runInNewContext</span>(untrustedCode, sandbox, { <span class="hljs-attr">timeout</span>: <span class="hljs-number">50</span> })
-</code></pre>
-<p>안전한 대안:</p>
-<pre><code class="language-js"><span class="hljs-comment">// untrusted code는 별도 프로세스/컨테이너에서 실행하고</span>
-<span class="hljs-comment">// 결과만 IPC로 받습니다.</span>
-</code></pre>
-<p>팀 규칙으로 고정합니다.
-[Source] <a href="https://cveawg.mitre.org/api/cve/CVE-2025-55131">https://cveawg.mitre.org/api/cve/CVE-2025-55131</a> (날짜 미표기)</p>
-<h3 id="4-uds-경로를-입력으로-받아-내부-소켓에-연결">4) UDS 경로를 입력으로 받아 내부 소켓에 연결</h3><p>공격자는 네트워크 권한 경계를 우회하기 위해 로컬 소켓(UDS) 경로를 입력으로 주입합니다. UDS 경로는 allowlist로 고정하고 입력에서 직접 받지 않습니다.</p>
-<p>안 좋은 예:</p>
-<pre><code class="language-js">net.<span class="hljs-title function_">connect</span>(userInput.<span class="hljs-property">socketPath</span>)
-</code></pre>
-<p>안전한 대안:</p>
-<pre><code class="language-js"><span class="hljs-keyword">const</span> <span class="hljs-variable constant_">ALLOWED_UDS</span> = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Set</span>([<span class="hljs-string">&quot;/run/app.sock&quot;</span>])
-<span class="hljs-keyword">if</span> (!<span class="hljs-variable constant_">ALLOWED_UDS</span>.<span class="hljs-title function_">has</span>(userInput.<span class="hljs-property">socketPath</span>)) <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Error</span>(<span class="hljs-string">&quot;blocked&quot;</span>)
-net.<span class="hljs-title function_">connect</span>(userInput.<span class="hljs-property">socketPath</span>)
-</code></pre>
-<p>팀 규칙으로 고정합니다.
-[Source] <a href="https://cveawg.mitre.org/api/cve/CVE-2026-21636">https://cveawg.mitre.org/api/cve/CVE-2026-21636</a> (날짜 미표기)</p>
-<h3 id="5-파일-타임스탬프를-보안-신호로-신뢰">5) 파일 타임스탬프를 보안 신호로 신뢰</h3><p>공격자는 메타데이터(타임스탬프) 조작 가능성을 악용합니다. 타임스탬프를 보안 판단에 직접 쓰지 않고 별도 감사 이벤트로 전환합니다.</p>
-<p>안 좋은 예:</p>
-<pre><code class="language-js"><span class="hljs-keyword">if</span> (stat.<span class="hljs-property">mtimeMs</span> &lt; lastSeen) <span class="hljs-title function_">deny</span>() <span class="hljs-comment">// 타임스탬프를 보안 판단으로 사용</span>
-</code></pre>
-<p>안전한 대안:</p>
-<pre><code class="language-js"><span class="hljs-comment">// 파일 내용 해시/서명 검증 + 별도 감사 이벤트 기록으로 전환</span>
-</code></pre>
-<p>팀 규칙으로 고정합니다.
-[Source] <a href="https://cveawg.mitre.org/api/cve/CVE-2025-55132">https://cveawg.mitre.org/api/cve/CVE-2025-55132</a> (날짜 미표기)</p>
-<p>팀이 오늘 적용할 규칙/코드 조치를 PR 체크리스트에 반영합니다.</p>
-<h2 id="24-운영-참고선택">(2.4) 운영 참고(선택)</h2>
 </section>
 <section class="view-java" data-view-section="java">
 <h1 id="3-java">(3) Java</h1><h2 id="31-cve이슈-표">(3.1) CVE/이슈 표</h2><table>
@@ -2107,115 +2106,105 @@ net.<span class="hljs-title function_">connect</span>(userInput.<span class="hlj
 </tr>
 </thead>
 <tbody><tr>
-<td>CVE-2025-68493 (S2-069)</td>
-<td>Apache Struts 영향 버전(공지 참조)</td>
-<td>C/I/A</td>
-<td>확인 불가</td>
-<td>Struts를 6.1.1 이상으로 업데이트하고 XML 파서에서 DTD/외부 엔티티를 비활성화합니다.</td>
-<td><a href="https://cwiki.apache.org/confluence/display/WW/S2-069">https://cwiki.apache.org/confluence/display/WW/S2-069</a> (2025-12-19)<br><a href="https://cveawg.mitre.org/api/cve/CVE-2025-68493">https://cveawg.mitre.org/api/cve/CVE-2025-68493</a> (날짜 미표기)</td>
-</tr>
-<tr>
-<td>CVE-2025-10492</td>
-<td>JasperReports 관련 컴포넌트(공지 참조)</td>
-<td>C/I/A</td>
-<td>확인 불가</td>
-<td>JasperReports 컴포넌트를 업데이트하고 외부 템플릿/직렬화 입력 경로를 차단합니다.</td>
-<td><a href="https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability">https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability</a> (2026-01-12)<br><a href="https://cveawg.mitre.org/api/cve/CVE-2025-10492">https://cveawg.mitre.org/api/cve/CVE-2025-10492</a> (날짜 미표기)</td>
-</tr>
-<tr>
-<td>CVE-2026-22718</td>
-<td>Spring CLI VSCode Extension &lt;= 0.9.0 (EOL)</td>
+<td>CVE-2025-68493</td>
+<td>Struts 6.0.0 ~ 6.1.0 (XWork XML 파싱 경로)</td>
 <td>C/I</td>
 <td>확인 불가</td>
-<td>해당 확장을 제거하고 워크스페이스 신뢰를 기본 거부로 설정합니다.</td>
-<td><a href="https://spring.io/security/cve-2026-22718">https://spring.io/security/cve-2026-22718</a> (2026-01-13)<br><a href="https://cveawg.mitre.org/api/cve/CVE-2026-22718">https://cveawg.mitre.org/api/cve/CVE-2026-22718</a> (날짜 미표기)</td>
+<td>Struts를 6.1.1 이상으로 업데이트하고, XML 외부 엔티티를 비활성화해야 합니다.</td>
+<td><a href="https://cwiki.apache.org/confluence/display/WW/S2-069">https://cwiki.apache.org/confluence/display/WW/S2-069</a> (2025-12-19)</td>
+</tr>
+<tr>
+<td>CVE-2025-66516</td>
+<td>Apache Solr 6.2.0 ~ 9.10.0 (extraction 모듈 사용 시)</td>
+<td>C/I</td>
+<td>확인 불가</td>
+<td>extraction 모듈 경계에서 파싱을 격리 실행으로 분리하고, 업로드 입력을 제한해야 합니다.</td>
+<td><a href="https://solr.apache.org/security.html">https://solr.apache.org/security.html</a> (2025-12-09)</td>
+</tr>
+<tr>
+<td>(이슈) HTTP/2 경계 업데이트</td>
+<td>Apache HttpComponents Core/Client 5.4/5.6 라인</td>
+<td>C/I</td>
+<td>확인 불가</td>
+<td>HTTP 스택 릴리스는 기능 업데이트가 아니라 경계 업데이트로 취급하고 빠르게 따라가야 합니다.</td>
+<td><a href="https://hc.apache.org/news.html">https://hc.apache.org/news.html</a> (2025-12-16)<br><a href="https://hc.apache.org/news.html">https://hc.apache.org/news.html</a> (2025-12-22)</td>
 </tr>
 </tbody></table>
-<h2 id="32-항목별-설명">(3.2) 항목별 설명</h2><h3 id="cve-2025-68493-s2-069-struts-xxe-다시-등장">CVE-2025-68493 (S2-069): Struts XXE 다시 등장</h3><p>XML 파서 기본값을 그대로 쓰면 XXE 공격에 또 당할 수 있습니다. Struts를 6.1.1 이상으로 올리고 XML 파서에서 DTD/외부 엔티티를 비활성화합니다. [Source] <a href="https://cwiki.apache.org/confluence/display/WW/S2-069">https://cwiki.apache.org/confluence/display/WW/S2-069</a> (2025-12-19)
-[Source] <a href="https://cveawg.mitre.org/api/cve/CVE-2025-68493">https://cveawg.mitre.org/api/cve/CVE-2025-68493</a> (날짜 미표기)</p>
-<h3 id="cve-2025-10492-jasperreports-역직렬화-입력">CVE-2025-10492: JasperReports 역직렬화 입력</h3><p>리포트 템플릿을 업로드받아서 그대로 렌더링하면 RCE로 이어집니다. 템플릿 업로드를 차단합니다. 필요하면 격리된 환경에서만 렌더링합니다. [Source] <a href="https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability">https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability</a> (2026-01-12)
-[Source] <a href="https://cveawg.mitre.org/api/cve/CVE-2025-10492">https://cveawg.mitre.org/api/cve/CVE-2025-10492</a> (날짜 미표기)</p>
-<h3 id="cve-2026-22718-개발-도구-확장이-뚫리는-경우">CVE-2026-22718: 개발 도구 확장이 뚫리는 경우</h3><p>EOL된 개발 도구는 패치가 없습니다. 확장을 제거합니다. 워크스페이스 신뢰를 기본 거부로 둡니다. [Source] <a href="https://spring.io/security/cve-2026-22718">https://spring.io/security/cve-2026-22718</a> (2026-01-13)
-[Source] <a href="https://cveawg.mitre.org/api/cve/CVE-2026-22718">https://cveawg.mitre.org/api/cve/CVE-2026-22718</a> (날짜 미표기)</p>
-<h3 id="영향-여부-자가진단빠른-확인">영향 여부 자가진단(빠른 확인)</h3><p>아래 명령으로 의존성(Struts/JasperReports)과 개발 도구(취약 확장) 설치 여부를 확인합니다.</p>
-<pre><code class="language-bash">mvn -q -DskipTests dependency:tree | grep -Ei <span class="hljs-string">&quot;struts2|jasperreports&quot;</span> || <span class="hljs-literal">true</span>
-code --list-extensions | grep -Ei <span class="hljs-string">&quot;spring|cli&quot;</span> || <span class="hljs-literal">true</span>
+<h2 id="32-항목별-설명">(3.2) 항목별 설명</h2><h3 id="struts-s2-069-xml-기본값은-공격-경로입니다">Struts S2-069: XML 기본값은 공격 경로입니다</h3><p>오래된 XWork XML 파싱 경로는 외부 엔티티/DTD가 열리면 곧 XXE 통로가 됩니다. Struts 버전 업데이트와 XML 외부 엔티티 차단 설정을 같은 변경으로 묶어야 합니다. [Source] <a href="https://cwiki.apache.org/confluence/display/WW/S2-069">https://cwiki.apache.org/confluence/display/WW/S2-069</a> (2025-12-19)</p>
+<h3 id="영향-여부-자가진단-빠른-확인-1">영향 여부 자가진단 (빠른 확인)</h3><p>Struts/Solr/HttpComponents 버전을 빠르게 점검합니다.</p>
+<pre><code class="language-bash">./gradlew dependencies --configuration runtimeClasspath | grep -E <span class="hljs-string">&quot;struts|xwork|solr|tika|httpclient|httpcore&quot;</span> || <span class="hljs-literal">true</span>
+mvn -q -DincludeScope=runtime dependency:tree | grep -E <span class="hljs-string">&quot;struts|solr|tika|httpclient|httpcore&quot;</span> || <span class="hljs-literal">true</span>
 </code></pre>
-<p>영향 가능성이 있으면 라이브러리를 업데이트하고 확장을 제거합니다.</p>
-<h2 id="33-이번-달-취약-개발-패턴-top-5">(3.3) 이번 달 취약 개발 패턴 Top 5</h2><h3 id="1-외부-입력xml을-파서-기본값으로-처리">1) 외부 입력(XML)을 파서 기본값으로 처리</h3><p>공격자는 XXE/정보 노출을 노리고 파서 기본값을 악용합니다. 외부 엔티티/DTD를 비활성화합니다. 허용 스키마만 처리합니다.</p>
+<p>취약 버전이 보이면 먼저 버전을 올리고, 파싱/HTTP 경계 설정을 기본값으로 고정해야 합니다. [Source] <a href="https://solr.apache.org/security.html">https://solr.apache.org/security.html</a> (2025-12-09)</p>
+<h3 id="apache-solr-2025-12-09-공지-extraction-모듈-경계는-곧-파싱-경계입니다">Apache Solr 2025-12-09 공지: extraction 모듈 경계는 곧 파싱 경계입니다</h3><p>Solr의 extraction 모듈은 내부적으로 Tika를 사용하며, PDF 파싱 경계는 곧 파일 접근 경계가 됩니다. SolrCell/Tika 경계는 애플리케이션 권한에서 분리하고 격리된 파싱 워커로 분리해야 합니다. [Source] <a href="https://solr.apache.org/security.html">https://solr.apache.org/security.html</a> (2025-12-09)</p>
+<h3 id="apache-httpcomponents-2025-12-릴리스-http-스택을-경계-코드로-취급해야-합니다">Apache HttpComponents 2025-12 릴리스: HTTP 스택을 경계 코드로 취급해야 합니다</h3><p>HTTP/2 지원과 핵심 네트워킹 변경은 기능 이슈가 아니라 경계 이슈입니다. 클라이언트/코어 버전은 라이브러리 업데이트가 아니라 보안 경계 업데이트로 보고 빠르게 따라가야 합니다. [Source] <a href="https://hc.apache.org/news.html">https://hc.apache.org/news.html</a> (2025-12-16)</p>
+<h2 id="33-이번-달-취약-개발-패턴-top-5">(3.3) 이번 달 취약 개발 패턴 Top 5</h2><h3 id="패턴-1-xml-파서를-프레임워크-기본값에-맡기기">패턴 1) XML 파서를 “프레임워크 기본값”에 맡기기</h3><p>왜 위험한지: XML 기본값은 외부 엔티티/DTD가 열려 있는 경우가 많습니다. 기본값은 기능 친화적이고, 보안 기본값은 아닙니다.</p>
 <p>안 좋은 예:</p>
-<pre><code class="language-java"><span class="hljs-type">Document</span> <span class="hljs-variable">doc</span> <span class="hljs-operator">=</span> DocumentBuilderFactory.newInstance()
-  .newDocumentBuilder()
-  .parse(inputStream);
+<pre><code class="language-xml"><span class="hljs-comment">&lt;!-- 기본 XML 파서를 그대로 신뢰 --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">constant</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;xwork.someXmlSetting&quot;</span> <span class="hljs-attr">value</span>=<span class="hljs-string">&quot;default&quot;</span> /&gt;</span>
 </code></pre>
 <p>안전한 대안:</p>
-<pre><code class="language-java"><span class="hljs-type">DocumentBuilderFactory</span> <span class="hljs-variable">f</span> <span class="hljs-operator">=</span> DocumentBuilderFactory.newInstance();
-f.setFeature(<span class="hljs-string">&quot;http:apache.org/xml/features/disallow-doctype-decl&quot;</span>, <span class="hljs-literal">true</span>);
-f.setFeature(<span class="hljs-string">&quot;http:xml.org/sax/features/external-general-entities&quot;</span>, <span class="hljs-literal">false</span>);
-f.setFeature(<span class="hljs-string">&quot;http:xml.org/sax/features/external-parameter-entities&quot;</span>, <span class="hljs-literal">false</span>);
+<pre><code class="language-bash">-Djavax.xml.accessExternalDTD=<span class="hljs-string">&quot;&quot;</span>
+-Djavax.xml.accessExternalSchema=<span class="hljs-string">&quot;&quot;</span>
+-Djavax.xml.accessExternalStylesheet=<span class="hljs-string">&quot;&quot;</span>
 </code></pre>
-<p>팀 규칙으로 고정합니다.
-[Source] <a href="https://cwiki.apache.org/confluence/display/WW/S2-069">https://cwiki.apache.org/confluence/display/WW/S2-069</a> (2025-12-19)</p>
-<h3 id="2-eol-struts를-그대로-유지">2) EOL Struts를 그대로 유지</h3><p>공격자는 패치가 없는 EOL 버전을 노립니다. Struts를 6.1.1 이상으로 업데이트합니다.</p>
+<p>XML 외부 엔티티 차단은 프레임워크 설정과 JVM 설정을 함께 고정해야 합니다. [Source] <a href="https://cwiki.apache.org/confluence/display/WW/S2-069">https://cwiki.apache.org/confluence/display/WW/S2-069</a> (2025-12-19)</p>
+<h3 id="패턴-2-파싱-경계를-애플리케이션-권한으로-직접-실행하기">패턴 2) 파싱 경계를 애플리케이션 권한으로 직접 실행하기</h3><p>왜 위험한지: 파싱은 복잡하고 취약점 밀도가 높은 영역입니다. 애플리케이션 권한으로 직접 파싱하면 사고가 곧 권한 사고가 됩니다.</p>
 <p>안 좋은 예:</p>
-<pre><code class="language-text">Struts 2.x EOL 버전을 그대로 운영
+<pre><code class="language-java"><span class="hljs-comment">// 앱 권한으로 바로 파싱</span>
+parser.parse(uploadedStream, handler, metadata, context);
 </code></pre>
 <p>안전한 대안:</p>
-<pre><code class="language-text">Struts 6.1.1 이상으로 업데이트
+<pre><code class="language-bash"><span class="hljs-comment"># 파싱은 격리된 워커/컨테이너에서 실행</span>
+./bin/parse-worker
 </code></pre>
-<p>팀 규칙으로 고정합니다.
-[Source] <a href="https://www.mail-archive.com/announcements%40struts.apache.org/msg00144.html">https://www.mail-archive.com/announcements%40struts.apache.org/msg00144.html</a> (2026-01-11)</p>
-<h3 id="3-jasperreports-템플릿-업로드를-신뢰">3) JasperReports 템플릿 업로드를 신뢰</h3><p>공격자는 템플릿=코드 경로를 노립니다. 템플릿 업로드를 차단합니다. 격리된 렌더러에서만 처리합니다.</p>
+<p>문서 파싱은 라이브러리 사용 문제가 아니라 격리 실행 문제로 설계해야 합니다. [Source] <a href="https://solr.apache.org/security.html">https://solr.apache.org/security.html</a> (2025-12-09)</p>
+<h3 id="패턴-3-보안-공지를-버전만-올리면-끝으로-처리하기">패턴 3) 보안 공지를 “버전만 올리면 끝”으로 처리하기</h3><p>왜 위험한지: 파싱/HTTP/권한 경계 이슈는 설정과 코드 경계까지 건드립니다. 버전 업데이트는 출발점이고, 경계 테스트가 본체입니다.</p>
 <p>안 좋은 예:</p>
-<pre><code class="language-java">compileAndRender(userUploadedTemplate);
+<pre><code class="language-bash">./gradlew dependencies --write-locks
+<span class="hljs-comment"># 버전 잠금만 갱신하고 테스트는 생략</span>
 </code></pre>
 <p>안전한 대안:</p>
-<pre><code class="language-java"><span class="hljs-comment">// 템플릿은 저장소에서만 로드하고 서명/해시로 무결성을 검증합니다.</span>
+<pre><code class="language-bash">./gradlew <span class="hljs-built_in">test</span>
+./gradlew integrationTest
 </code></pre>
-<p>팀 규칙으로 고정합니다.
-[Source] <a href="https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability">https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability</a> (2026-01-12)</p>
-<h3 id="4-jasperreports-역직렬화-입력-경로를-열어둠">4) JasperReports 역직렬화 입력 경로를 열어둠</h3><p>공격자는 역직렬화 입력을 통해 가젯 체인을 구성합니다. 외부 직렬화 입력을 차단합니다. 최신 패치로 업데이트합니다.</p>
+<p>보안 업데이트는 버전, 설정, 경계 테스트를 한 묶음으로 처리해야 합니다. [Source] <a href="https://cwiki.apache.org/confluence/display/WW/S2-069">https://cwiki.apache.org/confluence/display/WW/S2-069</a> (2025-12-19)</p>
+<h3 id="패턴-4-http-스택을-네트워크-유틸로만-취급하기">패턴 4) HTTP 스택을 “네트워크 유틸”로만 취급하기</h3><p>왜 위험한지: HTTP 스택은 경계 코드입니다. 프로토콜/파서/헤더 처리의 작은 차이가 곧 보안 경계 차이가 됩니다.</p>
 <p>안 좋은 예:</p>
-<pre><code class="language-java">loadReportFrom(userSuppliedBytes);
+<pre><code class="language-java"><span class="hljs-comment">// HTTP 클라이언트 버전을 장기간 고정</span>
+implementation(<span class="hljs-string">&quot;org.apache.httpcomponents.client5:httpclient5:5.2.0&quot;</span>)
 </code></pre>
 <p>안전한 대안:</p>
-<pre><code class="language-java"><span class="hljs-comment">// 외부 직렬화 입력을 차단하고 공식 패치 버전으로 업데이트합니다.</span>
+<pre><code class="language-java"><span class="hljs-comment">// 경계 코드는 릴리스 라인을 빠르게 따라감</span>
+implementation(<span class="hljs-string">&quot;org.apache.httpcomponents.client5:httpclient5:5.5.2&quot;</span>)
 </code></pre>
-<p>팀 규칙으로 고정합니다.
-[Source] <a href="https://community.jaspersoft.com/advisories/jaspersoft-security-advisory-september-16-2025-jaspersoft-library-cve-2025-10492-r6">https://community.jaspersoft.com/advisories/jaspersoft-security-advisory-september-16-2025-jaspersoft-library-cve-2025-10492-r6</a> (2025-09-16)</p>
-<h3 id="5-개발툴확장이-실행하는-명령을-프로젝트-입력이-좌우">5) 개발툴/확장이 실행하는 명령을 프로젝트 입력이 좌우</h3><p>공격자는 레포/워크스페이스 설정으로 개발자 PC에서 명령 실행을 유도합니다. 취약 확장을 제거합니다. 워크스페이스 신뢰를 기본 거부로 둡니다.</p>
+<p>HTTP 스택은 기능 라이브러리가 아니라 경계 코드로 취급하고 업데이트 정책을 분리해야 합니다. [Source] <a href="https://hc.apache.org/news.html">https://hc.apache.org/news.html</a> (2025-12-22)</p>
+<h3 id="패턴-5-경계-옵션을-선언하고-테스트로-고정하지-않기">패턴 5) 경계 옵션을 선언하고 테스트로 고정하지 않기</h3><p>왜 위험한지: 선언된 경계는 우회 경로가 등장하는 순간 무력화됩니다. 경계 옵션은 릴리스 테스트와 함께 살아 있어야 합니다.</p>
 <p>안 좋은 예:</p>
-<pre><code class="language-text">workspace 설정값 -&gt; shell command 문자열로 결합 -&gt; 실행
+<pre><code class="language-text">&quot;옵션을 켰다&quot;는 문서만 있고, 경계 테스트는 없음
 </code></pre>
 <p>안전한 대안:</p>
-<pre><code class="language-text">확장 설치 allowlist + 신뢰되지 않은 워크스페이스 기본 거부 + EOL 확장 제거
+<pre><code class="language-text">경계 옵션은 테스트 케이스(우회 경로 포함)로 고정
 </code></pre>
-<p>팀 규칙으로 고정합니다.
-[Source] <a href="https://spring.io/security/cve-2026-22718">https://spring.io/security/cve-2026-22718</a> (2026-01-13)</p>
-<p>팀이 오늘 적용할 규칙/코드 조치를 PR 체크리스트에 반영합니다.</p>
-<h2 id="34-운영-참고선택">(3.4) 운영 참고(선택)</h2>
+<p>경계 선언은 릴리스 테스트와 묶어야 실제 경계가 됩니다. [Source] <a href="https://solr.apache.org/security.html">https://solr.apache.org/security.html</a> (2025-12-09)</p>
+<h2 id="34-운영-참고선택">(3.4) 운영 참고(선택)</h2><p>(비워 둠)</p>
+
 </section>
 <section class="view-rest" data-view-section="rest">
 <h1 id="4-공통-트렌드권장사항">(4) 공통 트렌드/권장사항</h1><ul>
-<li>권한 모델은 보안 경계로 단정하면 우회가 나옵니다. 런타임을 업데이트합니다. 경로/UDS allowlist를 기본으로 둡니다. [Source] <a href="https://nodejs.org/es/blog/vulnerability/december-2025-security-releases">https://nodejs.org/es/blog/vulnerability/december-2025-security-releases</a> (2026-01-13)</li>
-<li>XML 파서 기본값은 공격 통로가 됩니다. DTD/외부 엔티티를 비활성화합니다. [Source] <a href="https://cwiki.apache.org/confluence/display/WW/S2-069">https://cwiki.apache.org/confluence/display/WW/S2-069</a> (2025-12-19)</li>
-<li>템플릿/직렬화 입력은 코드 실행으로 이어집니다. 템플릿 업로드를 차단합니다. [Source] <a href="https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability">https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability</a> (2026-01-12)</li>
-<li>EOL 개발 도구는 패치가 없습니다. 확장을 제거합니다. [Source] <a href="https://spring.io/security/cve-2026-22718">https://spring.io/security/cve-2026-22718</a> (2026-01-13)</li>
+<li>“보안 옵션을 켰다”는 선언은 보안 경계가 아닙니다. symlink, UDS, XML 외부 엔티티처럼 경계를 깨는 우회 경로를 테스트로 고정해야 합니다. [Source] <a href="https://nodejs.org/ko/blog/vulnerability/december-2025-security-releases">https://nodejs.org/ko/blog/vulnerability/december-2025-security-releases</a> (2025-12-15)</li>
+<li>파싱과 HTTP 스택은 기능이 아니라 경계 문제입니다. 파싱 격리와 HTTP 스택 업데이트 정책을 팀 규칙으로 승격해야 합니다. [Source] <a href="https://solr.apache.org/security.html">https://solr.apache.org/security.html</a> (2025-12-09)</li>
+<li>릴리스 노트와 보안 공지는 링크 모음이 아니라 정책 원천이어야 합니다. 공지의 권장 조치를 팀 기본 설정과 테스트 케이스로 승격해야 합니다. [Source] <a href="https://hc.apache.org/news.html">https://hc.apache.org/news.html</a> (2025-12-16)</li>
 </ul>
 <h1 id="6-참고자료">(6) 참고자료</h1><ul>
-<li><a href="https://nodejs.org/es/blog/vulnerability/december-2025-security-releases">https://nodejs.org/es/blog/vulnerability/december-2025-security-releases</a></li>
-<li><a href="https://cveawg.mitre.org/api/cve/CVE-2025-55131">https://cveawg.mitre.org/api/cve/CVE-2025-55131</a></li>
+<li><a href="https://nodejs.org/ko/blog/vulnerability/december-2025-security-releases">https://nodejs.org/ko/blog/vulnerability/december-2025-security-releases</a></li>
 <li><a href="https://cveawg.mitre.org/api/cve/CVE-2025-55130">https://cveawg.mitre.org/api/cve/CVE-2025-55130</a></li>
 <li><a href="https://cveawg.mitre.org/api/cve/CVE-2026-21636">https://cveawg.mitre.org/api/cve/CVE-2026-21636</a></li>
-<li><a href="https://cveawg.mitre.org/api/cve/CVE-2025-55132">https://cveawg.mitre.org/api/cve/CVE-2025-55132</a></li>
 <li><a href="https://cwiki.apache.org/confluence/display/WW/S2-069">https://cwiki.apache.org/confluence/display/WW/S2-069</a></li>
-<li><a href="https://www.mail-archive.com/announcements%40struts.apache.org/msg00144.html">https://www.mail-archive.com/announcements%40struts.apache.org/msg00144.html</a></li>
-<li><a href="https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability">https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability</a></li>
-<li><a href="https://community.jaspersoft.com/advisories/jaspersoft-security-advisory-september-16-2025-jaspersoft-library-cve-2025-10492-r6">https://community.jaspersoft.com/advisories/jaspersoft-security-advisory-september-16-2025-jaspersoft-library-cve-2025-10492-r6</a></li>
-<li><a href="https://cveawg.mitre.org/api/cve/CVE-2025-68493">https://cveawg.mitre.org/api/cve/CVE-2025-68493</a></li>
-<li><a href="https://cveawg.mitre.org/api/cve/CVE-2025-10492">https://cveawg.mitre.org/api/cve/CVE-2025-10492</a></li>
-<li><a href="https://spring.io/security/cve-2026-22718">https://spring.io/security/cve-2026-22718</a></li>
-<li><a href="https://cveawg.mitre.org/api/cve/CVE-2026-22718">https://cveawg.mitre.org/api/cve/CVE-2026-22718</a></li>
+<li><a href="https://solr.apache.org/security.html">https://solr.apache.org/security.html</a></li>
+<li><a href="https://hc.apache.org/news.html">https://hc.apache.org/news.html</a></li>
+<li><a href="https://cveawg.mitre.org/api/cve/CVE-2025-55131">https://cveawg.mitre.org/api/cve/CVE-2025-55131</a></li>
+<li><a href="https://cveawg.mitre.org/api/cve/CVE-2025-55132">https://cveawg.mitre.org/api/cve/CVE-2025-55132</a></li>
 </ul>
 
 </section>
