@@ -61,13 +61,15 @@ if (metaCards.length) {
   for (let i = 0; i < summaryItems.length; i++) {
     const { body, source } = splitSource(summaryItems[i]);
     const { summary, action } = splitActionSentence(body);
+    const isFirst = i === 0;
     cards.push({
-      kind: "summary",
-      header: "요약",
-      title: `Summary ${i + 1}/${summaryItems.length}`,
+      kind: isFirst ? "editorial" : "summary",
+      header: isFirst ? "Editor's Note" : "요약",
+      title: isFirst ? "Editor's Note" : `Summary ${i + 1}/${summaryItems.length}`,
       bodyMd: summary,
       actionMd: action,
       source,
+      domain: isFirst ? "editorial" : undefined,
     });
   }
 
@@ -190,460 +192,207 @@ function parseCardMetaBlocks(fullMd) {
 }
 
 function buildCardsHtml({ title, cards, reportHref }) {
-  const css = `
-  :root { color-scheme: dark; }
-  body {
-    margin: 0;
-    background:
-      radial-gradient(1000px 700px at 10% -10%, rgba(34,211,238,0.2), transparent 60%),
-      radial-gradient(900px 600px at 90% -10%, rgba(244,114,182,0.16), transparent 55%),
-      radial-gradient(700px 600px at 50% 120%, rgba(34,197,94,0.12), transparent 60%),
-      #0a0f17;
-    color: #e2e8f0;
-    font-family: "IBM Plex Sans", "Pretendard", "Apple SD Gothic Neo", "Noto Sans KR", system-ui, sans-serif;
-    -webkit-font-smoothing: antialiased;
-  }
-  body::before {
-    content: "";
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    background-image:
-      repeating-linear-gradient(
-        to bottom,
-        rgba(255,255,255,0.035),
-        rgba(255,255,255,0.035) 1px,
-        transparent 1px,
-        transparent 3px
-      );
-    opacity: 0.12;
-    mix-blend-mode: soft-light;
-  }
-  @media (prefers-color-scheme: light) {
-    body {
-      background:
-        radial-gradient(900px 600px at 10% -10%, rgba(14,165,233,0.12), transparent 60%),
-        radial-gradient(900px 600px at 90% -10%, rgba(219,39,119,0.10), transparent 55%),
-        radial-gradient(700px 600px at 50% 120%, rgba(34,197,94,0.08), transparent 60%),
-        #f8fafc;
-      color: #0f172a;
+  const cdn = `
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Pretendard', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            node: '#4ade80',
+            java: '#fb923c',
+            edit: '#a78bfa',
+          }
+        }
+      }
     }
-    body::before { opacity: 0.05; }
-    .page-header {
-      background: rgba(255,255,255,0.92);
-      border: 1px solid rgba(15,23,42,0.12);
+  </script>
+  <style>
+    @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&display=swap');
+    
+    /* Scroll Snap */
+    .snap-x {
+      scroll-snap-type: x mandatory;
     }
-    .report-link, .pager-btn {
-      color: #0f172a;
-      border: 1px solid rgba(14,165,233,0.25);
-      background: rgba(255,255,255,0.95);
+    .snap-center {
+      scroll-snap-align: center;
     }
-    .pager-indicator { color: rgba(15,23,42,0.7); }
-  }
-  @keyframes slideUpFade {
-    from { opacity: 0; transform: translateY(20px) scale(0.98); }
-    to { opacity: 1; transform: translateY(0) scale(1); }
-  }
-  .page-header {
-    position: fixed;
-    top: 14px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 20;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 12px;
-    width: min(920px, calc(100% - 32px));
-    align-items: center;
-    background: rgba(10,15,23,0.92);
-    border: 1px solid rgba(148,163,184,0.25);
-    border-radius: 999px;
-    padding: 8px 10px;
-    backdrop-filter: blur(10px);
-  }
-  .report-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    text-decoration: none;
-    color: #e2e8f0;
-    border: 1px solid rgba(34,211,238,0.3);
-    background: rgba(2,6,23,0.7);
-    border-radius: 999px;
-    padding: 6px 10px;
-    font-size: 12px;
-    line-height: 1;
-  }
-  .report-link:hover { border-color: rgba(34,211,238,0.55); }
-  .pager {
-    display: inline-flex;
-    gap: 8px;
-    align-items: center;
-  }
-  .pager-btn {
-    appearance: none;
-    border: 1px solid rgba(34,211,238,0.3);
-    background: rgba(2,6,23,0.7);
-    border-radius: 999px;
-    padding: 6px 10px;
-    font-size: 12px;
-    cursor: pointer;
-    color: #e2e8f0;
-  }
-  .pager-btn:disabled {
-    opacity: 0.45;
-    cursor: not-allowed;
-  }
-  .pager-indicator {
-    font-size: 12px;
-    color: rgba(226,232,240,0.7);
-    min-width: 56px;
-    text-align: center;
-  }
-  .deck {
-    max-width: 920px;
-    margin: 0 auto;
-    padding: 92px 16px 28px;
-    display: grid;
-    gap: 16px;
-  }
-  .card {
-    border: 1px solid rgba(148,163,184,0.3);
-    border-radius: 20px;
-    padding: 16px;
-    background:
-      radial-gradient(circle at 10% 0%, rgba(34,211,238,0.08) 0%, transparent 45%),
-      radial-gradient(circle at 90% 100%, rgba(244,114,182,0.06) 0%, transparent 45%),
-      linear-gradient(180deg, rgba(248,250,252,0.98) 0%, rgba(241,245,249,0.98) 100%);
-    box-shadow: 0 18px 60px rgba(2,6,23,0.4);
-    color: #0b1220;
-  }
-  .card--editorial {
-    border: 1px solid rgba(244,114,182,0.4);
-    background:
-      radial-gradient(circle at 8% 0%, rgba(244,114,182,0.2) 0%, transparent 45%),
-      radial-gradient(circle at 88% 110%, rgba(56,189,248,0.18) 0%, transparent 55%),
-      linear-gradient(180deg, rgba(255,255,255,0.98) 0%, rgba(248,250,252,0.98) 100%);
-    box-shadow: 0 20px 50px rgba(124,58,237,0.18), 0 10px 24px rgba(2,6,23,0.25);
-  }
-  .card--editorial .kicker {
-    background: rgba(244,114,182,0.16);
-    border: 1px solid rgba(244,114,182,0.45);
-    color: rgba(76,29,149,0.95);
-    padding: 2px 8px;
-    border-radius: 999px;
-    letter-spacing: 0.06em;
-  }
-  .card[hidden] { display: none; }
-  .card.is-active { animation: slideUpFade 0.5s cubic-bezier(0.2, 0.8, 0.2, 1); }
-  .card-head { margin-bottom: 12px; }
-  .meta {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    align-items: center;
-    margin-bottom: 6px;
-  }
-  .kicker {
-    margin: 0;
-    font-size: 12px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: rgba(15,23,42,0.6);
-    font-family: "JetBrains Mono", "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
-  }
-  .badge {
-    display: inline-flex;
-    align-items: center;
-    border-radius: 999px;
-    padding: 2px 8px;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.02em;
-    text-transform: uppercase;
-    border: 1px solid rgba(14,165,233,0.35);
-    background: rgba(14,165,233,0.12);
-    color: #0b1220;
-  }
-  .badge--node {
-    border-color: rgba(14,165,233,0.45);
-    background: rgba(14,165,233,0.14);
-  }
-  .badge--java {
-    border-color: rgba(234,88,12,0.45);
-    background: rgba(234,88,12,0.16);
-  }
-  .badge--common {
-    border-color: rgba(148,163,184,0.45);
-    background: rgba(148,163,184,0.16);
-  }
-  .card-title {
-    margin: 0;
-    font-size: 22px;
-    line-height: 1.25;
-    font-weight: 800;
-  }
-  .card-body .row {
-    display: grid;
-    grid-template-columns: 112px 1fr;
-    gap: 10px;
-    padding: 10px 0;
-    border-top: 1px solid rgba(148,163,184,0.25);
-    align-items: start;
-  }
-  .card-body dt { font-weight: 700; color: rgba(15,23,42,0.75); }
-  .card-body dd { margin: 0; color: rgba(15,23,42,0.9); }
-  .card-body p { margin: 0 0 8px; }
-  .card-body ul, .card-body ol { margin: 6px 0 0 1.1em; }
-  .card-body code { background: rgba(15,23,42,0.06); padding: 2px 6px; border-radius: 8px; }
-  .actions { margin: 0; padding-left: 1.1em; }
-  .card-foot {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 12px;
-    margin-top: 12px;
-    padding-top: 12px;
-    border-top: 1px solid rgba(148,163,184,0.25);
-    font-size: 12px;
-    color: rgba(15,23,42,0.7);
-  }
-  .card-foot a { color: inherit; text-decoration: none; }
-  .card-foot a:hover { text-decoration: underline; }
-  .checklist {
-    margin: 0;
-    padding-left: 0;
-    display: grid;
-    gap: 8px;
-    list-style: none;
-    counter-reset: checklist;
-  }
-  .checklist li {
-    line-height: 1.35;
-    counter-increment: checklist;
-    display: grid;
-    grid-template-columns: 24px 20px 1fr;
-    gap: 8px;
-    align-items: start;
-  }
-  .checklist li::before {
-    content: counter(checklist) ".";
-    font-weight: 600;
-    color: rgba(15,23,42,0.7);
-    text-align: right;
-    padding-top: 2px;
-  }
-  .checklist label { display: contents; }
-  .checklist input { grid-column: 2; margin-top: 2px; accent-color: #0ea5e9; }
-  .check-text { grid-column: 3; }
-  .card--checklist .card-title { margin-bottom: 6px; }
-  body.export .page-header { display: none; }
-  body.export .deck { padding-top: 24px; }
-  body.export .card {
-    width: 1080px;
-    height: 1350px;
-    margin: 0 auto 18px;
-  }
-  body.export .card-body .row { grid-template-columns: 140px 1fr; }
-  @media (max-width: 720px) {
-    .page-header {
-      top: auto;
-      bottom: 12px;
-      border-radius: 999px;
-      padding: 6px 8px;
-      width: calc(100% - 24px);
+    
+    /* Hide scrollbar for clean UI */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
     }
-    .deck { padding: 16px 12px 84px; }
-    .card { border-radius: 16px; padding: 14px; }
-    .card-title { font-size: 18px; }
-    .card-body .row { grid-template-columns: 88px 1fr; }
-    .pager-btn, .report-link { padding: 4px 8px; font-size: 12px; }
-    .pager-indicator { min-width: 52px; }
-  }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    body.export .deck {
+      display: block;
+      padding: 0;
+      height: auto;
+      overflow: visible;
+    }
+    body.export .card {
+      width: 1080px;
+      height: 1350px;
+      margin-bottom: 20px;
+      scroll-snap-align: none;
+      border-radius: 0;
+    }
+    body.export .page-header { display: none; }
+  </style>
   `;
 
   const cardsHtml = cards
     .map((c, i) => {
-      const bodyHtml = marked.parse(c.bodyMd || "");
-      const whyHtml = marked.parse(c.whyMd || "");
-      const impactHtml = marked.parse(c.impactMd || "");
-      const actionHtml = c.actionMd ? marked.parse(c.actionMd) : "";
+      // Custom Renderer for Cards to shorten links
+      const cardRenderer = new marked.Renderer();
+      cardRenderer.link = (href, title, text) => {
+        let display = text;
+        if (text.startsWith("http") && text.length > 20) {
+          display = "Link ↗";
+        }
+        return `<a href="${href}" target="_blank" class="text-blue-400 hover:text-blue-300 underline decoration-blue-400/30 underline-offset-2 break-all">${display}</a>`;
+      };
+
+      const parseCardMd = (md) => marked.parse(md || "", { renderer: cardRenderer });
+
+      const bodyHtml = parseCardMd(c.bodyMd);
+      const whyHtml = parseCardMd(c.whyMd);
+      const impactHtml = parseCardMd(c.impactMd);
+      const actionHtml = c.actionMd ? parseCardMd(c.actionMd) : "";
       const titleText = deriveCardTitle(c, i, cards.length);
-      const cardId = `card-${i + 1}`;
       const domainInfo = getDomainMeta(c);
+
+      // Determine theme colors based on domain
+      let themeClass = "from-slate-800 to-slate-900 border-slate-700";
+      let badgeClass = "bg-slate-800 text-slate-300 border-slate-600";
+      let accentClass = "text-slate-400";
+
+      if (domainInfo.domain === "node") {
+        themeClass = "from-slate-900 to-green-950 border-green-900/50";
+        badgeClass = "bg-green-900/30 text-green-400 border-green-700/50";
+        accentClass = "text-green-500";
+      } else if (domainInfo.domain === "java") {
+        themeClass = "from-slate-900 to-orange-950 border-orange-900/50";
+        badgeClass = "bg-orange-900/30 text-orange-400 border-orange-700/50";
+        accentClass = "text-orange-500";
+      } else if (domainInfo.domain === "editorial") {
+        themeClass = "from-slate-900 to-violet-950 border-violet-900/50";
+        badgeClass = "bg-violet-900/30 text-violet-400 border-violet-700/50";
+        accentClass = "text-violet-400";
+      }
+
       const badgesHtml = domainInfo.badges
-        .map((b) => `<span class="badge badge--${escapeHtml(b)}" data-domain="${escapeHtml(b)}">${badgeLabel(b)}</span>`)
+        .map((b) => `<span class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border ${badgeClass}">${badgeLabel(b)}</span>`)
         .join("");
+
       const metaHtml = `
-        <div class="meta">
-          <span class="kicker">DEVSECNEWS · ${escapeHtml(c.header)}</span>
-          ${badgesHtml}
+        <div class="flex items-center gap-2 mb-4">
+          <span class="text-xs font-mono uppercase tracking-widest text-slate-500">DEVSECNEWS</span>
+          <div class="flex gap-1 ml-auto">${badgesHtml}</div>
         </div>
       `;
+
       const sourceHtml = c.source
-        ? `<a class="source" href="${escapeHtml(c.source)}" target="_blank" rel="noopener">Source</a>`
-        : "";
-      const actionBlock = actionHtml
-        ? `<div class="row"><dt>오늘 조치</dt><dd>${actionHtml}</dd></div>`
+        ? `<a href="${escapeHtml(c.source)}" target="_blank" class="text-xs font-mono text-slate-500 hover:text-white transition-colors ml-auto">Source ↗</a>`
         : "";
 
+      // Internal Content Logic
+      let contentHtml = "";
       if (c.kind === "checklist") {
         const items = parseNumbered(c.bodyMd || "");
         const listItems = items
-          .map((item) => `<li><label><input type="checkbox" /><span class="check-text">${escapeHtml(item)}</span></label></li>`)
+          .map((item, idx) => `
+            <li class="flex gap-3 items-start p-3 bg-white/5 rounded-lg border border-white/5">
+              <span class="flex-shrink-0 flex items-center justify-center w-6 h-6 rounded-full bg-white/10 text-xs font-bold font-mono text-slate-300">${idx + 1}</span>
+              <span class="text-sm text-slate-200 leading-snug pt-0.5">${escapeHtml(item)}</span>
+            </li>`)
           .join("");
-        return `
-<section class="card card--checklist" data-card="${escapeHtml(c.kind)}" data-index="${i + 1}" data-domain="${escapeHtml(domainInfo.domain)}" aria-labelledby="${cardId}-title">
-  <header class="card-head">
-    ${metaHtml}
-    <h2 id="${cardId}-title" class="card-title">${escapeHtml(titleText)}</h2>
-  </header>
-  <ol class="checklist">${listItems}</ol>
-  <footer class="card-foot">
-    <span>${c.actionMd ? escapeHtml(stripMarkdown(c.actionMd)) : ""}</span>
-  </footer>
-</section>`;
+        contentHtml = `<ul class="space-y-2 mt-2 max-h-[400px] overflow-y-auto pr-1 custom-scrollbar">${listItems}</ul>`;
+      } else if (c.kind === "summary" || c.kind === "editorial") {
+        contentHtml = `
+          <div class="space-y-4 text-sm">
+            ${bodyHtml ? `<div class="p-3 rounded-lg bg-white/5 border border-white/5"><div class="text-xs font-bold text-slate-400 mb-1">SUMMARY</div><div class="text-slate-200 leading-relaxed">${bodyHtml}</div></div>` : ""}
+            ${whyHtml ? `<div class="p-3 rounded-lg bg-red-500/10 border border-red-500/20"><div class="text-xs font-bold text-red-400 mb-1">RISK</div><div class="text-slate-200 leading-relaxed">${whyHtml}</div></div>` : ""}
+            ${impactHtml ? `<div class="p-3 rounded-lg bg-orange-500/10 border border-orange-500/20"><div class="text-xs font-bold text-orange-400 mb-1">IMPACT</div><div class="text-slate-200 leading-relaxed">${impactHtml}</div></div>` : ""}
+          </div>
+        `;
+      } else {
+        contentHtml = `<div class="prose prose-invert prose-sm max-w-none text-slate-200 leading-relaxed">${bodyHtml}</div>`;
       }
 
-      if (c.kind === "summary") {
-        const summaryHtml = bodyHtml ? `<div class="row"><dt>한 줄 요약</dt><dd>${bodyHtml}</dd></div>` : "";
-        const whyBlock = whyHtml ? `<div class="row"><dt>왜 위험</dt><dd>${whyHtml}</dd></div>` : "";
-        const impactBlock = impactHtml ? `<div class="row"><dt>영향</dt><dd>${impactHtml}</dd></div>` : "";
-        return `
-<section class="card card--summary" data-card="${escapeHtml(c.kind)}" data-index="${i + 1}" data-domain="${escapeHtml(domainInfo.domain)}" aria-labelledby="${cardId}-title">
-  <header class="card-head">
-    ${metaHtml}
-    <h2 id="${cardId}-title" class="card-title">${escapeHtml(titleText)}</h2>
-  </header>
-  <dl class="card-body">
-    ${summaryHtml}
-    ${whyBlock}
-    ${impactBlock}
-    ${actionBlock}
-  </dl>
-  <footer class="card-foot">
-    ${sourceHtml}
-  </footer>
-</section>`;
-      }
+      const actionBlock = actionHtml
+        ? `<div class="mt-auto pt-4 border-t border-white/10">
+             <div class="text-[10px] font-bold uppercase tracking-widest ${accentClass} mb-1">Action</div>
+             <div class="text-sm text-white font-medium">${actionHtml}</div>
+           </div>`
+        : "";
 
       return `
-<section class="card card--${escapeHtml(c.kind)}" data-card="${escapeHtml(c.kind)}" data-index="${i + 1}" data-domain="${escapeHtml(domainInfo.domain)}" aria-labelledby="${cardId}-title">
-  <header class="card-head">
-    ${metaHtml}
-    <h2 id="${cardId}-title" class="card-title">${escapeHtml(titleText)}</h2>
-  </header>
-  <div class="card-body">
-    ${bodyHtml}
-  </div>
-  <footer class="card-foot">
-    <span>${c.actionMd ? escapeHtml(stripMarkdown(c.actionMd)) : ""}</span>
-    ${sourceHtml}
-  </footer>
-</section>`;
+        <!-- Card -->
+        <article class="card snap-center flex-shrink-0 w-[85vw] max-w-sm h-full max-h-[600px] flex flex-col relative bg-gradient-to-br ${themeClass} border rounded-3xl shadow-2xl overflow-hidden snap-always">
+          <div class="flex-1 flex flex-col p-6 z-10">
+            ${metaHtml}
+            <h2 class="text-2xl font-bold text-white leading-tight mb-4 tracking-tight">${escapeHtml(titleText)}</h2>
+            <div class="flex-1 overflow-y-auto no-scrollbar mask-fade-bottom">
+              ${contentHtml}
+            </div>
+            ${actionBlock}
+            <div class="mt-4 flex justify-between items-center pt-2 border-t border-white/5">
+              <span class="text-xs text-slate-600 font-mono">${i + 1} / ${cards.length}</span>
+              ${sourceHtml}
+            </div>
+          </div>
+          
+          <!-- Background Decoration -->
+          <div class="absolute -top-20 -right-20 w-64 h-64 bg-white/5 rounded-full blur-3xl pointer-events-none"></div>
+          <div class="absolute -bottom-20 -left-20 w-64 h-64 bg-black/20 rounded-full blur-3xl pointer-events-none"></div>
+        </article>
+      `;
     })
     .join("\n");
 
   return `<!doctype html>
-<html lang="ko">
+<html lang="ko" class="dark">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
     <title>${escapeHtml(title)} cards</title>
-    <style>${css}</style>
+    ${cdn}
   </head>
-  <body>
-    <header class="page-header">
-      <a class="report-link" href="${escapeHtml(reportHref || "../../devsecnews-2026-01-node-java.html")}" id="reportLink" aria-label="본문 리포트로 이동">본문 리포트</a>
-      <nav class="pager" aria-label="카드 이동">
-        <button class="pager-btn" type="button" id="prev" aria-label="이전">이전</button>
-        <span class="pager-indicator" aria-live="polite"><span id="count">1</span>/<span id="total">${cards.length}</span></span>
-        <button class="pager-btn" type="button" id="next" aria-label="다음">다음</button>
-      </nav>
+  <body class="bg-slate-950 text-slate-200 h-[100dvh] w-screen overflow-hidden flex flex-col select-none">
+    
+    <!-- Top Bar -->
+    <header class="page-header fixed top-0 w-full z-50 flex items-center justify-between px-4 py-3 bg-slate-950/80 backdrop-blur-md border-b border-white/5">
+      <a href="${escapeHtml(reportHref || "../../devsecnews-2026-01-node-java.html")}" class="flex items-center gap-2 text-xs font-medium text-slate-400 hover:text-white transition-colors">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+        Back to Report
+      </a>
+      <div class="text-xs font-mono text-slate-600">
+        <span class="hidden sm:inline">SWIPE or SCROLL</span>
+        <span class="sm:hidden">SWIPE</span>
+      </div>
     </header>
-    <main class="deck" id="stage">
-${cardsHtml}
+
+    <!-- Deck (Scroll Snap Container) -->
+    <main class="deck flex-1 w-full overflow-x-auto overflow-y-hidden snap-x snap-mandatory flex items-center px-6 gap-6 no-scrollbar pt-14 pb-4">
+      <!-- Spacer for centering first card -->
+      <div class="flex-shrink-0 w-1 sm:w-[calc(50vw-192px-24px)]"></div>
+      
+      ${cardsHtml}
+      
+      <!-- Spacer for centering last card -->
+      <div class="flex-shrink-0 w-1 sm:w-[calc(50vw-192px-24px)]"></div>
     </main>
-    <script>
-      (function () {
-        const params = new URLSearchParams(location.search);
-        if (params.get("export") === "1") document.body.classList.add("export");
-        const cards = Array.from(document.querySelectorAll(".card"));
-        const prev = document.getElementById("prev");
-        const next = document.getElementById("next");
-        const count = document.getElementById("count");
-        const total = document.getElementById("total");
-        if (cards.length === 0) return;
 
-        let idx = 0;
-        if (total) total.textContent = String(cards.length);
-        function set(i, focus) {
-          idx = Math.max(0, Math.min(cards.length - 1, i));
-          for (let j = 0; j < cards.length; j++) {
-            const isExport = document.body.classList.contains("export");
-            const isActive = j === idx || isExport;
-            if (!isExport) {
-              cards[j].hidden = !isActive;
-              cards[j].setAttribute("aria-hidden", isActive ? "false" : "true");
-            } else {
-              cards[j].hidden = false;
-              cards[j].removeAttribute("aria-hidden");
-            }
-            cards[j].classList.toggle("is-active", isActive && !isExport);
-          }
-          if (count) count.textContent = String(idx + 1);
-          if (prev) prev.disabled = cards.length <= 1;
-          if (next) next.disabled = cards.length <= 1;
-          if (focus && !document.body.classList.contains("export")) {
-            try { cards[idx].focus?.(); } catch {}
-          }
-        }
-        prev && prev.addEventListener("click", () => set(idx - 1, true));
-        next && next.addEventListener("click", () => set(idx + 1, true));
-
-        // Keyboard
-        window.addEventListener("keydown", (e) => {
-          if (e.key === "ArrowLeft") set(idx - 1, true);
-          if (e.key === "ArrowRight") set(idx + 1, true);
-          if (e.key === "ArrowUp") set(idx - 1, true);
-          if (e.key === "ArrowDown") set(idx + 1, true);
-        });
-
-        // Swipe (Mobile Touch)
-        let touchstartX = 0;
-        let touchstartY = 0;
-        const main = document.getElementById("stage");
-        if (main) {
-          main.addEventListener("touchstart", (e) => {
-            touchstartX = e.changedTouches[0].screenX;
-            touchstartY = e.changedTouches[0].screenY;
-          }, { passive: true });
-          main.addEventListener("touchend", (e) => {
-            const touchendX = e.changedTouches[0].screenX;
-            const touchendY = e.changedTouches[0].screenY;
-            handleSwipe(touchstartX, touchstartY, touchendX, touchendY);
-          }, { passive: true });
-        }
-
-        function handleSwipe(sx, sy, ex, ey) {
-          const dx = ex - sx;
-          const dy = ey - sy;
-          // Ignore vertical scrolls (if dy > dx)
-          if (Math.abs(dy) > Math.abs(dx)) return;
-          // Min swipe distance
-          if (Math.abs(dx) < 50) return;
-          if (dx < 0) set(idx + 1, true); // Swipe Left -> Next
-          if (dx > 0) set(idx - 1, true); // Swipe Right -> Prev
-        }
-
-        // Init (JS-enabled: single-card mode)
-        if (!document.body.classList.contains("export")) {
-          document.body.classList.add("js");
-          set(0, false);
-        }
-      })();
-    </script>
   </body>
 </html>`;
 }
@@ -679,7 +428,7 @@ function deriveCardTitle(card, index, total) {
 
 function getDomainMeta(card) {
   if (card.kind === "editorial") {
-    return { domain: "editorial", badges: [] };
+    return { domain: "editorial", badges: ["editor's note"] };
   }
   if (card.kind === "checklist") {
     return { domain: "mixed", badges: ["node", "java"] };
@@ -742,6 +491,7 @@ function badgeLabel(domain) {
   if (domain === "node") return "Node.js";
   if (domain === "java") return "Java";
   if (domain === "common") return "Common";
+  if (domain === "editor's note") return "Editor's Note";
   return domain.toUpperCase();
 }
 

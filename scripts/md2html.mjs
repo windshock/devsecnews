@@ -70,504 +70,112 @@ const htmlNode = parts.node ? marked.parse(parts.node) : "";
 const htmlJava = parts.java ? marked.parse(parts.java) : "";
 const htmlRest = marked.parse(parts.rest);
 
-const githubMarkdownCss = readOptionalTextFile(
-  path.join("node_modules", "github-markdown-css", "github-markdown.css")
-);
-// GitHub-style code theme (light). This stays readable in most wiki/Teams embeds.
-const hljsCssLight = readOptionalTextFile(
-  path.join("node_modules", "highlight.js", "styles", "github.css")
-);
-const hljsCssDark = readOptionalTextFile(
-  path.join("node_modules", "highlight.js", "styles", "github-dark.css")
-);
+const css = fs.readFileSync(path.join("templates", "report.css"), "utf8");
+const githubMarkdownCss = fs.readFileSync(path.join("node_modules", "github-markdown-css", "github-markdown.css"), "utf8");
+const hljsCssLight = fs.readFileSync(path.join("node_modules", "highlight.js", "styles", "github.css"), "utf8");
+const hljsCssDark = fs.readFileSync(path.join("node_modules", "highlight.js", "styles", "github-dark.css"), "utf8");
 
-const css = `
-  @keyframes slideUpFade {
-    from { opacity: 0; transform: translateY(20px) scale(0.98); }
-    to { opacity: 1; transform: translateY(0) scale(1); }
-  }
-  :root {
-    --bg-body: #0a0f17;
-    --text-body: #e6edf3;
-    --text-muted: #9aa4b2;
-    --bg-topbar: rgba(10,15,23,0.92);
-    --border-color: rgba(95,125,155,0.35);
-    --bg-code: #0f172a;
-    --code-border: rgba(148,163,184,0.25);
-    --btn-hover: rgba(148,163,184,0.14);
-    --btn-active: rgba(148,163,184,0.22);
-    --highlight-bg: rgba(34,211,238,0.14);
-    --highlight-text: #22d3ee;
-    --accent-pink: #f472b6;
-    --accent-green: #22c55e;
-    --panel-bg: rgba(15,23,42,0.78);
-    --panel-border: rgba(148,163,184,0.25);
-    --surface: rgba(2,6,23,0.6);
-    --surface-strong: rgba(2,6,23,0.85);
-    color-scheme: light dark;
-  }
-
-  @media (prefers-color-scheme: light) {
-    :root {
-      --bg-body: #f7f5ef;
-      --text-body: #0f172a;
-      --text-muted: #475569;
-      --bg-topbar: rgba(247,245,239,0.9);
-      --border-color: rgba(148,163,184,0.45);
-      --bg-code: #f1f5f9;
-      --code-border: rgba(15,23,42,0.12);
-      --btn-hover: rgba(15,23,42,0.06);
-      --btn-active: rgba(15,23,42,0.12);
-      --highlight-bg: rgba(14,165,233,0.12);
-      --highlight-text: #0ea5e9;
-      --accent-pink: #db2777;
-      --accent-green: #16a34a;
-      --panel-border: rgba(15,23,42,0.12);
-      --surface: rgba(255,255,255,0.8);
-      --surface-strong: rgba(255,255,255,0.95);
-    }
-    body {
-      background:
-        radial-gradient(1000px 600px at 8% -10%, rgba(14,165,233,0.16), transparent 60%),
-        radial-gradient(900px 600px at 92% -5%, rgba(219,39,119,0.12), transparent 55%),
-        radial-gradient(600px 600px at 50% 120%, rgba(34,197,94,0.10), transparent 60%),
-        var(--bg-body);
-    }
-    }
-    body::before { opacity: 0.06; }
-    .markdown-body {
-      background: linear-gradient(180deg, #f8fafc 0%, #eef2f7 100%);
-      box-shadow: 0 12px 26px rgba(15,23,42,0.12);
-      border: 1px solid rgba(15,23,42,0.12);
-      border-radius: 20px;
-    }
-    .page-header {
-      background: rgba(255,255,255,0.9);
-      border: 1px solid rgba(14,165,233,0.2);
-    }
-    .tool-btn {
-      background: rgba(255,255,255,0.92);
-      border: 1px solid rgba(15,23,42,0.12);
-    }
-    .tool-btn { color: #0f172a; }
-    .hero-title { color: #0f172a; }
-    .hero-meta { color: #64748b; }
-  }
-
-  body {
-    margin: 0;
-    background:
-      radial-gradient(1200px 600px at 8% -10%, rgba(34,211,238,0.18), transparent 60%),
-      radial-gradient(900px 500px at 92% -5%, rgba(244,114,182,0.12), transparent 55%),
-      radial-gradient(600px 600px at 50% 120%, rgba(34,197,94,0.08), transparent 60%),
-      var(--bg-body);
-    color: var(--text-body);
-    font-family: "IBM Plex Sans", "Pretendard", "Apple SD Gothic Neo", "Noto Sans KR", system-ui, sans-serif;
-    line-height: 1.6;
-    -webkit-font-smoothing: antialiased;
-  }
-  body::before {
-    content: "";
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    background-image:
-      repeating-linear-gradient(
-        to bottom,
-        rgba(255,255,255,0.04),
-        rgba(255,255,255,0.04) 1px,
-        transparent 1px,
-        transparent 3px
-      );
-    opacity: 0.12;
-    mix-blend-mode: soft-light;
-  }
-  .page {
-    max-width: 1120px;
-    margin: 0 auto;
-    padding: 64px 16px 60px;
-    display: grid;
-    gap: 16px;
-  }
-  .page-header {
-    border-radius: 20px;
-    border: 1px solid rgba(34,211,238,0.25);
-    background: rgba(2,6,23,0.85);
-    box-shadow: 0 10px 24px rgba(0,0,0,0.3);
-    padding: 16px 18px;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-  .hero {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
-  .hero-title {
-    font-size: 28px;
-    font-weight: 800;
-    letter-spacing: -0.02em;
-    color: #e2e8f0;
-  }
-  .hero-meta {
-    font-size: 13px;
-    color: var(--text-muted);
-    font-family: "JetBrains Mono", "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-  }
-  .toolbar {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    align-items: center;
-  }
-  .tool-btn {
-    appearance: none;
-    border: 1px solid rgba(34,211,238,0.3);
-    background: rgba(2,6,23,0.7);
-    color: #e2e8f0;
-    border-radius: 999px;
-    padding: 0 14px;
-    font-size: 12px;
-    cursor: pointer;
-    white-space: nowrap;
-    height: 32px;
-    line-height: 32px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 84px;
-  }
-  .tool-btn:active { transform: translateY(1px); }
-  .tool-hint {
-    font-size: 12px;
-    color: var(--text-muted);
-  }
-  .layout {
-    display: grid;
-    grid-template-columns: minmax(220px, 280px) 1fr;
-    gap: 16px;
-    align-items: start;
-  }
-  .toc {
-    position: sticky;
-    top: 16px;
-    border: 1px solid var(--border-color);
-    border-radius: 14px;
-    background: var(--surface);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-    padding: 12px 14px;
-    max-height: calc(100vh - 120px);
-    overflow: auto;
-  }
-  .toc h4 {
-    margin: 0 0 8px;
-    font-size: 13px;
-    color: var(--text-muted);
-  }
-  .toc a {
-    display: block;
-    color: var(--text-body);
-    text-decoration: none;
-    font-size: 13px;
-    padding: 4px 2px;
-  }
-  .toc a:hover { color: var(--highlight-text); }
-  .toc .toc-l2 { padding-left: 8px; }
-  .toc .toc-l3 { padding-left: 16px; }
-  body[data-toc="closed"] .toc { display: none; }
-  body[data-toc="closed"] .layout { grid-template-columns: 1fr; }
-  .article {
-    min-width: 0;
-  }
-  .markdown-body {
-    box-sizing: border-box;
-    min-width: 200px;
-    color: #0b1220;
-    background: linear-gradient(180deg, #f8fafc 0%, #eef2f7 100%);
-    border: 1px solid rgba(15,23,42,0.12);
-    border-top: 0;
-    border-radius: 20px;
-    padding: 18px;
-    box-shadow: 0 18px 40px rgba(2,6,23,0.18);
-    animation: slideUpFade 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
-  }
-  .markdown-body a { color: #0ea5e9; }
-  .markdown-body code, .markdown-body pre code { color: #0b1220; }
-  .markdown-body h1, .markdown-body h2, .markdown-body h3 {
-    font-family: "IBM Plex Sans", "Pretendard", "Noto Sans KR", system-ui, sans-serif;
-    letter-spacing: -0.01em;
-  }
-  .markdown-body table { display: table; width: 100%; border-collapse: collapse; }
-  .markdown-body th, .markdown-body td {
-    border: 1px solid var(--border-color);
-    padding: 8px 10px;
-  }
-  .markdown-body th {
-    background: rgba(248,250,252,0.95);
-    color: #0b1220;
-  }
-  .markdown-body td {
-    background: rgba(248,250,252,0.9);
-    color: #0b1220;
-  }
-  .markdown-body blockquote {
-    border-left: 3px solid #94a3b8;
-    background: rgba(248,250,252,0.9);
-    padding: 10px 12px;
-    border-radius: 10px;
-    color: #0b1220;
-  }
-  
-  /* Code blocks */
-  .markdown-body pre {
-    padding: 12px;
-    border-radius: 10px;
-    overflow: auto;
-    background: var(--bg-code);
-    border: 1px solid var(--code-border);
-    box-shadow: inset 0 0 0 1px rgba(34,211,238,0.06);
-  }
-  /* Code blocks: bad vs good contrast (driven by JS classes on .codeblock) */
-  .codeblock.bad pre {
-    background: rgba(207,34,46,0.06);
-    border-color: rgba(207,34,46,0.20);
-  }
-  .codeblock.good pre {
-    background: rgba(26,127,55,0.06);
-    border-color: rgba(26,127,55,0.20);
-  }
-  .markdown-body code, .markdown-body pre code {
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-    font-size: 0.92em;
-    background: transparent;
-  }
-  a { word-break: break-all; color: var(--highlight-text); }
-  .source-link {
-    color: var(--highlight-text);
-    font-weight: 600;
-  }
-  .summary-grid {
-    display: grid;
-    gap: 12px;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    margin: 10px 0 18px;
-  }
-  body.js .summary-list { display: none; }
-  .summary-item {
-    border: 1px solid rgba(148,163,184,0.25);
-    border-radius: 12px;
-    padding: 10px 12px;
-    background: rgba(248,250,252,0.9);
-  }
-  .summary-item h5 {
-    margin: 0 0 6px;
-    font-size: 13px;
-    color: rgba(15,23,42,0.7);
-  }
-  .summary-item p {
-    margin: 0;
-    font-size: 14px;
-    color: rgba(15,23,42,0.9);
-  }
-  .summary-item a {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 12px;
-    margin-top: 6px;
-    color: var(--highlight-text);
-  }
-  .summary-item a + a { margin-left: 8px; }
-  .callout {
-    border: 1px solid rgba(34,197,94,0.25);
-    background: rgba(34,197,94,0.08);
-    border-radius: 12px;
-    padding: 12px 14px;
-    margin: 12px 0 16px;
-  }
-  .callout .callout-title {
-    font-weight: 700;
-    color: #15803d;
-    margin-bottom: 6px;
-    display: inline-flex;
-    gap: 6px;
-    align-items: center;
-  }
-  .callout pre,
-  .callout code {
-    background: rgba(255,255,255,0.92);
-    color: #111827;
-    border: 1px solid rgba(15,23,42,0.12);
-  }
-  .callout pre code { color: inherit; }
-  .callout pre code {
-    font-size: 0.95rem;
-    line-height: 1.5;
-  }
-  .checklist a.jump-link {
-    color: inherit;
-    text-decoration: none;
-    border-bottom: 1px dashed rgba(14,165,233,0.5);
-  }
-  .checklist { padding-left: 1.2em; }
-  .checklist a.jump-link:hover {
-    color: var(--highlight-text);
-  }
-  /* Code copy button */
-  .codeblock {
-    position: relative;
-    margin-bottom: 16px;
-  }
-  .copyBtn {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    appearance: none;
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    background: var(--surface);
-    opacity: 0.8;
-    padding: 4px 8px;
-    font-size: 12px;
-    cursor: pointer;
-    color: var(--text-body);
-  }
-  .copyBtn:active { transform: translateY(1px); }
-  .copyBtn[aria-disabled="true"] {
-    opacity: 0.6;
-    cursor: not-allowed;
-  }
-  @media (hover: hover) {
-    .codeblock .copyBtn { opacity: 0; transition: opacity 0.2s; }
-    .codeblock:hover .copyBtn { opacity: 1; }
-  }
-  /* Jump affordance */
-  .jumpHint {
-    font-size: 13px;
-    color: var(--text-muted);
-    margin-top: 6px;
-    padding: 4px 8px;
-    background: rgba(34,211,238,0.12);
-    border-radius: 6px;
-    display: inline-block;
-  }
-  .view-summary { display: none; }
-  .view-node { display: none; }
-  .view-java { display: none; }
-  .view-rest { display: none; }
-
-  /* Responsive (mobile-first adjustments) */
-  @media (max-width: 720px) {
-    .page { padding: 16px 12px 84px; }
-    .layout { grid-template-columns: 1fr; }
-    .toc {
-      position: static;
-      max-height: none;
-      order: 2;
-    }
-    body[data-toc="closed"] .toc { display: none; }
-    .page-header { position: sticky; top: 10px; z-index: 20; }
-    .hero-title { font-size: 22px; }
-    .tool-btn { min-width: 70px; height: 30px; }
-    .markdown-body { font-size: 16px; line-height: 1.6; }
-    .markdown-body h1 { font-size: 1.6em; }
-    /* Tables: horizontal scroll */
-    .markdown-body table { display: block; width: 100%; overflow-x: auto; white-space: nowrap; -webkit-overflow-scrolling: touch; }
-    .copyBtn { top: 6px; right: 6px; opacity: 1; padding: 6px 10px; }
-  }
-
-  body[data-view="all"] .view-summary { display: block; }
-  body[data-view="all"] .view-node { display: block; }
-  body[data-view="all"] .view-java { display: block; }
-  body[data-view="all"] .view-rest { display: block; }
-
-  body[data-view="summary"] .view-summary { display: block; }
-  body[data-view="node"] .view-node { display: block; }
-  body[data-view="java"] .view-java { display: block; }
-  ${githubMarkdownCss}
+// Combine CSS
+const combinedCss = `
+${githubMarkdownCss}
+/* Highlight.js Light */
+@media (prefers-color-scheme: light) {
   ${hljsCssLight}
-  @media (prefers-color-scheme: dark) {
-    ${hljsCssDark}
-  }
-  @media (prefers-color-scheme: dark) {
-    /* Force readable text inside light report panel on dark theme */
-    .markdown-body,
-    .markdown-body p,
-    .markdown-body li,
-    .markdown-body td,
-    .markdown-body th {
-      color: #0b1220;
-    }
-    .markdown-body code { color: #0b1220; }
-    .markdown-body pre {
-      color: #0b1220;
-      background: #f8fafc;
-      border-color: rgba(15,23,42,0.12);
-    }
-    .markdown-body pre code { color: inherit; }
-    .markdown-body pre code .hljs,
-    .markdown-body pre code .hljs * {
-      color: inherit;
-    }
-    .markdown-body a { color: #0ea5e9; }
-    .callout pre,
-    .callout code {
-      background: rgba(255,255,255,0.95);
-      color: #111827;
-      border-color: rgba(15,23,42,0.12);
-    }
-    .callout pre code { color: inherit; }
-  }
+}
+/* Highlight.js Dark */
+@media (prefers-color-scheme: dark) {
+  ${hljsCssDark}
+}
+${css}
 `;
+
 
 const title = path.basename(input);
 
+const cdn = `
+<script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+<script>
+  tailwind.config = {
+    darkMode: 'class',
+    theme: {
+      extend: {
+        fontFamily: {
+          sans: ['Pretendard', 'sans-serif'],
+          mono: ['JetBrains Mono', 'monospace'],
+        },
+      }
+    }
+  }
+</script>
+<style>
+  @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap');
+  
+  /* Smooth anchor scrolling */
+  html { scroll-behavior: smooth; }
+  
+  .details-summary::-webkit-details-marker { display: none; }
+</style>
+`;
+
 const html = `<!doctype html>
-<html lang="ko">
+<html lang="ko" class="scroll-pt-24">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>${escapeHtml(title)}</title>
-    <style>${css}</style>
+    ${cdn}
+    <style>${combinedCss}</style>
   </head>
-  <body data-view="all">
-    <div class="page">
-      <header class="page-header">
-        <div class="hero">
-          <div class="hero-meta" id="hero-meta">DevSecNews Report</div>
-          <div class="hero-title" id="hero-title">${escapeHtml(title)}</div>
+  <body class="bg-gray-50 text-slate-800 dark:bg-slate-950 dark:text-slate-200 antialiased" data-view="all">
+    
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
+      
+      <!-- Header -->
+      <header class="sticky top-4 z-50 mt-4 rounded-2xl bg-white/80 dark:bg-slate-900/80 backdrop-blur border border-slate-200 dark:border-slate-800 shadow-sm p-4 flex flex-wrap gap-4 items-center justify-between">
+        <div>
+          <div class="text-[10px] font-bold tracking-wider text-blue-600 dark:text-blue-400 uppercase mb-0.5">DevSecNews Report</div>
+          <h1 class="text-lg font-bold text-slate-900 dark:text-white leading-tight" id="hero-title">${escapeHtml(title)}</h1>
         </div>
-        <div class="toolbar" aria-label="상단 내비게이션">
-          <button type="button" class="tool-btn" id="view-toggle" aria-label="보기 모드">보기: 전체</button>
-          <button type="button" class="tool-btn" id="tts-toggle" aria-label="읽기">읽기</button>
-          <button type="button" class="tool-btn" id="toc-toggle" aria-label="목차">목차</button>
-          <span class="tool-hint">목차는 접어서 읽을 수 있습니다.</span>
+        
+        <div class="flex items-center gap-2">
+           <button type="button" id="view-toggle" class="px-3 py-1.5 text-xs font-medium bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-full hover:bg-gray-50 dark:hover:bg-slate-700 transition-colors">보기: 전체</button>
+           <button type="button" id="toc-toggle" class="px-3 py-1.5 text-xs font-medium bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-full hover:bg-gray-50 dark:hover:bg-slate-700 transition-colors lg:hidden">목차</button>
         </div>
       </header>
-      <div class="layout">
-        <aside class="toc" id="toc-panel" aria-label="목차">
-          <h4>목차</h4>
-          <div id="toc-list"></div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-[260px_1fr] gap-8 mt-8 items-start">
+        
+        <!-- Sidebar TOC -->
+        <aside id="toc-panel" class="hidden lg:block sticky top-28 max-h-[calc(100vh-140px)] overflow-y-auto w-full p-4 bg-white/50 dark:bg-slate-900/50 rounded-xl border border-slate-200 dark:border-slate-800 backdrop-blur-sm">
+          <h4 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">목차</h4>
+          <div id="toc-list" class="space-y-1"></div>
         </aside>
-        <main class="article">
-          <article class="markdown-body">
-<section class="view-summary" data-view-section="summary">
-${htmlPrelude}
-</section>
-<section class="view-node" data-view-section="node">
-${htmlNode}
-</section>
-<section class="view-java" data-view-section="java">
-${htmlJava}
-</section>
-<section class="view-rest" data-view-section="rest">
-${htmlRest}
-</section>
+
+        <!-- Main Content -->
+        <main class="article w-full min-w-0">
+          <article class="prose prose-slate dark:prose-invert max-w-none 
+            prose-headings:font-bold prose-headings:tracking-tight
+            prose-a:text-blue-600 dark:prose-a:text-blue-400 prose-a:no-underline hover:prose-a:underline
+            prose-pre:bg-slate-900 prose-pre:border prose-pre:border-slate-700
+            prose-img:rounded-xl prose-img:shadow-lg
+            prose-blockquote:border-l-4 prose-blockquote:border-blue-500 prose-blockquote:bg-blue-50 dark:prose-blockquote:bg-blue-900/20 prose-blockquote:py-1 prose-blockquote:px-4 prose-blockquote:not-italic
+          ">
+            <section class="view-summary" data-view-section="summary">
+              ${htmlPrelude}
+            </section>
+            <section class="view-node" data-view-section="node">
+              ${htmlNode}
+            </section>
+            <section class="view-java" data-view-section="java">
+              ${htmlJava}
+            </section>
+            <section class="view-rest" data-view-section="rest">
+              ${htmlRest}
+            </section>
           </article>
         </main>
+
       </div>
     </div>
     <script>
@@ -578,7 +186,6 @@ ${htmlRest}
         const tocPanel = document.getElementById("toc-panel");
         const tocList = document.getElementById("toc-list");
         const heroTitle = document.getElementById("hero-title");
-        const heroMeta = document.getElementById("hero-meta");
 
         function setView(v, persist) {
           if (!["summary","all","node","java"].includes(v)) v = "all";
@@ -587,10 +194,8 @@ ${htmlRest}
           if (persist) {
             try { localStorage.setItem(KEY, v); } catch {}
           }
-          // Keep URL navigable/bookmarkable without reloading.
+          // URL Update
           try { history.replaceState(null, "", v === "all" ? "#all" : ("#" + v)); } catch {}
-          // If speaking, restart to read the newly visible section only.
-          if (speaking) startTts();
           buildToc();
         }
 
@@ -623,20 +228,19 @@ ${htmlRest}
           }
           tocList.innerHTML = "";
           if (!items.length) {
-            const empty = document.createElement("div");
-            empty.style.fontSize = "13px";
-            empty.style.color = "var(--text-muted)";
-            empty.textContent = "표시할 목차가 없습니다.";
-            tocList.appendChild(empty);
+            tocList.innerHTML = '<div class="text-xs text-slate-500">표시할 목차가 없습니다.</div>';
             return;
           }
           for (const it of items) {
             const a = document.createElement("a");
             a.href = "#" + it.id;
             a.textContent = it.text;
-            a.className = it.level === "h2" ? "toc-l2" : (it.level === "h3" ? "toc-l3" : "");
+            a.className = "block text-sm py-1 border-l-2 border-transparent pl-3 text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:border-blue-500 transition-all truncate";
+            if (it.level === "h3") {
+              a.classList.add("ml-3", "text-xs");
+            }
             a.addEventListener("click", () => {
-              if (window.innerWidth <= 720) document.body.dataset.toc = "closed";
+              if (window.innerWidth < 1024 && tocPanel) tocPanel.classList.add("hidden");
             });
             tocList.appendChild(a);
           }
@@ -644,62 +248,32 @@ ${htmlRest}
 
         if (tocToggle && tocPanel) {
           tocToggle.addEventListener("click", () => {
-            const closed = document.body.dataset.toc === "closed";
-            document.body.dataset.toc = closed ? "" : "closed";
+            tocPanel.classList.toggle("hidden");
+            // Check if it has classes for mobile positioning
+            if (!tocPanel.classList.contains("fixed")) {
+                tocPanel.classList.add("fixed", "inset-x-4", "top-20", "z-40", "shadow-xl", "bg-white", "dark:bg-slate-900");
+                tocPanel.classList.remove("sticky");
+            }
           });
         }
 
         function initHero() {
-          if (!heroTitle) return;
-          const firstH1 = document.querySelector(".markdown-body h1");
-          if (firstH1 && firstH1.textContent) {
-            heroTitle.textContent = firstH1.textContent.trim();
+          // Remove first H1 from content if it matches title
+          const firstH1 = document.querySelector(".article h1");
+          if (firstH1 && heroTitle && firstH1.textContent.trim() === heroTitle.textContent.trim()) {
             firstH1.remove();
           }
-          if (heroMeta) {
-            heroMeta.textContent = "DevSecNews · Report";
-          }
-        }
-
-        function domainFromUrl(href) {
-          try {
-            const u = new URL(href);
-            return u.hostname.replace(/^www\\./, "");
-          } catch {
-            return href;
-          }
-        }
-
-        function isInReferences(el) {
-          const section = el.closest("section");
-          if (!section) return false;
-          const heads = Array.from(section.querySelectorAll("h1,h2,h3"));
-          let last = null;
-          for (const h of heads) {
-            if (h.compareDocumentPosition(el) & Node.DOCUMENT_POSITION_FOLLOWING) break;
-            last = h;
-          }
-          return !!(last && /참고자료/.test(last.textContent || ""));
         }
 
         function formatSourceLinks() {
-          const anchors = Array.from(document.querySelectorAll('.markdown-body a[href^="http"]'));
+          const anchors = Array.from(document.querySelectorAll('.article a[href^="http"]'));
           for (const a of anchors) {
-            if (isInReferences(a)) continue;
-            const href = a.getAttribute("href") || "";
-            const text = (a.textContent || "").trim();
-            if (text === href) {
-              a.textContent = domainFromUrl(href);
-              a.classList.add("source-link");
-            }
-            const parent = a.parentNode;
-            if (!parent) continue;
-            for (const node of Array.from(parent.childNodes)) {
-              if (node.nodeType !== Node.TEXT_NODE) continue;
-              if (node.textContent && node.textContent.includes("[Source]")) {
-                node.textContent = node.textContent.replace("[Source]", "Source").replace(/\\s{2,}/g, " ");
-              }
-            }
+             // Basic naive source mapping
+             if (a.textContent.trim() === a.href) {
+                try {
+                    a.textContent = new URL(a.href).hostname.replace(/^www\./, "");
+                } catch {}
+             }
           }
         }
 
@@ -738,12 +312,12 @@ ${htmlRest}
               a.href = link.getAttribute("href");
               a.target = "_blank";
               a.rel = "noopener";
-              a.textContent = "Source · " + domainFromUrl(a.href);
+              a.textContent = "Source · " + new URL(a.href).hostname.replace(/^www\./, "");
               item.appendChild(a);
             }
             const jump = document.createElement("a");
             let target = null;
-            if (/node\\.?js/i.test(text) && nodeHeading && nodeHeading.id) target = nodeHeading.id;
+            if (/node\.?js/i.test(text) && nodeHeading && nodeHeading.id) target = nodeHeading.id;
             if (/java/i.test(text) && javaHeading && javaHeading.id) target = javaHeading.id;
             if (target) {
               jump.href = "#" + target;
