@@ -299,9 +299,9 @@
     <h2 id="card-1-title" class="card-title">Moltbot/ClawdBot(OpenClaw) 위협 동향 + async_hooks 장애 포인트</h2>
   </header>
   <div class="card-body">
-    <p>Moltbot/ClawdBot(OpenClaw) 생태계 위협 동향의 핵심은 “관리 인터페이스 노출 + 느슨한 공급망 통제”가 결합되면 계정 탈취로 직결된다는 점입니다. 백엔드/관리 포트가 외부에 열려 있고 토큰·키가 평문으로 남아 있으면, 공격자는 별도 취약점 없이 takeover를 시작합니다.</p>
-<p>악성 스킬/플러그인 캠페인은 설치 유도만으로도 피해를 만듭니다. 승인된 스킬만 허용하고, 실행은 샌드박스로 제한하며, 외부 실행 파일/암호 ZIP/보안 경고 무시는 금지해야 합니다.</p>
-<p>Node.js 쪽은 async_hooks가 켜진 상태에서 재귀 기반 스택 오버플로가 “잡히지 않는 장애”로 이어질 수 있습니다. 런타임 업데이트와 재귀 깊이 제한을 기본값으로 두고, 문제 재현 테스트를 빌드 파이프라인에 포함하는 게 안전합니다.</p>
+    <p>Moltbot/ClawdBot(OpenClaw) 생태계는 관리 인터페이스 노출과 느슨한 공급망 통제가 겹치면 계정 탈취로 직결됩니다. 백엔드/관리 포트를 잠그고 토큰·키 노출을 차단해야 합니다.</p>
+<p>악성 스킬/플러그인 캠페인은 설치 유도로 확산됩니다. 승인된 스킬만 허용하고 실행은 샌드박스로 제한해야 합니다.</p>
+<p>Node.js는 async_hooks가 켜진 상태에서 재귀 기반 스택 오버플로가 잡히지 않는 장애로 이어질 수 있습니다. 런타임 업데이트와 재귀 깊이 제한을 기본값으로 둬야 합니다.</p>
 <p>자세히 보기: <a href="https://github.com/windshock/devsecnews/blob/main/editorial/2026-01/01.md">https://github.com/windshock/devsecnews/blob/main/editorial/2026-01/01.md</a>
 <a href="https://github.com/windshock/devsecnews/blob/main/editorial/2026-01/02.md">https://github.com/windshock/devsecnews/blob/main/editorial/2026-01/02.md</a></p>
 
