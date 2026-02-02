@@ -5,6 +5,7 @@
 ## 목적
 - DevSecNews 월간 리포트를 Markdown에서 HTML/카드뉴스/PNG로 변환합니다.
 - GitHub Pages 배포는 `docs/` 폴더에 산출물을 복사하는 방식입니다.
+- 선택적으로 `# (0) Editor's Note` 섹션을 최상단에 둘 수 있으며, `editorial/{YYYY-MM}/`을 참조합니다.
 
 ## 핵심 입력/출력
 - 입력: `devsecnews-YYYY-MM-node-java.md`

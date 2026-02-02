@@ -133,6 +133,22 @@
     box-shadow: 0 18px 60px rgba(2,6,23,0.4);
     color: #0b1220;
   }
+  .card--editorial {
+    border: 1px solid rgba(244,114,182,0.4);
+    background:
+      radial-gradient(circle at 8% 0%, rgba(244,114,182,0.2) 0%, transparent 45%),
+      radial-gradient(circle at 88% 110%, rgba(56,189,248,0.18) 0%, transparent 55%),
+      linear-gradient(180deg, rgba(255,255,255,0.98) 0%, rgba(248,250,252,0.98) 100%);
+    box-shadow: 0 20px 50px rgba(124,58,237,0.18), 0 10px 24px rgba(2,6,23,0.25);
+  }
+  .card--editorial .kicker {
+    background: rgba(244,114,182,0.16);
+    border: 1px solid rgba(244,114,182,0.45);
+    color: rgba(76,29,149,0.95);
+    padding: 2px 8px;
+    border-radius: 999px;
+    letter-spacing: 0.06em;
+  }
   .card[hidden] { display: none; }
   .card.is-active { animation: slideUpFade 0.5s cubic-bezier(0.2, 0.8, 0.2, 1); }
   .card-head { margin-bottom: 12px; }
@@ -266,13 +282,37 @@
       <a class="report-link" href="../../devsecnews-2026-01-node-java.html" id="reportLink" aria-label="본문 리포트로 이동">본문 리포트</a>
       <nav class="pager" aria-label="카드 이동">
         <button class="pager-btn" type="button" id="prev" aria-label="이전">이전</button>
-        <span class="pager-indicator" aria-live="polite"><span id="count">1</span>/<span id="total">7</span></span>
+        <span class="pager-indicator" aria-live="polite"><span id="count">1</span>/<span id="total">8</span></span>
         <button class="pager-btn" type="button" id="next" aria-label="다음">다음</button>
       </nav>
     </header>
     <main class="deck" id="stage">
 
-<section class="card card--summary" data-card="summary" data-index="1" data-domain="node" aria-labelledby="card-1-title">
+<section class="card card--editorial" data-card="editorial" data-index="1" data-domain="editorial" aria-labelledby="card-1-title">
+  <header class="card-head">
+    
+        <div class="meta">
+          <span class="kicker">DEVSECNEWS · 에디터 노트</span>
+          
+        </div>
+      
+    <h2 id="card-1-title" class="card-title">Moltbot/ClawdBot(OpenClaw) 위협 동향 + async_hooks 장애 포인트</h2>
+  </header>
+  <div class="card-body">
+    <p>Moltbot/ClawdBot(OpenClaw) 생태계 위협 동향의 핵심은 “관리 인터페이스 노출 + 느슨한 공급망 통제”가 결합되면 계정 탈취로 직결된다는 점입니다. 백엔드/관리 포트가 외부에 열려 있고 토큰·키가 평문으로 남아 있으면, 공격자는 별도 취약점 없이 takeover를 시작합니다.</p>
+<p>악성 스킬/플러그인 캠페인은 설치 유도만으로도 피해를 만듭니다. 승인된 스킬만 허용하고, 실행은 샌드박스로 제한하며, 외부 실행 파일/암호 ZIP/보안 경고 무시는 금지해야 합니다.</p>
+<p>Node.js 쪽은 async_hooks가 켜진 상태에서 재귀 기반 스택 오버플로가 “잡히지 않는 장애”로 이어질 수 있습니다. 런타임 업데이트와 재귀 깊이 제한을 기본값으로 두고, 문제 재현 테스트를 빌드 파이프라인에 포함하는 게 안전합니다.</p>
+<p>자세히 보기: <a href="https://github.com/windshock/devsecnews/blob/main/editorial/2026-01/01.md">https://github.com/windshock/devsecnews/blob/main/editorial/2026-01/01.md</a>
+<a href="https://github.com/windshock/devsecnews/blob/main/editorial/2026-01/02.md">https://github.com/windshock/devsecnews/blob/main/editorial/2026-01/02.md</a></p>
+
+  </div>
+  <footer class="card-foot">
+    <span></span>
+    <a class="source" href="https://github.com/windshock/devsecnews/blob/main/editorial/2026-01/01.md" target="_blank" rel="noopener">Source</a>
+  </footer>
+</section>
+
+<section class="card card--summary" data-card="summary" data-index="2" data-domain="node" aria-labelledby="card-2-title">
   <header class="card-head">
     
         <div class="meta">
@@ -280,7 +320,7 @@
           <span class="badge badge--node" data-domain="node">Node.js</span>
         </div>
       
-    <h2 id="card-1-title" class="card-title">Node.js 보안 릴리스 업데이트</h2>
+    <h2 id="card-2-title" class="card-title">Node.js 보안 릴리스 업데이트</h2>
   </header>
   <dl class="card-body">
     <div class="row"><dt>한 줄 요약</dt><dd><p>20/22/24/25 라인 보안 릴리스가 나왔습니다. 권한 모델과 vm 타임아웃 이슈가 핵심입니다.</p>
@@ -297,7 +337,7 @@
   </footer>
 </section>
 
-<section class="card card--summary" data-card="summary" data-index="2" data-domain="node" aria-labelledby="card-2-title">
+<section class="card card--summary" data-card="summary" data-index="3" data-domain="node" aria-labelledby="card-3-title">
   <header class="card-head">
     
         <div class="meta">
@@ -305,7 +345,7 @@
           <span class="badge badge--node" data-domain="node">Node.js</span>
         </div>
       
-    <h2 id="card-2-title" class="card-title">symlink 우회 경로 검증</h2>
+    <h2 id="card-3-title" class="card-title">symlink 우회 경로 검증</h2>
   </header>
   <dl class="card-body">
     <div class="row"><dt>한 줄 요약</dt><dd><p>권한 모델의 문자열 기반 경로 검증이 우회됩니다. realpath 기준으로 바꿉니다.</p>
@@ -322,7 +362,7 @@
   </footer>
 </section>
 
-<section class="card card--summary" data-card="summary" data-index="3" data-domain="node" aria-labelledby="card-3-title">
+<section class="card card--summary" data-card="summary" data-index="4" data-domain="node" aria-labelledby="card-4-title">
   <header class="card-head">
     
         <div class="meta">
@@ -330,7 +370,7 @@
           <span class="badge badge--node" data-domain="node">Node.js</span>
         </div>
       
-    <h2 id="card-3-title" class="card-title">UDS 우회 차단</h2>
+    <h2 id="card-4-title" class="card-title">UDS 우회 차단</h2>
   </header>
   <dl class="card-body">
     <div class="row"><dt>한 줄 요약</dt><dd><p>UDS 경로 입력을 허용하면 네트워크 차단이 무력화됩니다.</p>
@@ -347,7 +387,7 @@
   </footer>
 </section>
 
-<section class="card card--summary" data-card="summary" data-index="4" data-domain="java" aria-labelledby="card-4-title">
+<section class="card card--summary" data-card="summary" data-index="5" data-domain="java" aria-labelledby="card-5-title">
   <header class="card-head">
     
         <div class="meta">
@@ -355,7 +395,7 @@
           <span class="badge badge--java" data-domain="java">Java</span>
         </div>
       
-    <h2 id="card-4-title" class="card-title">Struts S2-069(XXE)</h2>
+    <h2 id="card-5-title" class="card-title">Struts S2-069(XXE)</h2>
   </header>
   <dl class="card-body">
     <div class="row"><dt>한 줄 요약</dt><dd><p>XML 파서 기본값이 남아 있으면 XXE가 열립니다.</p>
@@ -372,7 +412,7 @@
   </footer>
 </section>
 
-<section class="card card--summary" data-card="summary" data-index="5" data-domain="java" aria-labelledby="card-5-title">
+<section class="card card--summary" data-card="summary" data-index="6" data-domain="java" aria-labelledby="card-6-title">
   <header class="card-head">
     
         <div class="meta">
@@ -380,7 +420,7 @@
           <span class="badge badge--java" data-domain="java">Java</span>
         </div>
       
-    <h2 id="card-5-title" class="card-title">JasperReports 역직렬화 경계</h2>
+    <h2 id="card-6-title" class="card-title">JasperReports 역직렬화 경계</h2>
   </header>
   <dl class="card-body">
     <div class="row"><dt>한 줄 요약</dt><dd><p>외부 템플릿/직렬화 입력이 RCE로 이어집니다.</p>
@@ -397,7 +437,7 @@
   </footer>
 </section>
 
-<section class="card card--summary" data-card="summary" data-index="6" data-domain="java" aria-labelledby="card-6-title">
+<section class="card card--summary" data-card="summary" data-index="7" data-domain="java" aria-labelledby="card-7-title">
   <header class="card-head">
     
         <div class="meta">
@@ -405,7 +445,7 @@
           <span class="badge badge--java" data-domain="java">Java</span>
         </div>
       
-    <h2 id="card-6-title" class="card-title">EOL 확장 즉시 제거</h2>
+    <h2 id="card-7-title" class="card-title">EOL 확장 즉시 제거</h2>
   </header>
   <dl class="card-body">
     <div class="row"><dt>한 줄 요약</dt><dd><p>EOL 개발 도구는 패치가 없습니다. 확장을 즉시 제거합니다.</p>
@@ -422,7 +462,7 @@
   </footer>
 </section>
 
-<section class="card card--checklist" data-card="checklist" data-index="7" data-domain="mixed" aria-labelledby="card-7-title">
+<section class="card card--checklist" data-card="checklist" data-index="8" data-domain="mixed" aria-labelledby="card-8-title">
   <header class="card-head">
     
         <div class="meta">
@@ -430,7 +470,7 @@
           <span class="badge badge--node" data-domain="node">Node.js</span><span class="badge badge--java" data-domain="java">Java</span>
         </div>
       
-    <h2 id="card-7-title" class="card-title">이번 달 개발자 체크리스트(10)</h2>
+    <h2 id="card-8-title" class="card-title">이번 달 개발자 체크리스트(10)</h2>
   </header>
   <ol class="checklist"><li><label><input type="checkbox" /><span class="check-text">Node.js 런타임을 보안 릴리스 버전으로 업데이트합니다.</span></label></li><li><label><input type="checkbox" /><span class="check-text">권한 모델 경로 검증은 realpath 기준 allowlist로 바꿉니다.</span></label></li><li><label><input type="checkbox" /><span class="check-text">vm+timeout 조합으로 유저 코드를 실행하지 않고 격리합니다.</span></label></li><li><label><input type="checkbox" /><span class="check-text">UDS 경로는 allowlist로 고정합니다.</span></label></li><li><label><input type="checkbox" /><span class="check-text">Struts를 6.1.1 이상으로 업데이트합니다.</span></label></li><li><label><input type="checkbox" /><span class="check-text">XML 파서에서 DTD/외부 엔티티를 비활성화합니다.</span></label></li><li><label><input type="checkbox" /><span class="check-text">JasperReports 외부 템플릿 업로드/로딩 경로를 차단합니다.</span></label></li><li><label><input type="checkbox" /><span class="check-text">JasperReports 관련 컴포넌트를 최신 패치로 업데이트합니다.</span></label></li><li><label><input type="checkbox" /><span class="check-text">Spring CLI VSCode 확장을 제거합니다.</span></label></li><li><label><input type="checkbox" /><span class="check-text">신뢰되지 않은 워크스페이스는 기본 거부로 둡니다.</span></label></li></ol>
   <footer class="card-foot">

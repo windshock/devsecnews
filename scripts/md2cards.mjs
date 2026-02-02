@@ -319,6 +319,22 @@ function buildCardsHtml({ title, cards, reportHref }) {
     box-shadow: 0 18px 60px rgba(2,6,23,0.4);
     color: #0b1220;
   }
+  .card--editorial {
+    border: 1px solid rgba(244,114,182,0.4);
+    background:
+      radial-gradient(circle at 8% 0%, rgba(244,114,182,0.2) 0%, transparent 45%),
+      radial-gradient(circle at 88% 110%, rgba(56,189,248,0.18) 0%, transparent 55%),
+      linear-gradient(180deg, rgba(255,255,255,0.98) 0%, rgba(248,250,252,0.98) 100%);
+    box-shadow: 0 20px 50px rgba(124,58,237,0.18), 0 10px 24px rgba(2,6,23,0.25);
+  }
+  .card--editorial .kicker {
+    background: rgba(244,114,182,0.16);
+    border: 1px solid rgba(244,114,182,0.45);
+    color: rgba(76,29,149,0.95);
+    padding: 2px 8px;
+    border-radius: 999px;
+    letter-spacing: 0.06em;
+  }
   .card[hidden] { display: none; }
   .card.is-active { animation: slideUpFade 0.5s cubic-bezier(0.2, 0.8, 0.2, 1); }
   .card-head { margin-bottom: 12px; }
@@ -513,7 +529,7 @@ function buildCardsHtml({ title, cards, reportHref }) {
       }
 
       return `
-<section class="card" data-card="${escapeHtml(c.kind)}" data-index="${i + 1}" data-domain="${escapeHtml(domainInfo.domain)}" aria-labelledby="${cardId}-title">
+<section class="card card--${escapeHtml(c.kind)}" data-card="${escapeHtml(c.kind)}" data-index="${i + 1}" data-domain="${escapeHtml(domainInfo.domain)}" aria-labelledby="${cardId}-title">
   <header class="card-head">
     ${metaHtml}
     <h2 id="${cardId}-title" class="card-title">${escapeHtml(titleText)}</h2>
@@ -662,6 +678,9 @@ function deriveCardTitle(card, index, total) {
 }
 
 function getDomainMeta(card) {
+  if (card.kind === "editorial") {
+    return { domain: "editorial", badges: [] };
+  }
   if (card.kind === "checklist") {
     return { domain: "mixed", badges: ["node", "java"] };
   }

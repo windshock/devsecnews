@@ -1,7 +1,7 @@
 # Architecture
 
 ## 개요
-이 프로젝트는 월간 리포트 Markdown을 기준으로 리포트 HTML과 카드뉴스(HTML/PNG)를 생성하고, `docs/` 폴더로 배포합니다.
+이 프로젝트는 월간 리포트 Markdown을 기준으로 리포트 HTML과 카드뉴스(HTML/PNG)를 생성하고, `docs/` 폴더로 배포합니다. 선택적으로 `# (0) Editor's Note` 섹션을 최상단에 둡니다(`editorial/{YYYY-MM}/` 참조).
 
 ## 제작 워크플로우(조사 단계 포함)
 

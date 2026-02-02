@@ -1,5 +1,16 @@
 # DevSecNews 2026-01 — Node.js/Java 보안 요약(개발자용)
 
+# (0) Editor's Note
+
+Moltbot/ClawdBot(OpenClaw) 생태계 위협 동향의 핵심은 “관리 인터페이스 노출 + 느슨한 공급망 통제”가 결합되면 계정 탈취로 직결된다는 점입니다. 백엔드/관리 포트가 외부에 열려 있고 토큰·키가 평문으로 남아 있으면, 공격자는 별도 취약점 없이 takeover를 시작합니다.
+
+또한 악성 스킬/플러그인 캠페인은 설치 유도만으로도 피해를 만듭니다. 승인된 스킬만 허용하고, 실행은 샌드박스로 제한하며, 외부 실행 파일/암호 ZIP/보안 경고 무시는 금지해야 합니다.
+
+Node.js 쪽은 async_hooks가 켜진 상태에서 재귀 기반 스택 오버플로가 “잡히지 않는 장애”로 이어질 수 있습니다. 런타임 업데이트와 재귀 깊이 제한을 기본값으로 두고, 문제 재현 테스트를 빌드 파이프라인에 포함하는 게 안전합니다.
+
+자세히 보기: https://github.com/windshock/devsecnews/blob/main/editorial/2026-01/01.md
+https://github.com/windshock/devsecnews/blob/main/editorial/2026-01/02.md
+
 # (1) Summary
 
 - Node.js는 20/22/24/25 라인 보안 릴리스를 배포했습니다. 이번 달은 권한 모델과 `vm` 타임아웃 이슈가 핵심이어서 런타임을 보안 릴리스 버전으로 업데이트해야 합니다. [Source] https://nodejs.org/es/blog/vulnerability/december-2025-security-releases (2026-01-13)
@@ -9,6 +20,9 @@
 - JasperReports 역직렬화(CVE-2025-10492)는 외부 템플릿/직렬화 입력이 곧 RCE로 이어집니다. 템플릿 업로드는 차단하고, 필요하면 격리된 렌더러로 분리해야 합니다. [Source] https://skyve.org/blog/2026/1/12/security-advisory-cve-2025-10492-jaspersoft-library-deserialisation-vulnerability (2026-01-12)
 - EOL 개발 도구 확장(CVE-2026-22718)은 패치가 없습니다. 확장을 제거하고 워크스페이스 신뢰는 기본 거부로 둬야 합니다. [Source] https://spring.io/security/cve-2026-22718 (2026-01-13)
 
+<!--CARD
+{"id":"editorial-1","kind":"editorial","header":"에디터 노트","title":"Moltbot/ClawdBot(OpenClaw) 위협 동향 + async_hooks 장애 포인트","bodyMd":"Moltbot/ClawdBot(OpenClaw) 생태계 위협 동향의 핵심은 “관리 인터페이스 노출 + 느슨한 공급망 통제”가 결합되면 계정 탈취로 직결된다는 점입니다. 백엔드/관리 포트가 외부에 열려 있고 토큰·키가 평문으로 남아 있으면, 공격자는 별도 취약점 없이 takeover를 시작합니다.\n\n악성 스킬/플러그인 캠페인은 설치 유도만으로도 피해를 만듭니다. 승인된 스킬만 허용하고, 실행은 샌드박스로 제한하며, 외부 실행 파일/암호 ZIP/보안 경고 무시는 금지해야 합니다.\n\nNode.js 쪽은 async_hooks가 켜진 상태에서 재귀 기반 스택 오버플로가 “잡히지 않는 장애”로 이어질 수 있습니다. 런타임 업데이트와 재귀 깊이 제한을 기본값으로 두고, 문제 재현 테스트를 빌드 파이프라인에 포함하는 게 안전합니다.\n\n자세히 보기: https://github.com/windshock/devsecnews/blob/main/editorial/2026-01/01.md\nhttps://github.com/windshock/devsecnews/blob/main/editorial/2026-01/02.md","source":"https://github.com/windshock/devsecnews/blob/main/editorial/2026-01/01.md"}
+-->
 <!--CARD
 {"id":"summary-1","kind":"summary","header":"요약","title":"Node.js 보안 릴리스 업데이트","bodyMd":"20/22/24/25 라인 보안 릴리스가 나왔습니다. 권한 모델과 vm 타임아웃 이슈가 핵심입니다.","whyMd":"런타임 취약점은 앱 코드 경계 밖에서 바로 노출됩니다.","impactMd":"메모리 노출·권한 우회로 이어질 수 있습니다.","actionMd":"런타임을 보안 릴리스 버전으로 업데이트합니다.","source":"https://nodejs.org/es/blog/vulnerability/december-2025-security-releases "}
 -->
@@ -28,11 +42,6 @@
 {"id":"summary-6","kind":"summary","header":"요약","title":"EOL 확장 즉시 제거","bodyMd":"EOL 개발 도구는 패치가 없습니다. 확장을 즉시 제거합니다.","whyMd":"개발자 PC에서 명령 실행으로 이어집니다.","impactMd":"로컬 권한으로 임의 명령이 실행됩니다.","actionMd":"확장을 제거하고 워크스페이스 신뢰를 기본 거부로 둡니다.","source":"https://spring.io/security/cve-2026-22718 "}
 -->
 
-# (1.1) 에디터 노트
-
-운영/설정 실수로 인한 백엔드 노출이 에이전트 탈취로 바로 이어지는 흐름이 보입니다. 관리 인터페이스, DB API, 토큰 저장 경계는 한 번만 열려도 계정 탈취와 데이터 유출로 직결됩니다.
-
-스킬 레지스트리나 플러그인 마켓을 통한 사회공학형 공급망 공격이 반복됩니다. 승인된 스킬만 쓰고 실행 권한은 샌드박스로 제한하는 원칙이 최우선입니다.
 
 # (5) 이번 달 개발자 체크리스트
 
