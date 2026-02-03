@@ -232,6 +232,9 @@ function buildCardsHtml({ title, cards, reportHref }) {
       -ms-overflow-style: none;
       scrollbar-width: none;
     }
+    .card-scroll {
+      -webkit-overflow-scrolling: touch;
+    }
 
     body.export .deck {
       display: block;
@@ -339,10 +342,10 @@ function buildCardsHtml({ title, cards, reportHref }) {
       return `
         <!-- Card -->
         <article class="card snap-center flex-shrink-0 w-[85vw] max-w-sm h-full max-h-[600px] flex flex-col relative bg-gradient-to-br ${themeClass} border rounded-3xl shadow-2xl overflow-hidden snap-always">
-          <div class="flex-1 flex flex-col p-6 z-10">
+          <div class="flex-1 min-h-0 flex flex-col p-6 z-10">
             ${metaHtml}
             <h2 class="text-2xl font-bold text-white leading-tight mb-4 tracking-tight">${escapeHtml(titleText)}</h2>
-            <div class="flex-1 overflow-y-auto no-scrollbar mask-fade-bottom">
+            <div class="card-scroll flex-1 min-h-0 overflow-y-auto overscroll-contain no-scrollbar mask-fade-bottom">
               ${contentHtml}
             </div>
             ${actionBlock}
