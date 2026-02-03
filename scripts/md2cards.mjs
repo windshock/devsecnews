@@ -385,6 +385,71 @@ function buildCardsHtml({ title, cards, reportHref }) {
       </div>
     </header>
 
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const deck = document.querySelector('.deck');
+        if (!deck) return;
+
+        // 1. Keyboard Navigation
+        document.addEventListener('keydown', (e) => {
+          const cardWidth = deck.querySelector('.card')?.clientWidth || window.innerWidth;
+          if (e.key === 'ArrowRight') {
+            deck.scrollBy({ left: cardWidth, behavior: 'smooth' });
+          } else if (e.key === 'ArrowLeft') {
+            deck.scrollBy({ left: -cardWidth, behavior: 'smooth' });
+          }
+        });
+
+        // 2. Mouse Drag to Scroll
+        let isDown = false;
+        let startX;
+        let scrollLeft;
+
+        deck.style.cursor = 'grab';
+
+        deck.addEventListener('mousedown', (e) => {
+          isDown = true;
+          deck.style.cursor = 'grabbing';
+          // Disable snap temporarily for smooth dragging
+          deck.style.scrollSnapType = 'none';
+          startX = e.pageX - deck.offsetLeft;
+          scrollLeft = deck.scrollLeft;
+        });
+
+        const stopDrag = () => {
+          if (!isDown) return;
+          isDown = false;
+          deck.style.cursor = 'grab';
+          // Re-enable snap to let CSS handle the final alignment
+          deck.style.scrollSnapType = 'x mandatory';
+          // Trigger a tiny scroll to force snap if needed (optional, but browser usually handles it)
+        };
+
+        deck.addEventListener('mouseleave', stopDrag);
+        deck.addEventListener('mouseup', stopDrag);
+
+        deck.addEventListener('mousemove', (e) => {
+          if (!isDown) return;
+          e.preventDefault();
+          const x = e.pageX - deck.offsetLeft;
+          const walk = (x - startX) * 2; // Scroll-fast multiplier
+          deck.scrollLeft = scrollLeft - walk;
+        });
+
+        // 3. Vertical Mouse Wheel -> Horizontal Scroll
+        deck.addEventListener('wheel', (e) => {
+          // If purely vertical scroll (deltaY), map it to horizontal
+          if (e.deltaY !== 0) {
+            // Prevent default only if we are actually scrolling the deck, 
+            // to avoid blocking page refresh or other gestures if at boundaries.
+            // But here the deck is the main view, so we should map it.
+            deck.scrollLeft += e.deltaY;
+            e.preventDefault(); 
+          }
+        });
+      });
+    </script>
+
     <!-- Deck (Scroll Snap Container) -->
     <main class="deck flex-1 w-full overflow-x-auto overflow-y-hidden snap-x snap-mandatory flex items-center px-6 gap-6 no-scrollbar pt-14 pb-4">
       <!-- Spacer for centering first card -->
