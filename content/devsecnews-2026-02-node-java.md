@@ -4,8 +4,13 @@
 
 이번 달 Editors Pick은 Google Responsible AI Progress Report 2026을 검토한 관점에서 정리했습니다. 보고서의 핵심은 에이전트 안전을 User Alignment Critic, Agent Origin Sets, Mandatory Human Oversight로 다층 통제하는 구조입니다. 동시에 모델 기반 통제의 한계(우회·공모·인지 프레이밍 왜곡)도 남아 있어, 이번 달 이슈는 패치와 신뢰 경계 정책을 함께 적용하는 항목으로 선정했습니다. 자세한 메모는 https://github.com/windshock/devsecnews/blob/main/editorial/2026-02/01.md 를 참고해야 합니다. [Source] https://ai.google/static/documents/ai-responsibility-update-2026.pdf (날짜 미표기)
 
+두 번째 Editors Pick은 ClawHub/ClawdBot 악성 스킬 캠페인 분석입니다. 최근 공격은 SKILL.md 내부 페이로드를 외부 웹사이트로 분리해 정적 스캐닝을 우회하는 방향으로 진화했습니다. 이 때문에 스킬 파일만 검사하지 말고 prerequisite 설치 유도 링크와 런타임 네트워크 행위를 함께 점검해야 합니다. 자세한 메모는 https://github.com/windshock/devsecnews/blob/main/editorial/2026-02/02.md 를 참고해야 합니다. [Source] https://opensourcemalware.com/blog/malicious-clawhub-skills-hide-in-plain-sight (2026-02-09)
+
 <!--CARD
 {"id":"editorial-1","kind":"editorial","domain":"editorial","header":"에디터 노트","title":"Editors Pick (2026-02): Google Responsible AI Progress Report 2026 관점","bodyMd":"이번 달 Editors Pick은 Google Responsible AI Progress Report 2026을 검토한 관점에서 정리했습니다.\n\n핵심은 User Alignment Critic, Agent Origin Sets, Mandatory Human Oversight로 구성된 다층 통제 구조입니다.\n\n동시에 모델 기반 통제의 한계(우회·공모·인지 프레이밍 왜곡)가 남아 있어, 이번 달 이슈는 패치와 신뢰 경계 정책을 함께 적용하는 항목으로 선정했습니다.\n\n자세한 메모는 https://github.com/windshock/devsecnews/blob/main/editorial/2026-02/01.md 를 참고해야 합니다.","source":"https://ai.google/static/documents/ai-responsibility-update-2026.pdf"}
+-->
+<!--CARD
+{"id":"editorial-2","kind":"editorial","domain":"editorial","header":"에디터 노트","title":"Editors Pick (2026-02): ClawHub/ClawdBot 악성 스킬 캠페인","bodyMd":"두 번째 Editors Pick은 ClawHub/ClawdBot 악성 스킬 캠페인 분석입니다.\n\n최근 공격은 SKILL.md 내부 페이로드를 외부 웹사이트로 분리해 정적 스캐닝을 우회하는 방향으로 진화했습니다.\n\n스킬 파일 정적 검사만으로는 부족하므로 prerequisite 설치 유도 링크와 런타임 네트워크 행위를 함께 점검해야 합니다.\n\n자세한 메모는 https://github.com/windshock/devsecnews/blob/main/editorial/2026-02/02.md 를 참고해야 합니다.","source":"https://opensourcemalware.com/blog/malicious-clawhub-skills-hide-in-plain-sight"}
 -->
 
 # (1) Summary
@@ -335,3 +340,5 @@ CI 정책에 취약 버전 차단 규칙을 고정해야 합니다.
 - https://cveawg.mitre.org/api/cve/CVE-2025-33042
 - https://ai.google/static/documents/ai-responsibility-update-2026.pdf
 - https://github.com/windshock/devsecnews/blob/main/editorial/2026-02/01.md
+- https://opensourcemalware.com/blog/malicious-clawhub-skills-hide-in-plain-sight
+- https://github.com/windshock/devsecnews/blob/main/editorial/2026-02/02.md
