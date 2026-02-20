@@ -11,7 +11,8 @@
     "build:cards:png": "node scripts/cards2png.mjs",
     "build:cards": "node scripts/build-cards.mjs",
     "deploy": "node scripts/deploy.mjs",
-    "verify": "node scripts/verify.mjs"
+    "verify": "node scripts/verify.mjs",
+    "verify:strict": "node scripts/verify.mjs --strict"
   },
   "devDependencies": {
     "@playwright/test": "^1.57.0",

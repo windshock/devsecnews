@@ -290,6 +290,17 @@ const html = `<!doctype html>
           if (!list) return;
           const nodeHeading = document.querySelector(".view-node h1, .view-node h2, .view-node h3");
           const javaHeading = document.querySelector(".view-java h1, .view-java h2, .view-java h3");
+          function resolveTargetIdBySourceHref(href, excludeEl) {
+            const links = Array.from(document.querySelectorAll('a[href="' + href.replace(/"/g, '\\"') + '"]'));
+            for (const l of links) {
+              if (excludeEl && excludeEl.contains(l)) continue;
+              const heading =
+                l.closest("section")?.querySelector("h1,h2,h3") ||
+                l.closest("h1,h2,h3");
+              if (heading && heading.id) return heading.id;
+            }
+            return null;
+          }
           const items = Array.from(list.querySelectorAll("li"));
           const grid = document.createElement("div");
           grid.className = "summary-grid";
@@ -319,6 +330,9 @@ const html = `<!doctype html>
             let target = null;
             if (/node\.?js/i.test(text) && nodeHeading && nodeHeading.id) target = nodeHeading.id;
             if (/java/i.test(text) && javaHeading && javaHeading.id) target = javaHeading.id;
+            if (!target && link && link.getAttribute("href")) {
+              target = resolveTargetIdBySourceHref(link.getAttribute("href"), li);
+            }
             if (target) {
               jump.href = "#" + target;
               jump.textContent = "자세히";

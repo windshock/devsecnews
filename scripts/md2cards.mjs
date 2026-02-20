@@ -47,6 +47,7 @@ if (metaCards.length) {
   for (const c of metaCards) {
     cards.push({
       kind: c.kind,
+      domain: c.domain,
       header: c.header,
       title: c.title,
       bodyMd: c.bodyMd,

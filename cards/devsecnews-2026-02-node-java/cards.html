@@ -1,0 +1,498 @@
+<!doctype html>
+<html lang="ko" class="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <title>DevSecNews 2026-02 — Node.js/Java 보안 요약(개발자용) cards</title>
+    
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Pretendard', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            node: '#4ade80',
+            java: '#fb923c',
+            edit: '#a78bfa',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&display=swap');
+    
+    /* Scroll Snap */
+    .snap-x {
+      scroll-snap-type: x mandatory;
+    }
+    .snap-center {
+      scroll-snap-align: center;
+    }
+    
+    /* Hide scrollbar for clean UI */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    .card-scroll {
+      -webkit-overflow-scrolling: touch;
+    }
+
+    body.export .deck {
+      display: block;
+      padding: 0;
+      height: auto;
+      overflow: visible;
+    }
+    body.export .card {
+      width: 1080px;
+      height: 1350px;
+      margin-bottom: 20px;
+      scroll-snap-align: none;
+      border-radius: 0;
+    }
+    body.export .page-header { display: none; }
+  </style>
+  
+  </head>
+  <body class="bg-slate-950 text-slate-200 h-[100dvh] w-screen overflow-hidden flex flex-col select-none">
+    
+    <!-- Top Bar -->
+    <header class="page-header fixed top-0 w-full z-50 flex items-center justify-between px-4 py-3 bg-slate-950/80 backdrop-blur-md border-b border-white/5">
+      <a href="../../devsecnews-2026-02-node-java.html" class="flex items-center gap-2 text-xs font-medium text-slate-400 hover:text-white transition-colors">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+        Back to Report
+      </a>
+      <div class="text-xs font-mono text-slate-600">
+        <span class="hidden sm:inline">SWIPE or SCROLL</span>
+        <span class="sm:hidden">SWIPE</span>
+      </div>
+    </header>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const deck = document.querySelector('.deck');
+        if (!deck) return;
+
+        // 1. Keyboard Navigation
+        document.addEventListener('keydown', (e) => {
+          const cardWidth = deck.querySelector('.card')?.clientWidth || window.innerWidth;
+          if (e.key === 'ArrowRight') {
+            deck.scrollBy({ left: cardWidth, behavior: 'smooth' });
+          } else if (e.key === 'ArrowLeft') {
+            deck.scrollBy({ left: -cardWidth, behavior: 'smooth' });
+          }
+        });
+
+        // 2. Mouse Drag to Scroll
+        let isDown = false;
+        let startX;
+        let scrollLeft;
+
+        deck.style.cursor = 'grab';
+
+        deck.addEventListener('mousedown', (e) => {
+          isDown = true;
+          deck.style.cursor = 'grabbing';
+          // Disable snap temporarily for smooth dragging
+          deck.style.scrollSnapType = 'none';
+          startX = e.pageX - deck.offsetLeft;
+          scrollLeft = deck.scrollLeft;
+        });
+
+        const stopDrag = () => {
+          if (!isDown) return;
+          isDown = false;
+          deck.style.cursor = 'grab';
+          // Re-enable snap to let CSS handle the final alignment
+          deck.style.scrollSnapType = 'x mandatory';
+          // Trigger a tiny scroll to force snap if needed (optional, but browser usually handles it)
+        };
+
+        deck.addEventListener('mouseleave', stopDrag);
+        deck.addEventListener('mouseup', stopDrag);
+
+        deck.addEventListener('mousemove', (e) => {
+          if (!isDown) return;
+          e.preventDefault();
+          const x = e.pageX - deck.offsetLeft;
+          const walk = (x - startX) * 2; // Scroll-fast multiplier
+          deck.scrollLeft = scrollLeft - walk;
+        });
+
+        // 3. Vertical Mouse Wheel -> Horizontal Scroll
+        deck.addEventListener('wheel', (e) => {
+          // If purely vertical scroll (deltaY), map it to horizontal
+          if (e.deltaY !== 0) {
+            // Prevent default only if we are actually scrolling the deck, 
+            // to avoid blocking page refresh or other gestures if at boundaries.
+            // But here the deck is the main view, so we should map it.
+            deck.scrollLeft += e.deltaY;
+            e.preventDefault(); 
+          }
+        });
+      });
+    </script>
+
+    <!-- Deck (Scroll Snap Container) -->
+    <main class="deck flex-1 w-full overflow-x-auto overflow-y-hidden snap-x snap-mandatory flex items-center px-6 gap-6 no-scrollbar pt-14 pb-4">
+      <!-- Spacer for centering first card -->
+      <div class="flex-shrink-0 w-1 sm:w-[calc(50vw-192px-24px)]"></div>
+      
+      
+        <!-- Card -->
+        <article class="card snap-center flex-shrink-0 w-[85vw] max-w-sm h-full max-h-[600px] flex flex-col relative bg-gradient-to-br from-slate-900 to-violet-950 border-violet-900/50 border rounded-3xl shadow-2xl overflow-hidden snap-always">
+          <div class="flex-1 min-h-0 flex flex-col p-6 z-10">
+            
+        <div class="flex items-center gap-2 mb-4">
+          <span class="text-xs font-mono uppercase tracking-widest text-slate-500">DEVSECNEWS</span>
+          <div class="flex gap-1 ml-auto"><span class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border bg-violet-900/30 text-violet-400 border-violet-700/50">Editor's Note</span></div>
+        </div>
+      
+            <h2 class="text-2xl font-bold text-white leading-tight mb-4 tracking-tight">Editors Pick (2026-02): Google Responsible AI Progress Report 2026 관점</h2>
+            <div class="card-scroll flex-1 min-h-0 overflow-y-auto overscroll-contain no-scrollbar mask-fade-bottom">
+              
+          <div class="space-y-4 text-sm">
+            <div class="p-3 rounded-lg bg-white/5 border border-white/5"><div class="text-xs font-bold text-slate-400 mb-1">SUMMARY</div><div class="text-slate-200 leading-relaxed"><p>이번 달 Editors Pick은 Google Responsible AI Progress Report 2026을 검토한 관점에서 정리했습니다.</p>
+<p>핵심은 User Alignment Critic, Agent Origin Sets, Mandatory Human Oversight로 구성된 다층 통제 구조입니다.</p>
+<p>동시에 모델 기반 통제의 한계(우회·공모·인지 프레이밍 왜곡)가 남아 있어, 이번 달 이슈는 패치와 신뢰 경계 정책을 함께 적용하는 항목으로 선정했습니다.</p>
+<p>자세한 메모는 <a href="https://github.com/windshock/devsecnews/blob/main/editorial/2026-02/01.md" target="_blank" class="text-blue-400 hover:text-blue-300 underline decoration-blue-400/30 underline-offset-2 break-all">Link ↗</a> 를 참고해야 합니다.</p>
+</div></div>
+            
+            
+          </div>
+        
+            </div>
+            
+            <div class="mt-4 flex justify-between items-center pt-2 border-t border-white/5">
+              <span class="text-xs text-slate-600 font-mono">1 / 8</span>
+              <a href="https://ai.google/static/documents/ai-responsibility-update-2026.pdf" target="_blank" class="text-xs font-mono text-slate-500 hover:text-white transition-colors ml-auto">Source ↗</a>
+            </div>
+          </div>
+          
+          <!-- Background Decoration -->
+          <div class="absolute -top-20 -right-20 w-64 h-64 bg-white/5 rounded-full blur-3xl pointer-events-none"></div>
+          <div class="absolute -bottom-20 -left-20 w-64 h-64 bg-black/20 rounded-full blur-3xl pointer-events-none"></div>
+        </article>
+      
+
+        <!-- Card -->
+        <article class="card snap-center flex-shrink-0 w-[85vw] max-w-sm h-full max-h-[600px] flex flex-col relative bg-gradient-to-br from-slate-900 to-green-950 border-green-900/50 border rounded-3xl shadow-2xl overflow-hidden snap-always">
+          <div class="flex-1 min-h-0 flex flex-col p-6 z-10">
+            
+        <div class="flex items-center gap-2 mb-4">
+          <span class="text-xs font-mono uppercase tracking-widest text-slate-500">DEVSECNEWS</span>
+          <div class="flex gap-1 ml-auto"><span class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border bg-green-900/30 text-green-400 border-green-700/50">Node.js</span></div>
+        </div>
+      
+            <h2 class="text-2xl font-bold text-white leading-tight mb-4 tracking-tight">Swiper Prototype Pollution</h2>
+            <div class="card-scroll flex-1 min-h-0 overflow-y-auto overscroll-contain no-scrollbar mask-fade-bottom">
+              
+          <div class="space-y-4 text-sm">
+            <div class="p-3 rounded-lg bg-white/5 border border-white/5"><div class="text-xs font-bold text-slate-400 mb-1">SUMMARY</div><div class="text-slate-200 leading-relaxed"><p>옵션 병합 과정에서 Prototype Pollution 취약점이 공개됐습니다.</p>
+</div></div>
+            <div class="p-3 rounded-lg bg-red-500/10 border border-red-500/20"><div class="text-xs font-bold text-red-400 mb-1">RISK</div><div class="text-slate-200 leading-relaxed"><p>사용자 입력 객체를 직접 병합하면 전역 오염으로 이어질 수 있습니다.</p>
+</div></div>
+            <div class="p-3 rounded-lg bg-orange-500/10 border border-orange-500/20"><div class="text-xs font-bold text-orange-400 mb-1">IMPACT</div><div class="text-slate-200 leading-relaxed"><p>권한 우회 또는 예기치 않은 코드 흐름이 발생할 수 있습니다.</p>
+</div></div>
+          </div>
+        
+            </div>
+            <div class="mt-auto pt-4 border-t border-white/10">
+             <div class="text-[10px] font-bold uppercase tracking-widest text-green-500 mb-1">Action</div>
+             <div class="text-sm text-white font-medium"><p>swiper를 11.2.10/12.0.2 이상으로 업데이트합니다.</p>
+</div>
+           </div>
+            <div class="mt-4 flex justify-between items-center pt-2 border-t border-white/5">
+              <span class="text-xs text-slate-600 font-mono">2 / 8</span>
+              <a href="https://github.com/advisories/GHSA-hmx5-qpq5-p643" target="_blank" class="text-xs font-mono text-slate-500 hover:text-white transition-colors ml-auto">Source ↗</a>
+            </div>
+          </div>
+          
+          <!-- Background Decoration -->
+          <div class="absolute -top-20 -right-20 w-64 h-64 bg-white/5 rounded-full blur-3xl pointer-events-none"></div>
+          <div class="absolute -bottom-20 -left-20 w-64 h-64 bg-black/20 rounded-full blur-3xl pointer-events-none"></div>
+        </article>
+      
+
+        <!-- Card -->
+        <article class="card snap-center flex-shrink-0 w-[85vw] max-w-sm h-full max-h-[600px] flex flex-col relative bg-gradient-to-br from-slate-900 to-green-950 border-green-900/50 border rounded-3xl shadow-2xl overflow-hidden snap-always">
+          <div class="flex-1 min-h-0 flex flex-col p-6 z-10">
+            
+        <div class="flex items-center gap-2 mb-4">
+          <span class="text-xs font-mono uppercase tracking-widest text-slate-500">DEVSECNEWS</span>
+          <div class="flex gap-1 ml-auto"><span class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border bg-green-900/30 text-green-400 border-green-700/50">Node.js</span></div>
+        </div>
+      
+            <h2 class="text-2xl font-bold text-white leading-tight mb-4 tracking-tight">OpenClaw Path Traversal</h2>
+            <div class="card-scroll flex-1 min-h-0 overflow-y-auto overscroll-contain no-scrollbar mask-fade-bottom">
+              
+          <div class="space-y-4 text-sm">
+            <div class="p-3 rounded-lg bg-white/5 border border-white/5"><div class="text-xs font-bold text-slate-400 mb-1">SUMMARY</div><div class="text-slate-200 leading-relaxed"><p>apply_patch 경로 검증 미흡으로 workspace 밖 파일 조작이 가능했습니다.</p>
+</div></div>
+            <div class="p-3 rounded-lg bg-red-500/10 border border-red-500/20"><div class="text-xs font-bold text-red-400 mb-1">RISK</div><div class="text-slate-200 leading-relaxed"><p>경로 정규화 누락은 샌드박스 경계를 무너뜨립니다.</p>
+</div></div>
+            <div class="p-3 rounded-lg bg-orange-500/10 border border-orange-500/20"><div class="text-xs font-bold text-orange-400 mb-1">IMPACT</div><div class="text-slate-200 leading-relaxed"><p>로컬 파일 변조/삭제로 이어질 수 있습니다.</p>
+</div></div>
+          </div>
+        
+            </div>
+            <div class="mt-auto pt-4 border-t border-white/10">
+             <div class="text-[10px] font-bold uppercase tracking-widest text-green-500 mb-1">Action</div>
+             <div class="text-sm text-white font-medium"><p>도구 실행 경로를 샌드박스로 고정하고 업데이트합니다.</p>
+</div>
+           </div>
+            <div class="mt-4 flex justify-between items-center pt-2 border-t border-white/5">
+              <span class="text-xs text-slate-600 font-mono">3 / 8</span>
+              <a href="https://github.com/advisories/GHSA-r5fq-947m-xm57" target="_blank" class="text-xs font-mono text-slate-500 hover:text-white transition-colors ml-auto">Source ↗</a>
+            </div>
+          </div>
+          
+          <!-- Background Decoration -->
+          <div class="absolute -top-20 -right-20 w-64 h-64 bg-white/5 rounded-full blur-3xl pointer-events-none"></div>
+          <div class="absolute -bottom-20 -left-20 w-64 h-64 bg-black/20 rounded-full blur-3xl pointer-events-none"></div>
+        </article>
+      
+
+        <!-- Card -->
+        <article class="card snap-center flex-shrink-0 w-[85vw] max-w-sm h-full max-h-[600px] flex flex-col relative bg-gradient-to-br from-slate-900 to-green-950 border-green-900/50 border rounded-3xl shadow-2xl overflow-hidden snap-always">
+          <div class="flex-1 min-h-0 flex flex-col p-6 z-10">
+            
+        <div class="flex items-center gap-2 mb-4">
+          <span class="text-xs font-mono uppercase tracking-widest text-slate-500">DEVSECNEWS</span>
+          <div class="flex gap-1 ml-auto"><span class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border bg-green-900/30 text-green-400 border-green-700/50">Node.js</span></div>
+        </div>
+      
+            <h2 class="text-2xl font-bold text-white leading-tight mb-4 tracking-tight">OpenClaw safeBins 정보 노출</h2>
+            <div class="card-scroll flex-1 min-h-0 overflow-y-auto overscroll-contain no-scrollbar mask-fade-bottom">
+              
+          <div class="space-y-4 text-sm">
+            <div class="p-3 rounded-lg bg-white/5 border border-white/5"><div class="text-xs font-bold text-slate-400 mb-1">SUMMARY</div><div class="text-slate-200 leading-relaxed"><p>safeBins 처리에서 정보 노출 취약점이 공개됐습니다.</p>
+</div></div>
+            <div class="p-3 rounded-lg bg-red-500/10 border border-red-500/20"><div class="text-xs font-bold text-red-400 mb-1">RISK</div><div class="text-slate-200 leading-relaxed"><p>명령 안전장치의 누락은 우회 경로를 만듭니다.</p>
+</div></div>
+            <div class="p-3 rounded-lg bg-orange-500/10 border border-orange-500/20"><div class="text-xs font-bold text-orange-400 mb-1">IMPACT</div><div class="text-slate-200 leading-relaxed"><p>내부 파일/실행 정보 노출 가능성이 증가합니다.</p>
+</div></div>
+          </div>
+        
+            </div>
+            <div class="mt-auto pt-4 border-t border-white/10">
+             <div class="text-[10px] font-bold uppercase tracking-widest text-green-500 mb-1">Action</div>
+             <div class="text-sm text-white font-medium"><p>안전 명령 allowlist와 출력 제한을 적용합니다.</p>
+</div>
+           </div>
+            <div class="mt-4 flex justify-between items-center pt-2 border-t border-white/5">
+              <span class="text-xs text-slate-600 font-mono">4 / 8</span>
+              <a href="https://github.com/advisories/GHSA-6c9j-x93c-rw6j" target="_blank" class="text-xs font-mono text-slate-500 hover:text-white transition-colors ml-auto">Source ↗</a>
+            </div>
+          </div>
+          
+          <!-- Background Decoration -->
+          <div class="absolute -top-20 -right-20 w-64 h-64 bg-white/5 rounded-full blur-3xl pointer-events-none"></div>
+          <div class="absolute -bottom-20 -left-20 w-64 h-64 bg-black/20 rounded-full blur-3xl pointer-events-none"></div>
+        </article>
+      
+
+        <!-- Card -->
+        <article class="card snap-center flex-shrink-0 w-[85vw] max-w-sm h-full max-h-[600px] flex flex-col relative bg-gradient-to-br from-slate-900 to-orange-950 border-orange-900/50 border rounded-3xl shadow-2xl overflow-hidden snap-always">
+          <div class="flex-1 min-h-0 flex flex-col p-6 z-10">
+            
+        <div class="flex items-center gap-2 mb-4">
+          <span class="text-xs font-mono uppercase tracking-widest text-slate-500">DEVSECNEWS</span>
+          <div class="flex gap-1 ml-auto"><span class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border bg-orange-900/30 text-orange-400 border-orange-700/50">Java</span></div>
+        </div>
+      
+            <h2 class="text-2xl font-bold text-white leading-tight mb-4 tracking-tight">Tomcat 인증/제약 우회</h2>
+            <div class="card-scroll flex-1 min-h-0 overflow-y-auto overscroll-contain no-scrollbar mask-fade-bottom">
+              
+          <div class="space-y-4 text-sm">
+            <div class="p-3 rounded-lg bg-white/5 border border-white/5"><div class="text-xs font-bold text-slate-400 mb-1">SUMMARY</div><div class="text-slate-200 leading-relaxed"><p>Tomcat에서 인증 우회와 제약 우회가 2월에 공지됐습니다.</p>
+</div></div>
+            <div class="p-3 rounded-lg bg-red-500/10 border border-red-500/20"><div class="text-xs font-bold text-red-400 mb-1">RISK</div><div class="text-slate-200 leading-relaxed"><p>프로토콜/인증 경계가 맞닿은 구간은 우회 표면이 됩니다.</p>
+</div></div>
+            <div class="p-3 rounded-lg bg-orange-500/10 border border-orange-500/20"><div class="text-xs font-bold text-orange-400 mb-1">IMPACT</div><div class="text-slate-200 leading-relaxed"><p>보호 경로 접근 허용으로 이어질 수 있습니다.</p>
+</div></div>
+          </div>
+        
+            </div>
+            <div class="mt-auto pt-4 border-t border-white/10">
+             <div class="text-[10px] font-bold uppercase tracking-widest text-orange-500 mb-1">Action</div>
+             <div class="text-sm text-white font-medium"><p>Tomcat을 패치 버전으로 즉시 업데이트합니다.</p>
+</div>
+           </div>
+            <div class="mt-4 flex justify-between items-center pt-2 border-t border-white/5">
+              <span class="text-xs text-slate-600 font-mono">5 / 8</span>
+              <a href="https://github.com/advisories/GHSA-fpj8-gq4v-p354" target="_blank" class="text-xs font-mono text-slate-500 hover:text-white transition-colors ml-auto">Source ↗</a>
+            </div>
+          </div>
+          
+          <!-- Background Decoration -->
+          <div class="absolute -top-20 -right-20 w-64 h-64 bg-white/5 rounded-full blur-3xl pointer-events-none"></div>
+          <div class="absolute -bottom-20 -left-20 w-64 h-64 bg-black/20 rounded-full blur-3xl pointer-events-none"></div>
+        </article>
+      
+
+        <!-- Card -->
+        <article class="card snap-center flex-shrink-0 w-[85vw] max-w-sm h-full max-h-[600px] flex flex-col relative bg-gradient-to-br from-slate-900 to-orange-950 border-orange-900/50 border rounded-3xl shadow-2xl overflow-hidden snap-always">
+          <div class="flex-1 min-h-0 flex flex-col p-6 z-10">
+            
+        <div class="flex items-center gap-2 mb-4">
+          <span class="text-xs font-mono uppercase tracking-widest text-slate-500">DEVSECNEWS</span>
+          <div class="flex gap-1 ml-auto"><span class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border bg-orange-900/30 text-orange-400 border-orange-700/50">Java</span></div>
+        </div>
+      
+            <h2 class="text-2xl font-bold text-white leading-tight mb-4 tracking-tight">Avro Java SDK 코드 인젝션</h2>
+            <div class="card-scroll flex-1 min-h-0 overflow-y-auto overscroll-contain no-scrollbar mask-fade-bottom">
+              
+          <div class="space-y-4 text-sm">
+            <div class="p-3 rounded-lg bg-white/5 border border-white/5"><div class="text-xs font-bold text-slate-400 mb-1">SUMMARY</div><div class="text-slate-200 leading-relaxed"><p>Avro Java SDK 코드 인젝션 취약점이 공개됐습니다.</p>
+</div></div>
+            <div class="p-3 rounded-lg bg-red-500/10 border border-red-500/20"><div class="text-xs font-bold text-red-400 mb-1">RISK</div><div class="text-slate-200 leading-relaxed"><p>schema 처리 경로가 입력 검증 없이 노출되면 위험합니다.</p>
+</div></div>
+            <div class="p-3 rounded-lg bg-orange-500/10 border border-orange-500/20"><div class="text-xs font-bold text-orange-400 mb-1">IMPACT</div><div class="text-slate-200 leading-relaxed"><p>원격 코드 실행 가능성으로 확장될 수 있습니다.</p>
+</div></div>
+          </div>
+        
+            </div>
+            <div class="mt-auto pt-4 border-t border-white/10">
+             <div class="text-[10px] font-bold uppercase tracking-widest text-orange-500 mb-1">Action</div>
+             <div class="text-sm text-white font-medium"><p>org.apache.avro:avro를 패치 버전으로 업데이트합니다.</p>
+</div>
+           </div>
+            <div class="mt-4 flex justify-between items-center pt-2 border-t border-white/5">
+              <span class="text-xs text-slate-600 font-mono">6 / 8</span>
+              <a href="https://github.com/advisories/GHSA-rp46-r563-jrc7" target="_blank" class="text-xs font-mono text-slate-500 hover:text-white transition-colors ml-auto">Source ↗</a>
+            </div>
+          </div>
+          
+          <!-- Background Decoration -->
+          <div class="absolute -top-20 -right-20 w-64 h-64 bg-white/5 rounded-full blur-3xl pointer-events-none"></div>
+          <div class="absolute -bottom-20 -left-20 w-64 h-64 bg-black/20 rounded-full blur-3xl pointer-events-none"></div>
+        </article>
+      
+
+        <!-- Card -->
+        <article class="card snap-center flex-shrink-0 w-[85vw] max-w-sm h-full max-h-[600px] flex flex-col relative bg-gradient-to-br from-slate-800 to-slate-900 border-slate-700 border rounded-3xl shadow-2xl overflow-hidden snap-always">
+          <div class="flex-1 min-h-0 flex flex-col p-6 z-10">
+            
+        <div class="flex items-center gap-2 mb-4">
+          <span class="text-xs font-mono uppercase tracking-widest text-slate-500">DEVSECNEWS</span>
+          <div class="flex gap-1 ml-auto"><span class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border bg-slate-800 text-slate-300 border-slate-600">Common</span></div>
+        </div>
+      
+            <h2 class="text-2xl font-bold text-white leading-tight mb-4 tracking-tight">공통: 신뢰 경계 고정</h2>
+            <div class="card-scroll flex-1 min-h-0 overflow-y-auto overscroll-contain no-scrollbar mask-fade-bottom">
+              
+          <div class="space-y-4 text-sm">
+            <div class="p-3 rounded-lg bg-white/5 border border-white/5"><div class="text-xs font-bold text-slate-400 mb-1">SUMMARY</div><div class="text-slate-200 leading-relaxed"><p>병합/경로/프로토콜 경계 검증 누락이 공통 원인이었습니다.</p>
+</div></div>
+            <div class="p-3 rounded-lg bg-red-500/10 border border-red-500/20"><div class="text-xs font-bold text-red-400 mb-1">RISK</div><div class="text-slate-200 leading-relaxed"><p>취약점은 대부분 경계 처리 코드에서 시작됩니다.</p>
+</div></div>
+            <div class="p-3 rounded-lg bg-orange-500/10 border border-orange-500/20"><div class="text-xs font-bold text-orange-400 mb-1">IMPACT</div><div class="text-slate-200 leading-relaxed"><p>패치 후에도 동일 패턴으로 재발할 수 있습니다.</p>
+</div></div>
+          </div>
+        
+            </div>
+            <div class="mt-auto pt-4 border-t border-white/10">
+             <div class="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-1">Action</div>
+             <div class="text-sm text-white font-medium"><p>패치와 설정 변경을 같은 PR에서 반영합니다.</p>
+</div>
+           </div>
+            <div class="mt-4 flex justify-between items-center pt-2 border-t border-white/5">
+              <span class="text-xs text-slate-600 font-mono">7 / 8</span>
+              <a href="https://github.com/advisories/GHSA-qq5r-98hh-rxc9" target="_blank" class="text-xs font-mono text-slate-500 hover:text-white transition-colors ml-auto">Source ↗</a>
+            </div>
+          </div>
+          
+          <!-- Background Decoration -->
+          <div class="absolute -top-20 -right-20 w-64 h-64 bg-white/5 rounded-full blur-3xl pointer-events-none"></div>
+          <div class="absolute -bottom-20 -left-20 w-64 h-64 bg-black/20 rounded-full blur-3xl pointer-events-none"></div>
+        </article>
+      
+
+        <!-- Card -->
+        <article class="card snap-center flex-shrink-0 w-[85vw] max-w-sm h-full max-h-[600px] flex flex-col relative bg-gradient-to-br from-slate-800 to-slate-900 border-slate-700 border rounded-3xl shadow-2xl overflow-hidden snap-always">
+          <div class="flex-1 min-h-0 flex flex-col p-6 z-10">
+            
+        <div class="flex items-center gap-2 mb-4">
+          <span class="text-xs font-mono uppercase tracking-widest text-slate-500">DEVSECNEWS</span>
+          <div class="flex gap-1 ml-auto"><span class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border bg-slate-800 text-slate-300 border-slate-600">Node.js</span><span class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border bg-slate-800 text-slate-300 border-slate-600">Java</span></div>
+        </div>
+      
+            <h2 class="text-2xl font-bold text-white leading-tight mb-4 tracking-tight">이번 달 개발자 체크리스트(10)</h2>
+            <div class="card-scroll flex-1 min-h-0 overflow-y-auto overscroll-contain no-scrollbar mask-fade-bottom">
+              <ul class="space-y-2 mt-2 max-h-[400px] overflow-y-auto pr-1 custom-scrollbar">
+            <li class="flex gap-3 items-start p-3 bg-white/5 rounded-lg border border-white/5">
+              <span class="flex-shrink-0 flex items-center justify-center w-6 h-6 rounded-full bg-white/10 text-xs font-bold font-mono text-slate-300">1</span>
+              <span class="text-sm text-slate-200 leading-snug pt-0.5">swiper를 11.2.10/12.0.2 이상으로 업데이트합니다.</span>
+            </li>
+            <li class="flex gap-3 items-start p-3 bg-white/5 rounded-lg border border-white/5">
+              <span class="flex-shrink-0 flex items-center justify-center w-6 h-6 rounded-full bg-white/10 text-xs font-bold font-mono text-slate-300">2</span>
+              <span class="text-sm text-slate-200 leading-snug pt-0.5">merge 전에 위험 키를 제거합니다.</span>
+            </li>
+            <li class="flex gap-3 items-start p-3 bg-white/5 rounded-lg border border-white/5">
+              <span class="flex-shrink-0 flex items-center justify-center w-6 h-6 rounded-full bg-white/10 text-xs font-bold font-mono text-slate-300">3</span>
+              <span class="text-sm text-slate-200 leading-snug pt-0.5">OpenClaw를 최신 버전으로 업데이트합니다.</span>
+            </li>
+            <li class="flex gap-3 items-start p-3 bg-white/5 rounded-lg border border-white/5">
+              <span class="flex-shrink-0 flex items-center justify-center w-6 h-6 rounded-full bg-white/10 text-xs font-bold font-mono text-slate-300">4</span>
+              <span class="text-sm text-slate-200 leading-snug pt-0.5">OpenClaw 실행 경로를 workspace 하위로 강제합니다.</span>
+            </li>
+            <li class="flex gap-3 items-start p-3 bg-white/5 rounded-lg border border-white/5">
+              <span class="flex-shrink-0 flex items-center justify-center w-6 h-6 rounded-full bg-white/10 text-xs font-bold font-mono text-slate-300">5</span>
+              <span class="text-sm text-slate-200 leading-snug pt-0.5">safeBins allowlist와 출력 제한을 적용합니다.</span>
+            </li>
+            <li class="flex gap-3 items-start p-3 bg-white/5 rounded-lg border border-white/5">
+              <span class="flex-shrink-0 flex items-center justify-center w-6 h-6 rounded-full bg-white/10 text-xs font-bold font-mono text-slate-300">6</span>
+              <span class="text-sm text-slate-200 leading-snug pt-0.5">Tomcat을 9.0.99/10.1.35/11.0.3 이상으로 올립니다.</span>
+            </li>
+            <li class="flex gap-3 items-start p-3 bg-white/5 rounded-lg border border-white/5">
+              <span class="flex-shrink-0 flex items-center justify-center w-6 h-6 rounded-full bg-white/10 text-xs font-bold font-mono text-slate-300">7</span>
+              <span class="text-sm text-slate-200 leading-snug pt-0.5">인증/보안 제약 매핑을 재검증합니다.</span>
+            </li>
+            <li class="flex gap-3 items-start p-3 bg-white/5 rounded-lg border border-white/5">
+              <span class="flex-shrink-0 flex items-center justify-center w-6 h-6 rounded-full bg-white/10 text-xs font-bold font-mono text-slate-300">8</span>
+              <span class="text-sm text-slate-200 leading-snug pt-0.5">org.apache.avro:avro를 패치 버전으로 올립니다.</span>
+            </li>
+            <li class="flex gap-3 items-start p-3 bg-white/5 rounded-lg border border-white/5">
+              <span class="flex-shrink-0 flex items-center justify-center w-6 h-6 rounded-full bg-white/10 text-xs font-bold font-mono text-slate-300">9</span>
+              <span class="text-sm text-slate-200 leading-snug pt-0.5">Avro schema 입력 검증을 선행합니다.</span>
+            </li>
+            <li class="flex gap-3 items-start p-3 bg-white/5 rounded-lg border border-white/5">
+              <span class="flex-shrink-0 flex items-center justify-center w-6 h-6 rounded-full bg-white/10 text-xs font-bold font-mono text-slate-300">10</span>
+              <span class="text-sm text-slate-200 leading-snug pt-0.5">CI에서 취약 버전 탐지 시 배포를 중단합니다.</span>
+            </li></ul>
+            </div>
+            <div class="mt-auto pt-4 border-t border-white/10">
+             <div class="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-1">Action</div>
+             <div class="text-sm text-white font-medium"><p>이번 카드의 항목을 완료 처리합니다.</p>
+</div>
+           </div>
+            <div class="mt-4 flex justify-between items-center pt-2 border-t border-white/5">
+              <span class="text-xs text-slate-600 font-mono">8 / 8</span>
+              <a href="https://github.com/advisories/GHSA-hmx5-qpq5-p643" target="_blank" class="text-xs font-mono text-slate-500 hover:text-white transition-colors ml-auto">Source ↗</a>
+            </div>
+          </div>
+          
+          <!-- Background Decoration -->
+          <div class="absolute -top-20 -right-20 w-64 h-64 bg-white/5 rounded-full blur-3xl pointer-events-none"></div>
+          <div class="absolute -bottom-20 -left-20 w-64 h-64 bg-black/20 rounded-full blur-3xl pointer-events-none"></div>
+        </article>
+      
+      
+      <!-- Spacer for centering last card -->
+      <div class="flex-shrink-0 w-1 sm:w-[calc(50vw-192px-24px)]"></div>
+    </main>
+
+  </body>
+</html>
