@@ -43,9 +43,12 @@ const page = await browser.newPage({
   deviceScaleFactor: 2,
 });
 
-// Force export mode so layout stays fixed at 1080x1350 for consistent PNG.
-const url = pathToFileURL(path.resolve(inputHtml)).toString() + "?export=1";
+// Open cards HTML and switch to export mode class for deterministic full-frame capture.
+const url = pathToFileURL(path.resolve(inputHtml)).toString();
 await page.goto(url, { waitUntil: "load" });
+await page.evaluate(() => {
+  document.body.classList.add("export");
+});
 
 // Ensure fonts/layout settle.
 await page.waitForTimeout(250);

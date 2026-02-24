@@ -42,6 +42,20 @@ const checklistItems = parseNumbered(checklistMd);
 const rulesItems = parseNumbered(rulesMd);
 
 const cards = [];
+const FINAL_CARD_CTA_LINKS = [
+  {
+    label: "보안진단 플레이북(SKILLS)",
+    href: "http://code.skplanet.com/projects/VULCHK/repos/audit_result/browse?at=refs%2Fheads%2Fmain",
+  },
+  {
+    label: "보안진단 신청 페이지",
+    href: "https://wiki.skplanet.com/x/XjzEIw",
+  },
+  {
+    label: "시큐어 코딩 가이드",
+    href: "https://wiki.skplanet.com/pages/viewpage.action?pageId=237006490",
+  },
+];
 
 if (metaCards.length) {
   for (const c of metaCards) {
@@ -102,6 +116,17 @@ if (metaCards.length) {
     });
   }
 }
+
+// Always append a dedicated final CTA card for internal self-check resources.
+cards.push({
+  kind: "cta",
+  domain: "common",
+  header: "가이드",
+  title: "개발자 셀프 체크 가이드 및 툴",
+  bodyMd:
+    "월간 점검을 마친 뒤 아래 링크로 바로 실행/신청/가이드 확인까지 이어가세요.",
+  source: "",
+});
 
 const html = buildCardsHtml({
   title: titleLine,
@@ -321,6 +346,25 @@ function buildCardsHtml({ title, cards, reportHref }) {
             </li>`)
           .join("");
         contentHtml = `<ul class="space-y-2 mt-2 max-h-[400px] overflow-y-auto pr-1 custom-scrollbar">${listItems}</ul>`;
+      } else if (c.kind === "cta") {
+        const ctaDesc = bodyHtml
+          ? `<div class="p-3 rounded-lg bg-white/5 border border-white/5 text-slate-200 leading-relaxed">${bodyHtml}</div>`
+          : "";
+        const ctaButtons = FINAL_CARD_CTA_LINKS.map((link, idx) => {
+          const colorClass =
+            idx === 0
+              ? "bg-sky-600/90 hover:bg-sky-500 border-sky-400/40"
+              : idx === 1
+                ? "bg-emerald-600/90 hover:bg-emerald-500 border-emerald-400/40"
+                : "bg-amber-600/90 hover:bg-amber-500 border-amber-400/40";
+          return `<a href="${escapeHtml(link.href)}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center rounded-lg border px-3 py-2 text-xs font-semibold text-white transition-colors text-center ${colorClass}">${escapeHtml(link.label)} ↗</a>`;
+        }).join("");
+        contentHtml = `
+          <div class="space-y-3 mt-2">
+            ${ctaDesc}
+            <div class="grid gap-2">${ctaButtons}</div>
+          </div>
+        `;
       } else if (c.kind === "summary" || c.kind === "editorial") {
         contentHtml = `
           <div class="space-y-4 text-sm">
@@ -339,7 +383,6 @@ function buildCardsHtml({ title, cards, reportHref }) {
              <div class="text-sm text-white font-medium">${actionHtml}</div>
            </div>`
         : "";
-
       return `
         <!-- Card -->
         <article class="card snap-center flex-shrink-0 w-[85vw] max-w-sm h-full max-h-[600px] flex flex-col relative bg-gradient-to-br ${themeClass} border rounded-3xl shadow-2xl overflow-hidden snap-always">
@@ -502,6 +545,9 @@ function getDomainMeta(card) {
   if (card.kind === "checklist") {
     return { domain: "mixed", badges: ["node", "java"] };
   }
+  if (card.kind === "cta") {
+    return { domain: "common", badges: ["guide"] };
+  }
   const preferred = normalizeDomain(card.domain);
   const inferred = preferred || inferDomain(card);
   const domain = inferred || "common";
@@ -560,6 +606,7 @@ function badgeLabel(domain) {
   if (domain === "node") return "Node.js";
   if (domain === "java") return "Java";
   if (domain === "common") return "Common";
+  if (domain === "guide") return "Guide";
   if (domain === "editor's note") return "Editor's Note";
   return domain.toUpperCase();
 }
