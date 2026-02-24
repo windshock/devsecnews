@@ -1,8 +1,12 @@
 import fs from "node:fs";
 import path from "node:path";
 import process from "node:process";
+import { execSync } from "node:child_process";
+import { fileURLToPath } from "node:url";
 import { marked } from "marked";
 import { parseArgs, getMonth, defaultInput } from "./cli.mjs";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 function usageAndExit() {
   console.error(
@@ -136,6 +140,33 @@ const html = buildCardsHtml({
 
 const outFile = path.join(outDir, "cards.html");
 fs.writeFileSync(outFile, html, "utf8");
+
+/* ── Tailwind CLI: generate minimal CSS and inline it ── */
+const projectRoot = path.resolve(__dirname, "..");
+const twConfig = path.join(projectRoot, "tailwind.cards.config.cjs");
+const twInput = path.join(__dirname, "cards-input.css");
+const twOutput = path.join(outDir, ".tw.css");
+
+try {
+  execSync(
+    `npx tailwindcss -c ${twConfig} -i ${twInput} --content ${outFile} -o ${twOutput} --minify`,
+    { cwd: projectRoot, stdio: "pipe" }
+  );
+  const twCss = fs.readFileSync(twOutput, "utf8");
+  let final = fs.readFileSync(outFile, "utf8");
+  final = final.replace("<!-- __TAILWIND_CSS__ -->", `<style>${twCss}</style>`);
+  fs.writeFileSync(outFile, final, "utf8");
+  fs.unlinkSync(twOutput); // clean up temp file
+} catch (e) {
+  console.warn("⚠ Tailwind CLI failed, falling back to CDN:", e.message);
+  let final = fs.readFileSync(outFile, "utf8");
+  final = final.replace(
+    "<!-- __TAILWIND_CSS__ -->",
+    '<script src="https://cdn.tailwindcss.com"></script>'
+  );
+  fs.writeFileSync(outFile, final, "utf8");
+}
+
 console.log(`wrote: ${outFile}`);
 console.log(`cards: ${cards.length}`);
 
@@ -219,25 +250,7 @@ function parseCardMetaBlocks(fullMd) {
 
 function buildCardsHtml({ title, cards, reportHref }) {
   const cdn = `
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          fontFamily: {
-            sans: ['Pretendard', 'sans-serif'],
-            mono: ['JetBrains Mono', 'monospace'],
-          },
-          colors: {
-            node: '#4ade80',
-            java: '#fb923c',
-            edit: '#a78bfa',
-          }
-        }
-      }
-    }
-  </script>
+  <!-- __TAILWIND_CSS__ -->
   <style>
     @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
     @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&display=swap');
