@@ -159,7 +159,6 @@
         const vh = () => (window.visualViewport ? window.visualViewport.height : window.innerHeight);
         const layout = () => {
           const baseW = Math.max(240, Math.round(cards[0].getBoundingClientRect().width || 360));
-          halfW = Math.round(baseW / 2);
           spacing = Math.round(baseW * (isMobile() ? 0.44 : 0.62));
           const h = vh();
           const ringH = isMobile()
@@ -168,22 +167,18 @@
           ring.style.height = ringH + "px";
         };
 
-        /* Half card width, cached on layout */
-        let halfW = 180;
-
         const render = () => {
           for (let i = 0; i < n; i += 1) {
             const card = cards[i];
             const d = wrapDelta(i, position);
             const ad = Math.abs(d);
-            /* Only GPU-friendly properties: transform + opacity */
-            const x = Math.round(d * spacing - halfW);
+            const x = Math.round(d * spacing);
             const z = Math.round(320 - ad * 130);
             const rotateY = clamp(d * -42, -62, 62);
             const scale = 1 - Math.min(0.26, ad * 0.11);
             const opacity = Math.max(0.25, 1 - Math.min(0.75, ad * 0.25));
             card.style.cssText = "position:absolute;left:50%;top:50%;"
-              + "transform:translate3d(" + x + "px,-50%," + z + "px) rotateY(" + rotateY + "deg) scale(" + scale + ");"
+              + "transform:translate3d(calc(-50% + " + x + "px),-50%," + z + "px) rotateY(" + rotateY + "deg) scale(" + scale + ");"
               + "opacity:" + opacity + ";"
               + "z-index:" + Math.round(1000 - ad * 120) + ";"
               + "pointer-events:" + (ad < 0.75 ? "auto" : "none") + ";";
