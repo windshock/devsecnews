@@ -67,7 +67,7 @@
       .card {
         width: 60vw !important;
         max-width: 270px !important;
-        height: 56vh !important;
+        height: 56svh !important;
         max-height: 415px !important;
         border-radius: 1.25rem !important;
       }
@@ -111,12 +111,12 @@
       pointer-events: auto !important;
     }
     body.export .page-header { display: none; }
-    /* After Safari bar collapses, lock body scroll */
-    body.locked { overflow: hidden !important; height: 100dvh !important; }
+    /* Lock body scroll — use svh so it fits within Safari bars */
+    body.locked { overflow: hidden !important; height: 100svh !important; height: 100dvh !important; }
   </style>
   
   </head>
-  <body class="bg-slate-950 text-slate-200 min-h-[100dvh] w-screen flex flex-col select-none" style="padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)">
+  <body class="bg-slate-950 text-slate-200 w-screen flex flex-col select-none" style="height:100svh;height:100dvh;padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)">
     
     <!-- Top Bar -->
     <header class="page-header fixed top-0 w-full z-50 flex items-center justify-between px-4 py-3 bg-slate-950/80 backdrop-blur-md border-b border-white/5">
@@ -131,28 +131,8 @@
     </header>
 
     <script>
-      /* ── iOS Safari: collapse address/tab bar on load ── */
-      (function safariBarCollapse() {
-        var isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
-        if (!isIOS) { document.body.classList.add('locked'); return; }
-        if (navigator.standalone) { document.body.classList.add('locked'); return; }
-        var b = document.body;
-        /* briefly allow scroll so 1px scroll triggers bar collapse */
-        b.style.height = 'calc(100dvh + 2px)';
-        b.style.overflow = 'auto';
-        setTimeout(function() {
-          window.scrollTo({ top: 1, behavior: 'instant' });
-          setTimeout(function() {
-            b.style.height = '';
-            b.style.overflow = '';
-            b.classList.add('locked');
-            /* fire resize so layout() picks up new innerHeight */
-            window.dispatchEvent(new Event('resize'));
-          }, 350);
-        }, 80);
-      })();
-
       document.addEventListener('DOMContentLoaded', () => {
+        document.body.classList.add('locked');
         const deck = document.querySelector('.deck');
         const ring = document.getElementById('coverflow');
         if (!deck || !ring) return;
@@ -175,13 +155,16 @@
         const autoSpeed = 0.18; // cards / sec
 
         const isMobile = () => window.innerWidth <= 640;
+        /* visualViewport gives the real visible area (accounts for Safari bars) */
+        const vh = () => (window.visualViewport ? window.visualViewport.height : window.innerHeight);
         const layout = () => {
           const baseW = Math.max(240, Math.round(cards[0].getBoundingClientRect().width || 360));
           halfW = Math.round(baseW / 2);
           spacing = Math.round(baseW * (isMobile() ? 0.44 : 0.62));
+          const h = vh();
           const ringH = isMobile()
-            ? Math.max(360, Math.round(window.innerHeight * 0.65))
-            : Math.max(500, Math.round(window.innerHeight * 0.78));
+            ? Math.max(320, Math.round(h * 0.65))
+            : Math.max(500, Math.round(h * 0.78));
           ring.style.height = ringH + "px";
         };
 
@@ -344,6 +327,9 @@
           });
         });
         window.addEventListener("resize", () => { layout(); render(); });
+        if (window.visualViewport) {
+          window.visualViewport.addEventListener("resize", () => { layout(); render(); });
+        }
 
         layout();
         render();
