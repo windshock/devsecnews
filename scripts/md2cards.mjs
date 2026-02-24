@@ -242,14 +242,6 @@ function buildCardsHtml({ title, cards, reportHref }) {
     @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
     @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&display=swap');
     
-    /* Scroll Snap */
-    .snap-x {
-      scroll-snap-type: x mandatory;
-    }
-    .snap-center {
-      scroll-snap-align: center;
-    }
-    
     /* Hide scrollbar for clean UI */
     .no-scrollbar::-webkit-scrollbar {
       display: none;
@@ -261,6 +253,48 @@ function buildCardsHtml({ title, cards, reportHref }) {
     .card-scroll {
       -webkit-overflow-scrolling: touch;
     }
+    .deck {
+      perspective: 1400px;
+      transform-style: preserve-3d;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    @media (max-width: 640px) {
+      .deck { perspective: 900px; }
+    }
+    .coverflow {
+      position: relative;
+      transform-style: preserve-3d;
+      width: 100%;
+      height: min(82vh, 620px);
+    }
+    .card {
+      transform-origin: center center;
+      transform-style: preserve-3d;
+      transition: transform 220ms ease, opacity 220ms ease, filter 220ms ease;
+      will-change: transform, opacity, filter;
+    }
+    /* Mobile portrait: tall & narrow cards — phone-shaped cover flow */
+    @media (max-width: 640px) {
+      .card {
+        width: 60vw !important;
+        max-width: 270px !important;
+        height: 56vh !important;
+        max-height: 415px !important;
+        border-radius: 1.25rem !important;
+      }
+      .card > div:first-child { padding: 0.875rem !important; }
+      .card h2 { font-size: 0.875rem !important; line-height: 1.3 !important; margin-bottom: 0.5rem !important; }
+      .card .text-xs { font-size: 0.55rem !important; }
+      .card .text-sm { font-size: 0.65rem !important; }
+      .card .text-2xl { font-size: 0.875rem !important; }
+      .card .text-\[10px\] { font-size: 8px !important; }
+      .card .p-3 { padding: 0.5rem !important; }
+      .card .space-y-4 > * + * { margin-top: 0.5rem !important; }
+      .card .mb-4 { margin-bottom: 0.375rem !important; }
+    }
 
     body.export .deck {
       display: block;
@@ -268,12 +302,24 @@ function buildCardsHtml({ title, cards, reportHref }) {
       height: auto;
       overflow: visible;
     }
+    body.export .coverflow {
+      display: block;
+      width: auto;
+      height: auto !important;
+      position: static;
+    }
     body.export .card {
       width: 1080px;
       height: 1350px;
       margin-bottom: 20px;
-      scroll-snap-align: none;
       border-radius: 0;
+      position: relative !important;
+      left: auto !important;
+      top: auto !important;
+      transform: none !important;
+      opacity: 1 !important;
+      filter: none !important;
+      pointer-events: auto !important;
     }
     body.export .page-header { display: none; }
   </style>
@@ -385,7 +431,7 @@ function buildCardsHtml({ title, cards, reportHref }) {
         : "";
       return `
         <!-- Card -->
-        <article class="card snap-center flex-shrink-0 w-[85vw] max-w-sm h-full max-h-[600px] flex flex-col relative bg-gradient-to-br ${themeClass} border rounded-3xl shadow-2xl overflow-hidden snap-always">
+        <article class="card w-[85vw] max-w-sm h-[78vh] max-h-[560px] flex flex-col relative bg-gradient-to-br ${themeClass} border rounded-3xl shadow-2xl overflow-hidden">
           <div class="flex-1 min-h-0 flex flex-col p-6 z-10">
             ${metaHtml}
             <h2 class="text-2xl font-bold text-white leading-tight mb-4 tracking-tight">${escapeHtml(titleText)}</h2>
@@ -424,85 +470,198 @@ function buildCardsHtml({ title, cards, reportHref }) {
         Back to Report
       </a>
       <div class="text-xs font-mono text-slate-600">
-        <span class="hidden sm:inline">SWIPE or SCROLL</span>
-        <span class="sm:hidden">SWIPE</span>
+        <span class="hidden sm:inline">← DRAG or SCROLL →</span>
+        <span class="sm:hidden">← SWIPE →</span>
       </div>
     </header>
 
     <script>
       document.addEventListener('DOMContentLoaded', () => {
         const deck = document.querySelector('.deck');
-        if (!deck) return;
+        const ring = document.getElementById('coverflow');
+        if (!deck || !ring) return;
+        const isExport = document.body.classList.contains('export') || new URLSearchParams(location.search).get('export') === '1';
+        if (isExport) return;
 
-        // 1. Keyboard Navigation
-        document.addEventListener('keydown', (e) => {
-          const cardWidth = deck.querySelector('.card')?.clientWidth || window.innerWidth;
-          if (e.key === 'ArrowRight') {
-            deck.scrollBy({ left: cardWidth, behavior: 'smooth' });
-          } else if (e.key === 'ArrowLeft') {
-            deck.scrollBy({ left: -cardWidth, behavior: 'smooth' });
-          }
-        });
+        const cards = Array.from(ring.querySelectorAll('.card'));
+        const n = cards.length;
+        if (!n) return;
 
-        // 2. Mouse Drag to Scroll
-        let isDown = false;
-        let startX;
-        let scrollLeft;
+        const mod = (v, m) => ((v % m) + m) % m;
+        const wrapDelta = (index, pos) => mod(index - pos + n / 2, n) - n / 2;
+        const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
 
-        deck.style.cursor = 'grab';
+        let position = 0;
+        let target = 0;
+        let autoRotate = true;
+        let lastTs = 0;
+        let spacing = 220;
+        const autoSpeed = 0.18; // cards / sec
 
-        deck.addEventListener('mousedown', (e) => {
-          isDown = true;
-          deck.style.cursor = 'grabbing';
-          // Disable snap temporarily for smooth dragging
-          deck.style.scrollSnapType = 'none';
-          startX = e.pageX - deck.offsetLeft;
-          scrollLeft = deck.scrollLeft;
-        });
-
-        const stopDrag = () => {
-          if (!isDown) return;
-          isDown = false;
-          deck.style.cursor = 'grab';
-          // Re-enable snap to let CSS handle the final alignment
-          deck.style.scrollSnapType = 'x mandatory';
-          // Trigger a tiny scroll to force snap if needed (optional, but browser usually handles it)
+        const isMobile = () => window.innerWidth <= 640;
+        const layout = () => {
+          const baseW = Math.max(240, Math.round(cards[0].getBoundingClientRect().width || 360));
+          spacing = Math.round(baseW * (isMobile() ? 0.44 : 0.62));
+          const ringH = isMobile()
+            ? Math.max(360, Math.round(window.innerHeight * 0.65))
+            : Math.max(500, Math.round(window.innerHeight * 0.78));
+          ring.style.height = ringH + "px";
+          cards.forEach((card, idx) => {
+            card.style.position = "absolute";
+            card.style.left = "50%";
+            card.style.top = "50%";
+            /* centering is handled by translate3d(-50%, -50%, …) in render() */
+            card.dataset.index = String(idx);
+          });
         };
 
-        deck.addEventListener('mouseleave', stopDrag);
-        deck.addEventListener('mouseup', stopDrag);
-
-        deck.addEventListener('mousemove', (e) => {
-          if (!isDown) return;
-          e.preventDefault();
-          const x = e.pageX - deck.offsetLeft;
-          const walk = (x - startX) * 2; // Scroll-fast multiplier
-          deck.scrollLeft = scrollLeft - walk;
-        });
-
-        // 3. Vertical Mouse Wheel -> Horizontal Scroll
-        deck.addEventListener('wheel', (e) => {
-          // If purely vertical scroll (deltaY), map it to horizontal
-          if (e.deltaY !== 0) {
-            // Prevent default only if we are actually scrolling the deck, 
-            // to avoid blocking page refresh or other gestures if at boundaries.
-            // But here the deck is the main view, so we should map it.
-            deck.scrollLeft += e.deltaY;
-            e.preventDefault(); 
+        const render = () => {
+          for (let i = 0; i < n; i += 1) {
+            const card = cards[i];
+            const d = wrapDelta(i, position);
+            const ad = Math.abs(d);
+            const x = d * spacing;
+            const z = Math.round(320 - ad * 130);
+            const rotateY = clamp(d * -42, -62, 62);
+            const scale = 1 - Math.min(0.26, ad * 0.11);
+            const opacity = 1 - Math.min(0.7, ad * 0.22);
+            card.style.transform =
+              "translate3d(calc(-50% + " + x + "px), -50%, " + z + "px) rotateY(" + rotateY + "deg) scale(" + scale + ")";
+            card.style.opacity = String(Math.max(0.28, opacity));
+            card.style.filter = ad > 1.5 ? "saturate(0.72) blur(1px)" : "none";
+            card.style.zIndex = String(Math.round(1000 - ad * 120));
+            card.style.pointerEvents = ad < 0.75 ? "auto" : "none";
           }
+        };
+
+        const tick = (ts) => {
+          if (!lastTs) lastTs = ts;
+          const dt = (ts - lastTs) / 1000;
+          lastTs = ts;
+          if (autoRotate) target += autoSpeed * dt;
+          const diff = target - position;
+          position += diff * Math.min(1, dt * 7.5);
+          render();
+          window.requestAnimationFrame(tick);
+        };
+
+        let dragging = false;
+        let dragStartX = 0;
+        let dragStartTarget = 0;
+        let autoResumeTimer = null;
+        deck.style.cursor = "grab";
+
+        const snapToNearest = () => {
+          target = Math.round(target);
+        };
+        const pauseAutoRotate = () => {
+          autoRotate = false;
+          if (autoResumeTimer) clearTimeout(autoResumeTimer);
+        };
+        const scheduleAutoResume = () => {
+          if (autoResumeTimer) clearTimeout(autoResumeTimer);
+          autoResumeTimer = setTimeout(() => { autoRotate = true; }, 4000);
+        };
+
+        /* ── Mouse ── */
+        deck.addEventListener("mouseenter", () => { pauseAutoRotate(); });
+        deck.addEventListener("mouseleave", () => {
+          if (!dragging) { snapToNearest(); scheduleAutoResume(); }
         });
+        deck.addEventListener("mousedown", (e) => {
+          dragging = true;
+          pauseAutoRotate();
+          dragStartX = e.clientX;
+          dragStartTarget = target;
+          deck.style.cursor = "grabbing";
+        });
+        window.addEventListener("mouseup", () => {
+          if (!dragging) return;
+          dragging = false;
+          snapToNearest();
+          scheduleAutoResume();
+          deck.style.cursor = "grab";
+        });
+        window.addEventListener("mousemove", (e) => {
+          if (!dragging) return;
+          const dx = e.clientX - dragStartX;
+          target = dragStartTarget - dx / spacing;
+        });
+
+        /* ── Touch (direction-locked) ── */
+        let touchStartX = 0;
+        let touchStartY = 0;
+        let touchStartTarget = 0;
+        let touchAxis = ""; /* "" = undecided, "h" = horizontal, "v" = vertical */
+        const LOCK_THRESHOLD = 8; /* px to decide direction */
+        deck.addEventListener("touchstart", (e) => {
+          pauseAutoRotate();
+          touchStartX = e.touches[0].clientX;
+          touchStartY = e.touches[0].clientY;
+          touchStartTarget = target;
+          touchAxis = "";
+          dragging = false; /* wait until direction is decided */
+        }, { passive: true });
+        deck.addEventListener("touchmove", (e) => {
+          const dx = e.touches[0].clientX - touchStartX;
+          const dy = e.touches[0].clientY - touchStartY;
+          if (!touchAxis) {
+            if (Math.abs(dx) > LOCK_THRESHOLD || Math.abs(dy) > LOCK_THRESHOLD) {
+              touchAxis = Math.abs(dx) >= Math.abs(dy) ? "h" : "v";
+              if (touchAxis === "h") dragging = true;
+            }
+          }
+          if (touchAxis === "h") {
+            target = touchStartTarget - dx / spacing;
+            e.preventDefault(); /* block page scroll only for horizontal swipe */
+          }
+          /* vertical → let browser handle card-scroll natively */
+        }, { passive: false });
+        deck.addEventListener("touchend", () => {
+          if (dragging) {
+            dragging = false;
+            snapToNearest();
+          }
+          scheduleAutoResume();
+          touchAxis = "";
+        });
+
+        /* ── Wheel ── */
+        deck.addEventListener("wheel", (e) => {
+          target += e.deltaY * 0.0028;
+          pauseAutoRotate();
+          snapToNearest();
+          scheduleAutoResume();
+          e.preventDefault();
+        }, { passive: false });
+
+        /* ── Keyboard ── */
+        document.addEventListener("keydown", (e) => {
+          if (e.key === "ArrowRight") { target += 1; pauseAutoRotate(); scheduleAutoResume(); }
+          if (e.key === "ArrowLeft")  { target -= 1; pauseAutoRotate(); scheduleAutoResume(); }
+        });
+
+        /* ── Click to focus card ── */
+        cards.forEach((card, idx) => {
+          card.addEventListener("click", () => {
+            target += wrapDelta(idx, target);
+            pauseAutoRotate();
+            scheduleAutoResume();
+          });
+        });
+        window.addEventListener("resize", layout);
+
+        layout();
+        render();
+        window.requestAnimationFrame(tick);
       });
     </script>
 
     <!-- Deck (Scroll Snap Container) -->
-    <main class="deck flex-1 w-full overflow-x-auto overflow-y-hidden snap-x snap-mandatory flex items-center px-6 gap-6 no-scrollbar pt-14 pb-4">
-      <!-- Spacer for centering first card -->
-      <div class="flex-shrink-0 w-1 sm:w-[calc(50vw-192px-24px)]"></div>
-      
-      ${cardsHtml}
-      
-      <!-- Spacer for centering last card -->
-      <div class="flex-shrink-0 w-1 sm:w-[calc(50vw-192px-24px)]"></div>
+    <main class="deck flex-1 w-full pt-14 pb-4 px-4">
+      <div class="coverflow" id="coverflow">
+        ${cardsHtml}
+      </div>
     </main>
 
   </body>
