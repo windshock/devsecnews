@@ -272,9 +272,9 @@ function buildCardsHtml({ title, cards, reportHref }) {
     }
     .card {
       transform-origin: center center;
-      transform-style: preserve-3d;
-      transition: transform 220ms ease, opacity 220ms ease, filter 220ms ease;
-      will-change: transform, opacity, filter;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      contain: layout style paint;
     }
     /* Mobile portrait: tall & narrow cards — phone-shaped cover flow */
     @media (max-width: 640px) {
@@ -294,6 +294,9 @@ function buildCardsHtml({ title, cards, reportHref }) {
       .card .p-3 { padding: 0.5rem !important; }
       .card .space-y-4 > * + * { margin-top: 0.5rem !important; }
       .card .mb-4 { margin-bottom: 0.375rem !important; }
+      /* Kill expensive effects on mobile */
+      .card .blur-3xl { display: none !important; }
+      .page-header { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; background: rgb(2 6 23 / 0.95) !important; }
     }
 
     body.export .deck {
@@ -322,6 +325,8 @@ function buildCardsHtml({ title, cards, reportHref }) {
       pointer-events: auto !important;
     }
     body.export .page-header { display: none; }
+    /* After Safari bar collapses, lock body scroll */
+    body.locked { overflow: hidden !important; height: 100dvh !important; }
   </style>
   `;
 
@@ -457,11 +462,11 @@ function buildCardsHtml({ title, cards, reportHref }) {
 <html lang="ko" class="dark">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
     <title>${escapeHtml(title)} cards</title>
     ${cdn}
   </head>
-  <body class="bg-slate-950 text-slate-200 h-[100dvh] w-screen overflow-hidden flex flex-col select-none">
+  <body class="bg-slate-950 text-slate-200 min-h-[100dvh] w-screen flex flex-col select-none" style="padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)">
     
     <!-- Top Bar -->
     <header class="page-header fixed top-0 w-full z-50 flex items-center justify-between px-4 py-3 bg-slate-950/80 backdrop-blur-md border-b border-white/5">
@@ -476,6 +481,27 @@ function buildCardsHtml({ title, cards, reportHref }) {
     </header>
 
     <script>
+      /* ── iOS Safari: collapse address/tab bar on load ── */
+      (function safariBarCollapse() {
+        var isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
+        if (!isIOS) { document.body.classList.add('locked'); return; }
+        if (navigator.standalone) { document.body.classList.add('locked'); return; }
+        var b = document.body;
+        /* briefly allow scroll so 1px scroll triggers bar collapse */
+        b.style.height = 'calc(100dvh + 2px)';
+        b.style.overflow = 'auto';
+        setTimeout(function() {
+          window.scrollTo({ top: 1, behavior: 'instant' });
+          setTimeout(function() {
+            b.style.height = '';
+            b.style.overflow = '';
+            b.classList.add('locked');
+            /* fire resize so layout() picks up new innerHeight */
+            window.dispatchEvent(new Event('resize'));
+          }, 350);
+        }, 80);
+      })();
+
       document.addEventListener('DOMContentLoaded', () => {
         const deck = document.querySelector('.deck');
         const ring = document.getElementById('coverflow');
@@ -501,39 +527,38 @@ function buildCardsHtml({ title, cards, reportHref }) {
         const isMobile = () => window.innerWidth <= 640;
         const layout = () => {
           const baseW = Math.max(240, Math.round(cards[0].getBoundingClientRect().width || 360));
+          halfW = Math.round(baseW / 2);
           spacing = Math.round(baseW * (isMobile() ? 0.44 : 0.62));
           const ringH = isMobile()
             ? Math.max(360, Math.round(window.innerHeight * 0.65))
             : Math.max(500, Math.round(window.innerHeight * 0.78));
           ring.style.height = ringH + "px";
-          cards.forEach((card, idx) => {
-            card.style.position = "absolute";
-            card.style.left = "50%";
-            card.style.top = "50%";
-            /* centering is handled by translate3d(-50%, -50%, …) in render() */
-            card.dataset.index = String(idx);
-          });
         };
+
+        /* Half card width, cached on layout */
+        let halfW = 180;
 
         const render = () => {
           for (let i = 0; i < n; i += 1) {
             const card = cards[i];
             const d = wrapDelta(i, position);
             const ad = Math.abs(d);
-            const x = d * spacing;
+            /* Only GPU-friendly properties: transform + opacity */
+            const x = Math.round(d * spacing - halfW);
             const z = Math.round(320 - ad * 130);
             const rotateY = clamp(d * -42, -62, 62);
             const scale = 1 - Math.min(0.26, ad * 0.11);
-            const opacity = 1 - Math.min(0.7, ad * 0.22);
-            card.style.transform =
-              "translate3d(calc(-50% + " + x + "px), -50%, " + z + "px) rotateY(" + rotateY + "deg) scale(" + scale + ")";
-            card.style.opacity = String(Math.max(0.28, opacity));
-            card.style.filter = ad > 1.5 ? "saturate(0.72) blur(1px)" : "none";
-            card.style.zIndex = String(Math.round(1000 - ad * 120));
-            card.style.pointerEvents = ad < 0.75 ? "auto" : "none";
+            const opacity = Math.max(0.25, 1 - Math.min(0.75, ad * 0.25));
+            card.style.cssText = "position:absolute;left:50%;top:50%;"
+              + "transform:translate3d(" + x + "px,-50%," + z + "px) rotateY(" + rotateY + "deg) scale(" + scale + ");"
+              + "opacity:" + opacity + ";"
+              + "z-index:" + Math.round(1000 - ad * 120) + ";"
+              + "pointer-events:" + (ad < 0.75 ? "auto" : "none") + ";";
           }
         };
 
+        let rafId = 0;
+        let running = false;
         const tick = (ts) => {
           if (!lastTs) lastTs = ts;
           const dt = (ts - lastTs) / 1000;
@@ -542,7 +567,20 @@ function buildCardsHtml({ title, cards, reportHref }) {
           const diff = target - position;
           position += diff * Math.min(1, dt * 7.5);
           render();
-          window.requestAnimationFrame(tick);
+          /* Stop loop when idle (position ≈ target and no auto-rotate) */
+          if (!autoRotate && Math.abs(diff) < 0.001) {
+            position = target;
+            render();
+            running = false;
+            return;
+          }
+          rafId = window.requestAnimationFrame(tick);
+        };
+        const startLoop = () => {
+          if (running) return;
+          running = true;
+          lastTs = 0;
+          rafId = window.requestAnimationFrame(tick);
         };
 
         let dragging = false;
@@ -560,13 +598,13 @@ function buildCardsHtml({ title, cards, reportHref }) {
         };
         const scheduleAutoResume = () => {
           if (autoResumeTimer) clearTimeout(autoResumeTimer);
-          autoResumeTimer = setTimeout(() => { autoRotate = true; }, 4000);
+          autoResumeTimer = setTimeout(() => { autoRotate = true; startLoop(); }, 4000);
         };
 
         /* ── Mouse ── */
         deck.addEventListener("mouseenter", () => { pauseAutoRotate(); });
         deck.addEventListener("mouseleave", () => {
-          if (!dragging) { snapToNearest(); scheduleAutoResume(); }
+          if (!dragging) { snapToNearest(); startLoop(); scheduleAutoResume(); }
         });
         deck.addEventListener("mousedown", (e) => {
           dragging = true;
@@ -574,11 +612,13 @@ function buildCardsHtml({ title, cards, reportHref }) {
           dragStartX = e.clientX;
           dragStartTarget = target;
           deck.style.cursor = "grabbing";
+          startLoop();
         });
         window.addEventListener("mouseup", () => {
           if (!dragging) return;
           dragging = false;
           snapToNearest();
+          startLoop();
           scheduleAutoResume();
           deck.style.cursor = "grab";
         });
@@ -586,6 +626,7 @@ function buildCardsHtml({ title, cards, reportHref }) {
           if (!dragging) return;
           const dx = e.clientX - dragStartX;
           target = dragStartTarget - dx / spacing;
+          startLoop();
         });
 
         /* ── Touch (direction-locked) ── */
@@ -613,14 +654,15 @@ function buildCardsHtml({ title, cards, reportHref }) {
           }
           if (touchAxis === "h") {
             target = touchStartTarget - dx / spacing;
-            e.preventDefault(); /* block page scroll only for horizontal swipe */
+            startLoop();
+            e.preventDefault();
           }
-          /* vertical → let browser handle card-scroll natively */
         }, { passive: false });
         deck.addEventListener("touchend", () => {
           if (dragging) {
             dragging = false;
             snapToNearest();
+            startLoop();
           }
           scheduleAutoResume();
           touchAxis = "";
@@ -631,14 +673,15 @@ function buildCardsHtml({ title, cards, reportHref }) {
           target += e.deltaY * 0.0028;
           pauseAutoRotate();
           snapToNearest();
+          startLoop();
           scheduleAutoResume();
           e.preventDefault();
         }, { passive: false });
 
         /* ── Keyboard ── */
         document.addEventListener("keydown", (e) => {
-          if (e.key === "ArrowRight") { target += 1; pauseAutoRotate(); scheduleAutoResume(); }
-          if (e.key === "ArrowLeft")  { target -= 1; pauseAutoRotate(); scheduleAutoResume(); }
+          if (e.key === "ArrowRight") { target += 1; pauseAutoRotate(); startLoop(); scheduleAutoResume(); }
+          if (e.key === "ArrowLeft")  { target -= 1; pauseAutoRotate(); startLoop(); scheduleAutoResume(); }
         });
 
         /* ── Click to focus card ── */
@@ -646,14 +689,15 @@ function buildCardsHtml({ title, cards, reportHref }) {
           card.addEventListener("click", () => {
             target += wrapDelta(idx, target);
             pauseAutoRotate();
+            startLoop();
             scheduleAutoResume();
           });
         });
-        window.addEventListener("resize", layout);
+        window.addEventListener("resize", () => { layout(); render(); });
 
         layout();
         render();
-        window.requestAnimationFrame(tick);
+        startLoop();
       });
     </script>
 
