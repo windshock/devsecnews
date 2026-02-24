@@ -10,7 +10,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 function usageAndExit() {
   console.error(
-    "Usage:\n  node scripts/md2cards.mjs <input.md> [outDir]\n  node scripts/md2cards.mjs --month YYYY-MM\n\nExamples:\n  node scripts/md2cards.mjs devsecnews-2026-01-node-java.md\n  node scripts/md2cards.mjs in.md cards/out\n  node scripts/md2cards.mjs --month 2026-01"
+    "Usage:\n  node scripts/md2cards.mjs <input.md> [outDir]\n  node scripts/md2cards.mjs --month YYYY-MM [--rewrite-copy --copy-attempts 3]\n\nExamples:\n  node scripts/md2cards.mjs devsecnews-2026-01-node-java.md\n  node scripts/md2cards.mjs in.md cards/out\n  node scripts/md2cards.mjs --month 2026-01\n  node scripts/md2cards.mjs --month 2026-01 --rewrite-copy --copy-attempts 3"
   );
   process.exit(2);
 }
@@ -132,6 +132,25 @@ cards.push({
   source: "",
 });
 
+if (flags["rewrite-copy"]) {
+  const attempts = Math.max(1, Number(flags["copy-attempts"] || 3) || 3);
+  const rewritten = rewriteCardsWithCodex(cards, {
+    attempts,
+    model: typeof flags["copy-model"] === "string" ? flags["copy-model"] : "",
+    guidelinePath:
+      typeof flags["copy-guideline"] === "string"
+        ? flags["copy-guideline"]
+        : path.join("prompts", "devsecnews-card-copy-editor-skill.md"),
+    keepTmp: Boolean(flags["copy-debug"]),
+  });
+  if (rewritten && rewritten.length === cards.length) {
+    cards.splice(0, cards.length, ...rewritten);
+    console.log(`copy rewrite: applied (${attempts} attempts)`);
+  } else {
+    console.warn("copy rewrite: skipped (fallback to original copy)");
+  }
+}
+
 const html = buildCardsHtml({
   title: titleLine,
   cards,
@@ -169,6 +188,9 @@ try {
 
 console.log(`wrote: ${outFile}`);
 console.log(`cards: ${cards.length}`);
+if (flags["rewrite-copy"]) {
+  console.log("copy rewrite: enabled");
+}
 
 function extractTopSection(fullMd, headingLine) {
   const start = indexOfLine(fullMd, headingLine);
@@ -252,8 +274,9 @@ function buildCardsHtml({ title, cards, reportHref }) {
   const cdn = `
   <!-- __TAILWIND_CSS__ -->
   <style>
-    @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
-    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&display=swap');
+    :root {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+    }
     
     /* Hide scrollbar for clean UI */
     .no-scrollbar::-webkit-scrollbar {
@@ -704,6 +727,240 @@ function buildCardsHtml({ title, cards, reportHref }) {
 
   </body>
 </html>`;
+}
+
+function rewriteCardsWithCodex(cards, { attempts, model, guidelinePath, keepTmp }) {
+  const codexBin = findExecutable("codex");
+  if (!codexBin) {
+    console.warn("copy rewrite: codex CLI not found");
+    return null;
+  }
+  if (!fs.existsSync(guidelinePath)) {
+    console.warn(`copy rewrite: guideline not found (${guidelinePath})`);
+    return null;
+  }
+  const guideline = fs.readFileSync(guidelinePath, "utf8");
+  const basePayload = cards.map((c, idx) => ({
+    idx,
+    kind: c.kind,
+    header: c.header || "",
+    title: c.title || "",
+    bodyMd: c.bodyMd || "",
+    whyMd: c.whyMd || "",
+    impactMd: c.impactMd || "",
+    actionMd: c.actionMd || "",
+    source: c.source || "",
+  }));
+
+  const tmpDir = path.join(outDir, ".copy-rewrite-tmp");
+  fs.mkdirSync(tmpDir, { recursive: true });
+
+  try {
+    const candidates = [];
+    for (let i = 0; i < attempts; i += 1) {
+      const attemptNo = i + 1;
+      const prompt = buildCopyPrompt({
+        guideline,
+        payload: basePayload,
+        mode: "draft",
+        attemptNo,
+      });
+      const parsed = runCodexForCopy({
+        codexBin,
+        prompt,
+        tmpDir,
+        runTag: `attempt-${attemptNo}`,
+        model,
+      });
+      if (!parsed) continue;
+      const normalized = normalizeRewrittenCards(parsed, cards.length);
+      if (!normalized) continue;
+      const score = scoreCopyCards(normalized);
+      candidates.push({ score, cards: applyRewrites(cards, normalized) });
+    }
+
+    if (!candidates.length) return null;
+    candidates.sort((a, b) => b.score - a.score);
+    const best = candidates[0].cards;
+
+    const refinePrompt = buildCopyPrompt({
+      guideline,
+      payload: best.map((c, idx) => ({
+        idx,
+        kind: c.kind,
+        header: c.header || "",
+        title: c.title || "",
+        bodyMd: c.bodyMd || "",
+        whyMd: c.whyMd || "",
+        impactMd: c.impactMd || "",
+        actionMd: c.actionMd || "",
+        source: c.source || "",
+      })),
+      mode: "refine",
+      attemptNo: 0,
+    });
+    const refined = runCodexForCopy({
+      codexBin,
+      prompt: refinePrompt,
+      tmpDir,
+      runTag: "refine",
+      model,
+    });
+    const normalizedRefined = refined
+      ? normalizeRewrittenCards(refined, cards.length)
+      : null;
+    return normalizedRefined ? applyRewrites(cards, normalizedRefined) : best;
+  } finally {
+    if (!keepTmp) {
+      fs.rmSync(tmpDir, { recursive: true, force: true });
+    }
+  }
+}
+
+function buildCopyPrompt({ guideline, payload, mode, attemptNo }) {
+  const modeInstruction =
+    mode === "refine"
+      ? "리라이트 전용 패스다. 정보(사실/숫자/고유명사/링크)를 절대 바꾸지 말고 문장만 자연스럽게 다듬어라."
+      : `초안+리라이트 2패스를 내부에서 수행하고 최종 결과만 출력해라. 현재 시도 번호는 ${attemptNo}다.`;
+  return `${guideline}
+
+${modeInstruction}
+출력은 JSON 객체 하나만 허용한다. 코드블록/설명문을 절대 추가하지 말고 아래 스키마를 정확히 지켜라.
+{
+  "cards": [
+    {
+      "idx": 0,
+      "title": "...",
+      "bodyMd": "...",
+      "whyMd": "...",
+      "impactMd": "...",
+      "actionMd": "..."
+    }
+  ]
+}
+
+입력 카드(JSON):
+${JSON.stringify(payload, null, 2)}
+`;
+}
+
+function runCodexForCopy({ codexBin, prompt, tmpDir, runTag, model }) {
+  const promptFile = path.join(tmpDir, `${runTag}.prompt.txt`);
+  const outputFile = path.join(tmpDir, `${runTag}.out.txt`);
+  fs.writeFileSync(promptFile, prompt, "utf8");
+  const modelFlag = model ? ` --model ${shellQuote(model)}` : "";
+  const cmd = `${shellQuote(codexBin)} exec --skip-git-repo-check --sandbox workspace-write${modelFlag} --output-last-message ${shellQuote(outputFile)} - < ${shellQuote(promptFile)}`;
+  try {
+    execSync(cmd, { stdio: "pipe", timeout: 180000 });
+  } catch (e) {
+    console.warn(`copy rewrite: codex exec failed (${runTag}): ${e.message}`);
+    return null;
+  }
+  if (!fs.existsSync(outputFile)) return null;
+  const raw = fs.readFileSync(outputFile, "utf8");
+  return parseJsonObject(raw);
+}
+
+function parseJsonObject(text) {
+  const raw = String(text || "").trim();
+  if (!raw) return null;
+  const fence = raw.match(/```(?:json)?\s*([\s\S]*?)```/i);
+  const candidate = (fence ? fence[1] : raw).trim();
+  try {
+    return JSON.parse(candidate);
+  } catch {
+    const first = candidate.indexOf("{");
+    const last = candidate.lastIndexOf("}");
+    if (first === -1 || last === -1 || last <= first) return null;
+    try {
+      return JSON.parse(candidate.slice(first, last + 1));
+    } catch {
+      return null;
+    }
+  }
+}
+
+function normalizeRewrittenCards(obj, expectedLen) {
+  if (!obj || typeof obj !== "object") return null;
+  if (!Array.isArray(obj.cards) || obj.cards.length !== expectedLen) return null;
+  const out = [];
+  for (const item of obj.cards) {
+    const idx = Number(item?.idx);
+    if (!Number.isInteger(idx) || idx < 0 || idx >= expectedLen) return null;
+    out.push({
+      idx,
+      title: String(item?.title ?? "").trim(),
+      bodyMd: String(item?.bodyMd ?? "").trim(),
+      whyMd: String(item?.whyMd ?? "").trim(),
+      impactMd: String(item?.impactMd ?? "").trim(),
+      actionMd: String(item?.actionMd ?? "").trim(),
+    });
+  }
+  out.sort((a, b) => a.idx - b.idx);
+  return out;
+}
+
+function applyRewrites(cards, rewritten) {
+  return cards.map((c, idx) => {
+    const r = rewritten[idx];
+    if (!r) return c;
+    return {
+      ...c,
+      title: r.title || c.title,
+      bodyMd: r.bodyMd || c.bodyMd,
+      whyMd: r.whyMd || c.whyMd,
+      impactMd: r.impactMd || c.impactMd,
+      actionMd: r.actionMd || c.actionMd,
+    };
+  });
+}
+
+function scoreCopyCards(cards) {
+  const banned = [
+    "다음과 같습니다",
+    "기반으로",
+    "최적",
+    "솔루션",
+    "효율",
+    "또한",
+    "따라서",
+    "전반적으로",
+  ];
+  const endingBag = [];
+  let penalty = 0;
+  for (const c of cards) {
+    const text = [c.title, c.bodyMd, c.whyMd, c.impactMd, c.actionMd]
+      .map((v) => String(v || ""))
+      .join(" ");
+    for (const word of banned) {
+      if (text.includes(word)) penalty += 8;
+    }
+    const endings = text.match(/[가-힣]+\s*(?:요|다)\./g) || [];
+    for (const e of endings) endingBag.push(e.trim());
+    if (text.length > 220) penalty += 2;
+  }
+  let repeatPenalty = 0;
+  for (let i = 2; i < endingBag.length; i += 1) {
+    if (endingBag[i] === endingBag[i - 1] && endingBag[i - 1] === endingBag[i - 2]) {
+      repeatPenalty += 6;
+    }
+  }
+  return 100 - penalty - repeatPenalty;
+}
+
+function findExecutable(bin) {
+  try {
+    const out = execSync(`command -v ${shellQuote(bin)}`, { stdio: "pipe" })
+      .toString()
+      .trim();
+    return out || "";
+  } catch {
+    return "";
+  }
+}
+
+function shellQuote(s) {
+  return `'${String(s).replace(/'/g, `'\\''`)}'`;
 }
 
 function splitActionSentence(body) {
