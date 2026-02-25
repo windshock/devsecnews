@@ -5,7 +5,9 @@ import { execSync } from "node:child_process";
 import { parseArgs, getMonth, defaultBaseName, defaultHtml } from "./cli.mjs";
 
 function usageAndExit() {
-  console.error("Usage:\n  node scripts/deploy.mjs --month YYYY-MM");
+  console.error(
+    "Usage:\n  node scripts/deploy.mjs --month YYYY-MM [--no-rewrite-copy] [--no-rewrite-report]"
+  );
   process.exit(2);
 }
 
@@ -14,8 +16,10 @@ if (flags.help) usageAndExit();
 
 const month = getMonth(flags);
 const baseName = defaultBaseName(month);
+const rewriteCopyArgs = flags["no-rewrite-copy"] ? " --no-rewrite-copy" : "";
+const rewriteReportArgs = flags["no-rewrite-report"] ? " --no-rewrite-report" : "";
 
-run(`node scripts/build-cards.mjs --month ${month}`);
+run(`node scripts/build-cards.mjs --month ${month}${rewriteCopyArgs}${rewriteReportArgs}`);
 
 const docsDir = path.join("docs");
 const cardsSrc = path.join("cards", baseName);

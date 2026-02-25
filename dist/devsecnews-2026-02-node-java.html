@@ -1965,8 +1965,8 @@ body[data-view="java"] .view-java { display: block; }
             prose-blockquote:border-l-4 prose-blockquote:border-blue-500 prose-blockquote:bg-blue-50 dark:prose-blockquote:bg-blue-900/20 prose-blockquote:py-1 prose-blockquote:px-4 prose-blockquote:not-italic
           ">
             <section class="view-summary" data-view-section="summary">
-              <h1 id="devsecnews-2026-02-nodejsjava-보안-요약개발자용">DevSecNews 2026-02 — Node.js/Java 보안 요약(개발자용)</h1><h1 id="0-editors-note">(0) Editor&#39;s Note</h1><p>이번 달 Editors Pick은 Google Responsible AI Progress Report 2026을 검토한 관점에서 정리했습니다. 보고서의 핵심은 에이전트 안전을 User Alignment Critic, Agent Origin Sets, Mandatory Human Oversight로 다층 통제하는 구조입니다. 동시에 모델 기반 통제의 한계(우회·공모·인지 프레이밍 왜곡)도 남아 있어, 이번 달 이슈는 패치와 신뢰 경계 정책을 함께 적용하는 항목으로 선정했습니다. 자세한 메모는 <a href="https://github.com/windshock/devsecnews/blob/main/editorial/2026-02/01.md">https://github.com/windshock/devsecnews/blob/main/editorial/2026-02/01.md</a> 를 참고해야 합니다. [Source] <a href="https://ai.google/static/documents/ai-responsibility-update-2026.pdf">https://ai.google/static/documents/ai-responsibility-update-2026.pdf</a> (날짜 미표기)</p>
-<p>두 번째 Editors Pick은 ClawHub/ClawdBot 악성 스킬 캠페인 분석입니다. 최근 공격은 SKILL.md 내부 페이로드를 외부 웹사이트로 분리해 정적 스캐닝을 우회하는 방향으로 진화했습니다. 이 때문에 스킬 파일만 검사하지 말고 prerequisite 설치 유도 링크와 런타임 네트워크 행위를 함께 점검해야 합니다. 자세한 메모는 <a href="https://github.com/windshock/devsecnews/blob/main/editorial/2026-02/02.md">https://github.com/windshock/devsecnews/blob/main/editorial/2026-02/02.md</a> 를 참고해야 합니다. [Source] <a href="https://opensourcemalware.com/blog/malicious-clawhub-skills-hide-in-plain-sight">https://opensourcemalware.com/blog/malicious-clawhub-skills-hide-in-plain-sight</a> (2026-02-09)</p>
+              <h1 id="devsecnews-2026-02-nodejsjava-보안-요약개발자용">DevSecNews 2026-02 — Node.js/Java 보안 요약(개발자용)</h1><h1 id="0-editors-note">(0) Editor&#39;s Note</h1><p>이번 달 Editors Pick은 Google Responsible AI Progress Report 2026을 점검한 관점으로 정리했습니다. 보고서 핵심은 에이전트 안전을 User Alignment Critic, Agent Origin Sets, Mandatory Human Oversight로 다층 통제하는 구조입니다. 모델 중심 통제만으로는 우회·공모·인지 프레이밍 왜곡 같은 한계가 남습니다. 이번 달 이슈는 패치와 신뢰 경계 정책을 함께 적용해야 하는 항목으로 골랐습니다. 자세한 메모는 <a href="https://github.com/windshock/devsecnews/blob/main/editorial/2026-02/01.md">https://github.com/windshock/devsecnews/blob/main/editorial/2026-02/01.md</a> 를 참고하면 됩니다. [Source] <a href="https://ai.google/static/documents/ai-responsibility-update-2026.pdf">https://ai.google/static/documents/ai-responsibility-update-2026.pdf</a> (날짜 미표기)</p>
+<p>두 번째 Editors Pick은 ClawHub/ClawdBot 악성 스킬 캠페인 분석입니다. 최근 공격은 SKILL.md 내부 페이로드를 외부 웹사이트로 분리해 정적 스캐닝을 우회하는 쪽으로 진화했습니다. 스킬 파일 검사에만 머물지 말고 prerequisite 설치 유도 링크와 런타임 네트워크 행위를 함께 점검해야 합니다. 자세한 메모는 <a href="https://github.com/windshock/devsecnews/blob/main/editorial/2026-02/02.md">https://github.com/windshock/devsecnews/blob/main/editorial/2026-02/02.md</a> 를 참고하면 됩니다. [Source] <a href="https://opensourcemalware.com/blog/malicious-clawhub-skills-hide-in-plain-sight">https://opensourcemalware.com/blog/malicious-clawhub-skills-hide-in-plain-sight</a> (2026-02-09)</p>
 <!--CARD
 {"id":"editorial-1","kind":"editorial","domain":"editorial","header":"에디터 노트","title":"Editors Pick (2026-02): Google Responsible AI Progress Report 2026 관점","bodyMd":"이번 달 Editors Pick은 Google Responsible AI Progress Report 2026을 검토한 관점에서 정리했습니다.\n\n핵심은 User Alignment Critic, Agent Origin Sets, Mandatory Human Oversight로 구성된 다층 통제 구조입니다.\n\n동시에 모델 기반 통제의 한계(우회·공모·인지 프레이밍 왜곡)가 남아 있어, 이번 달 이슈는 패치와 신뢰 경계 정책을 함께 적용하는 항목으로 선정했습니다.\n\n자세한 메모는 https://github.com/windshock/devsecnews/blob/main/editorial/2026-02/01.md 를 참고해야 합니다.","source":"https://ai.google/static/documents/ai-responsibility-update-2026.pdf"}
 -->
@@ -1975,9 +1975,9 @@ body[data-view="java"] .view-java { display: block; }
 -->
 
 <h1 id="1-summary">(1) Summary</h1><ul>
-<li>Swiper는 옵션 병합 과정에서 Prototype Pollution이 가능한 취약점(CVE-2026-27212)이 공개됐습니다. <code>swiper</code>를 11.2.10/12.0.2 이상으로 업데이트하고 사용자 입력 객체 직접 병합을 중지해야 합니다. [Source] <a href="https://github.com/advisories/GHSA-hmx5-qpq5-p643">https://github.com/advisories/GHSA-hmx5-qpq5-p643</a> (2026-02-19)</li>
+<li>Swiper는 옵션 병합 과정에서 Prototype Pollution이 가능한 취약점(CVE-2026-27212)이 공개됐습니다. <code>swiper</code>를 11.2.10/12.0.2 이상으로 올리고 사용자 입력 객체를 직접 병합하는 동작을 중단해야 합니다. [Source] <a href="https://github.com/advisories/GHSA-hmx5-qpq5-p643">https://github.com/advisories/GHSA-hmx5-qpq5-p643</a> (2026-02-19)</li>
 <li>OpenClaw는 <code>apply_patch</code> 경로 검증 미흡으로 workspace 밖 파일 쓰기/삭제가 가능한 취약점이 공개됐습니다. 도구 실행 경로를 샌드박스로 고정하고 최신 버전으로 업데이트해야 합니다. [Source] <a href="https://github.com/advisories/GHSA-r5fq-947m-xm57">https://github.com/advisories/GHSA-r5fq-947m-xm57</a> (2026-02-19)</li>
-<li>OpenClaw는 safeBins 처리에서도 정보 노출/우회 관련 취약점이 동시에 공개됐습니다. 안전 명령 allowlist와 출력 제한을 함께 적용해야 합니다. [Source] <a href="https://github.com/advisories/GHSA-6c9j-x93c-rw6j">https://github.com/advisories/GHSA-6c9j-x93c-rw6j</a> (2026-02-19)</li>
+<li>OpenClaw는 safeBins 처리에서도 정보 노출/우회 관련 취약점이 함께 공개됐습니다. 안전 명령 allowlist와 출력 제한을 함께 적용해야 합니다. [Source] <a href="https://github.com/advisories/GHSA-6c9j-x93c-rw6j">https://github.com/advisories/GHSA-6c9j-x93c-rw6j</a> (2026-02-19)</li>
 <li>Apache Tomcat은 클라이언트 인증 우회(CVE-2025-66614)와 보안 제약 우회(CVE-2026-24733)가 2월에 공개됐습니다. 9.0.99/10.1.35/11.0.3 이상으로 즉시 업데이트해야 합니다. [Source] <a href="https://github.com/advisories/GHSA-fpj8-gq4v-p354">https://github.com/advisories/GHSA-fpj8-gq4v-p354</a> (2026-02-17)</li>
 <li>Apache Avro Java SDK는 코드 인젝션(CVE-2025-33042)이 공개됐습니다. <code>org.apache.avro:avro</code>를 패치 버전으로 올리고 schema 입력 검증을 강화해야 합니다. [Source] <a href="https://github.com/advisories/GHSA-rp46-r563-jrc7">https://github.com/advisories/GHSA-rp46-r563-jrc7</a> (2026-02-13)</li>
 <li>이번 달 공통 포인트는 “입력값 자체보다 신뢰 경계(병합/경로/프로토콜)가 무너지면 즉시 취약점으로 연결된다”는 점입니다. 패치와 설정 변경을 같은 PR에서 함께 반영해야 합니다. [Source] <a href="https://github.com/advisories/GHSA-qq5r-98hh-rxc9">https://github.com/advisories/GHSA-qq5r-98hh-rxc9</a> (2026-02-17)</li>
@@ -2049,9 +2049,9 @@ npm audit --omit=dev
 </code></pre>
 <p>영향 버전이 확인되면 패치 버전으로 즉시 업데이트해야 합니다.</p>
 <p><a id="node-swiper-cve-2026-27212"></a></p>
-<h3 id="cve-2026-27212-swiper-prototype-pollution">CVE-2026-27212: Swiper Prototype Pollution</h3><p>옵션 병합에 사용자 입력 객체가 직접 들어가면 프로토타입 오염이 발생할 수 있습니다. 위험 키를 제거한 뒤 병합하고 패치 버전으로 업데이트해야 합니다. [Source] <a href="https://github.com/advisories/GHSA-hmx5-qpq5-p643">https://github.com/advisories/GHSA-hmx5-qpq5-p643</a> (2026-02-19)</p>
+<h3 id="cve-2026-27212-swiper-prototype-pollution">CVE-2026-27212: Swiper Prototype Pollution</h3><p>옵션 병합 과정에 사용자 입력 객체가 직접 들어가면 프로토타입 오염이 발생할 수 있습니다. 위험 키를 제거한 뒤 병합하고 패치 버전으로 업데이트해야 합니다. [Source] <a href="https://github.com/advisories/GHSA-hmx5-qpq5-p643">https://github.com/advisories/GHSA-hmx5-qpq5-p643</a> (2026-02-19)</p>
 <p><a id="node-openclaw-ghsa-r5fq-947m-xm57"></a></p>
-<h3 id="ghsa-r5fq-947m-xm57-openclaw-applypatch-path-traversal">GHSA-r5fq-947m-xm57: OpenClaw <code>apply_patch</code> Path Traversal</h3><p>경로 검증이 약하면 workspace 밖 파일 조작이 가능합니다. <code>apply_patch</code> 대상 경로를 workspace 내부로 강제하고 도구를 최신 버전으로 업데이트해야 합니다. [Source] <a href="https://github.com/advisories/GHSA-r5fq-947m-xm57">https://github.com/advisories/GHSA-r5fq-947m-xm57</a> (2026-02-19)</p>
+<h3 id="ghsa-r5fq-947m-xm57-openclaw-applypatch-path-traversal">GHSA-r5fq-947m-xm57: OpenClaw <code>apply_patch</code> Path Traversal</h3><p>경로 검증이 느슨하면 workspace 밖 파일을 조작할 수 있습니다. <code>apply_patch</code> 대상 경로를 workspace 내부로 강제하고 도구를 최신 버전으로 업데이트해야 합니다. [Source] <a href="https://github.com/advisories/GHSA-r5fq-947m-xm57">https://github.com/advisories/GHSA-r5fq-947m-xm57</a> (2026-02-19)</p>
 <p><a id="node-openclaw-ghsa-6c9j-x93c-rw6j"></a></p>
 <h3 id="ghsa-6c9j-x93c-rw6j-openclaw-safebins-정보-노출">GHSA-6c9j-x93c-rw6j: OpenClaw safeBins 정보 노출</h3><p>safeBins 처리 경계가 약하면 명령/파일 관련 정보 노출로 이어질 수 있습니다. 안전 명령 allowlist를 강화하고 출력 제한을 적용해야 합니다. [Source] <a href="https://github.com/advisories/GHSA-6c9j-x93c-rw6j">https://github.com/advisories/GHSA-6c9j-x93c-rw6j</a> (2026-02-19)</p>
 <h2 id="23-이번-달-취약-개발-패턴-top-5">(2.3) 이번 달 취약 개발 패턴 Top 5</h2><p><a id="node-pattern-1"></a></p>
@@ -2063,7 +2063,7 @@ npm audit --omit=dev
 <pre><code class="language-js"><span class="hljs-keyword">const</span> { __proto__, constructor, prototype, ...safe } = req.<span class="hljs-property">body</span>.<span class="hljs-property">params</span> || {}
 <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">assign</span>(config, safe)
 </code></pre>
-<p>객체 병합 지점은 스키마 검증 통과 입력만 허용하도록 고정해야 합니다.
+<p>객체 병합 지점은 스키마 검증을 통과한 입력만 허용하도록 고정해야 합니다.
 [Source] <a href="https://github.com/advisories/GHSA-hmx5-qpq5-p643">https://github.com/advisories/GHSA-hmx5-qpq5-p643</a> (2026-02-19)</p>
 <h3 id="2-경로-정규화-없이-파일-수정-기능을-노출">2) 경로 정규화 없이 파일 수정 기능을 노출</h3><p>공격자는 <code>../</code> 경로를 이용해 작업 디렉터리 밖 파일을 조작합니다. 파일 수정 기능은 기준 루트 경로를 강제하고 탈출 시 즉시 차단해야 합니다.</p>
 <p>안 좋은 예:</p>
@@ -2076,7 +2076,7 @@ fs.<span class="hljs-title function_">writeFileSync</span>(p, content)
 </code></pre>
 <p>파일 수정 API 앞단에 경로 정규화 검증을 강제해야 합니다.
 [Source] <a href="https://github.com/advisories/GHSA-r5fq-947m-xm57">https://github.com/advisories/GHSA-r5fq-947m-xm57</a> (2026-02-19)</p>
-<h3 id="3-안전-명령-allowlist를-운영-중에-완화">3) 안전 명령 allowlist를 운영 중에 완화</h3><p>공격자는 완화된 allowlist를 우회 경로로 사용합니다. 안전 명령 목록을 고정하고 예외 허용은 운영 승인 절차로 제한해야 합니다.</p>
+<h3 id="3-안전-명령-allowlist를-운영-중에-완화">3) 안전 명령 allowlist를 운영 중에 완화</h3><p>공격자는 완화된 allowlist를 우회 경로로 악용합니다. 안전 명령 목록을 고정하고 예외 허용은 운영 승인 절차로 제한해야 합니다.</p>
 <p>안 좋은 예:</p>
 <pre><code class="language-js"><span class="hljs-variable constant_">ALLOWED_CMDS</span>.<span class="hljs-title function_">add</span>(userInput.<span class="hljs-property">command</span>)
 </code></pre>
@@ -2085,7 +2085,7 @@ fs.<span class="hljs-title function_">writeFileSync</span>(p, content)
 </code></pre>
 <p>명령 allowlist 변경은 코드 리뷰 필수 항목으로 고정해야 합니다.
 [Source] <a href="https://github.com/advisories/GHSA-6c9j-x93c-rw6j">https://github.com/advisories/GHSA-6c9j-x93c-rw6j</a> (2026-02-19)</p>
-<h3 id="4-취약-버전-범위를-ci에서-차단하지-않음">4) 취약 버전 범위를 CI에서 차단하지 않음</h3><p>공격자는 공개된 affected version 범위를 기준으로 자동 스캔합니다. 취약 범위 탐지 시 배포를 중단하도록 파이프라인을 구성해야 합니다.</p>
+<h3 id="4-취약-버전-범위를-ci에서-차단하지-않음">4) 취약 버전 범위를 CI에서 차단하지 않음</h3><p>공격자는 공개된 affected version 범위를 기준으로 자동 스캔합니다. 취약 범위를 탐지하면 배포를 중단하도록 파이프라인을 구성해야 합니다.</p>
 <p>안 좋은 예:</p>
 <pre><code class="language-js"><span class="hljs-comment">// audit 경고만 출력하고 배포 진행</span>
 </code></pre>
@@ -2122,7 +2122,7 @@ fs.<span class="hljs-title function_">writeFileSync</span>(p, content)
 <td>Apache Tomcat (공지 참조)</td>
 <td>C/I</td>
 <td>확인 불가</td>
-<td>Tomcat을 9.0.99/10.1.35/11.0.3 이상으로 올리고 클라이언트 인증 설정을 재검증합니다.</td>
+<td>Tomcat을 9.0.99/10.1.35/11.0.3 이상으로 업데이트하고 클라이언트 인증 설정을 재검증합니다.</td>
 <td><a href="https://github.com/advisories/GHSA-fpj8-gq4v-p354">https://github.com/advisories/GHSA-fpj8-gq4v-p354</a> (2026-02-17)<br><a href="https://cveawg.mitre.org/api/cve/CVE-2025-66614">https://cveawg.mitre.org/api/cve/CVE-2025-66614</a> (날짜 미표기)</td>
 </tr>
 <tr>
@@ -2149,7 +2149,7 @@ fs.<span class="hljs-title function_">writeFileSync</span>(p, content)
 <h3 id="cve-2025-66614-tomcat-클라이언트-인증-우회">CVE-2025-66614: Tomcat 클라이언트 인증 우회</h3><p>클라이언트 인증 경계가 무너지면 보호 자원 접근 검증이 우회될 수 있습니다. Tomcat을 패치 버전으로 업데이트하고 인증 커넥터 설정을 재검증해야 합니다. [Source] <a href="https://github.com/advisories/GHSA-fpj8-gq4v-p354">https://github.com/advisories/GHSA-fpj8-gq4v-p354</a> (2026-02-17)
 [Source] <a href="https://tomcat.apache.org/security-11.html">https://tomcat.apache.org/security-11.html</a> (2026-02-17)</p>
 <p><a id="java-cve-2026-24733"></a></p>
-<h3 id="cve-2026-24733-tomcat-보안-제약-우회http09">CVE-2026-24733: Tomcat 보안 제약 우회(HTTP/0.9)</h3><p>레거시 프로토콜 경로를 통한 보안 제약 우회가 가능하면 경로 기반 접근제어가 무력화됩니다. HTTP/0.9 경로를 차단하고 보안 제약 매핑을 다시 점검해야 합니다. [Source] <a href="https://github.com/advisories/GHSA-qq5r-98hh-rxc9">https://github.com/advisories/GHSA-qq5r-98hh-rxc9</a> (2026-02-17)
+<h3 id="cve-2026-24733-tomcat-보안-제약-우회http09">CVE-2026-24733: Tomcat 보안 제약 우회(HTTP/0.9)</h3><p>레거시 프로토콜 경로로 보안 제약 우회가 가능해지면 경로 기반 접근제어가 무력화됩니다. HTTP/0.9 경로를 차단하고 보안 제약 매핑을 다시 점검해야 합니다. [Source] <a href="https://github.com/advisories/GHSA-qq5r-98hh-rxc9">https://github.com/advisories/GHSA-qq5r-98hh-rxc9</a> (2026-02-17)
 [Source] <a href="https://tomcat.apache.org/security-10.html">https://tomcat.apache.org/security-10.html</a> (2026-02-17)</p>
 <p><a id="java-cve-2025-33042"></a></p>
 <h3 id="cve-2025-33042-apache-avro-java-sdk-코드-인젝션">CVE-2025-33042: Apache Avro Java SDK 코드 인젝션</h3><p>Schema/데이터 처리 경로에서 입력 검증이 약하면 코드 인젝션으로 이어질 수 있습니다. Avro SDK를 패치 버전으로 업데이트하고 schema 입력 검증을 강화해야 합니다. [Source] <a href="https://github.com/advisories/GHSA-rp46-r563-jrc7">https://github.com/advisories/GHSA-rp46-r563-jrc7</a> (2026-02-13)
@@ -2172,7 +2172,7 @@ fs.<span class="hljs-title function_">writeFileSync</span>(p, content)
 </code></pre>
 <p>레거시 경로 차단 정책을 기본값으로 고정해야 합니다.
 [Source] <a href="https://github.com/advisories/GHSA-qq5r-98hh-rxc9">https://github.com/advisories/GHSA-qq5r-98hh-rxc9</a> (2026-02-17)</p>
-<h3 id="3-schema-처리-입력에-타입길이-검증-누락">3) schema 처리 입력에 타입/길이 검증 누락</h3><p>공격자는 schema 처리 경로에 비정상 입력을 주입합니다. schema 필드 타입/길이/허용 값 검증을 선행해야 합니다.</p>
+<h3 id="3-schema-처리-입력에-타입길이-검증-누락">3) schema 처리 입력에 타입/길이 검증 누락</h3><p>공격자는 schema 처리 경로에 비정상 입력을 주입합니다. schema 필드 타입/길이/허용 값 검증을 먼저 수행해야 합니다.</p>
 <p>안 좋은 예:</p>
 <pre><code class="language-java"><span class="hljs-type">Schema</span> <span class="hljs-variable">schema</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Schema</span>.Parser().parse(userInputSchema);
 </code></pre>
@@ -2204,10 +2204,10 @@ fs.<span class="hljs-title function_">writeFileSync</span>(p, content)
             </section>
             <section class="view-rest" data-view-section="rest">
               <h1 id="4-공통-트렌드권장사항">(4) 공통 트렌드/권장사항</h1><ul>
-<li>Node.js와 Java 모두에서 취약점 핵심은 “신뢰 경계 처리”였습니다. 입력 병합/경로/프로토콜 검증을 코드 레벨에서 강제해야 합니다. [Source] <a href="https://github.com/advisories/GHSA-hmx5-qpq5-p643">https://github.com/advisories/GHSA-hmx5-qpq5-p643</a> (2026-02-19)</li>
+<li>Node.js와 Java 모두에서 취약점의 핵심은 “신뢰 경계 처리”였습니다. 입력 병합/경로/프로토콜 검증을 코드 레벨에서 강제해야 합니다. [Source] <a href="https://github.com/advisories/GHSA-hmx5-qpq5-p643">https://github.com/advisories/GHSA-hmx5-qpq5-p643</a> (2026-02-19)</li>
 <li>패키지 업데이트만으로는 재발을 막기 어렵습니다. 패치와 설정 변경을 같은 릴리스에 반영해야 합니다. [Source] <a href="https://github.com/advisories/GHSA-qq5r-98hh-rxc9">https://github.com/advisories/GHSA-qq5r-98hh-rxc9</a> (2026-02-17)
 <a id="common-ci-gate"></a></li>
-<li>취약 버전 차단을 CI 게이트로 강제하는 방식이 가장 빠른 재발 방지책입니다. 영향을 받는 버전 탐지 시 배포를 중단해야 합니다. [Source] <a href="https://github.com/advisories/GHSA-rp46-r563-jrc7">https://github.com/advisories/GHSA-rp46-r563-jrc7</a> (2026-02-13)</li>
+<li>취약 버전 차단을 CI 게이트로 강제하는 방식이 가장 빠른 재발 방지책입니다. 영향을 받는 버전이 탐지되면 배포를 중단해야 합니다. [Source] <a href="https://github.com/advisories/GHSA-rp46-r563-jrc7">https://github.com/advisories/GHSA-rp46-r563-jrc7</a> (2026-02-13)</li>
 </ul>
 <h1 id="6-참고자료">(6) 참고자료</h1><ul>
 <li><a href="https://github.com/advisories/GHSA-hmx5-qpq5-p643">https://github.com/advisories/GHSA-hmx5-qpq5-p643</a></li>

@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import process from "node:process";
+import { execSync } from "node:child_process";
 import hljs from "highlight.js";
 import { marked } from "marked";
 import { markedHighlight } from "marked-highlight";
@@ -8,7 +9,7 @@ import { parseArgs, getMonth, defaultInput, defaultHtml, DIST_DIR } from "./cli.
 
 function usageAndExit() {
   console.error(
-    "Usage:\n  node scripts/md2html.mjs <input.md> [output.html]\n  node scripts/md2html.mjs --month YYYY-MM\n\nExamples:\n  node scripts/md2html.mjs content/devsecnews-2026-01-node-java.md\n  node scripts/md2html.mjs in.md dist/out.html\n  node scripts/md2html.mjs --month 2026-01"
+    "Usage:\n  node scripts/md2html.mjs <input.md> [output.html]\n  node scripts/md2html.mjs --month YYYY-MM [--rewrite-report --report-attempts 3]\n\nExamples:\n  node scripts/md2html.mjs content/devsecnews-2026-01-node-java.md\n  node scripts/md2html.mjs in.md dist/out.html\n  node scripts/md2html.mjs --month 2026-01\n  node scripts/md2html.mjs --month 2026-01 --rewrite-report --report-attempts 3"
   );
   process.exit(2);
 }
@@ -31,7 +32,26 @@ if (!fs.existsSync(input)) {
   process.exit(1);
 }
 
-const md = fs.readFileSync(input, "utf8");
+let md = fs.readFileSync(input, "utf8");
+if (flags["rewrite-report"]) {
+  const attempts = Math.max(1, Number(flags["report-attempts"] || 3) || 3);
+  const rewritten = rewriteReportWithCodex(md, {
+    attempts,
+    model: typeof flags["report-model"] === "string" ? flags["report-model"] : "",
+    guidelinePath:
+      typeof flags["report-guideline"] === "string"
+        ? flags["report-guideline"]
+        : path.join("prompts", "devsecnews-report-copy-editor-skill.md"),
+    tempDir: path.join(path.dirname(output), `.report-rewrite-${inferredBase}-tmp`),
+    keepTmp: Boolean(flags["report-debug"]),
+  });
+  if (rewritten) {
+    md = rewritten;
+    console.log(`report rewrite: applied (${attempts} attempts)`);
+  } else {
+    console.warn("report rewrite: skipped (fallback to original report)");
+  }
+}
 
 marked.use(
   markedHighlight({
@@ -783,6 +803,9 @@ fs.mkdirSync(path.dirname(output) === "." ? "." : path.dirname(output), {
 });
 fs.writeFileSync(output, html, "utf8");
 console.log(`wrote: ${output}`);
+if (flags["rewrite-report"]) {
+  console.log("report rewrite: enabled");
+}
 
 function escapeHtml(s) {
   return String(s)
@@ -791,6 +814,244 @@ function escapeHtml(s) {
     .replaceAll(">", "&gt;")
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#39;");
+}
+
+function rewriteReportWithCodex(originalMd, { attempts, model, guidelinePath, tempDir, keepTmp }) {
+  const codexBin = findExecutable("codex");
+  if (!codexBin) {
+    console.warn("report rewrite: codex CLI not found");
+    return null;
+  }
+  if (!fs.existsSync(guidelinePath)) {
+    console.warn(`report rewrite: guideline not found (${guidelinePath})`);
+    return null;
+  }
+
+  fs.mkdirSync(tempDir, { recursive: true });
+  const guideline = fs.readFileSync(guidelinePath, "utf8");
+  const maskedCards = maskSegments(
+    originalMd,
+    /<!--CARD[\s\S]*?-->/g,
+    "__CARD_BLOCK_"
+  );
+  const maskedCodes = maskSegments(
+    maskedCards.text,
+    /```[\s\S]*?```/g,
+    "__CODE_BLOCK_"
+  );
+  const rewriteInput = maskedCodes.text;
+  const restoreTokens = [...maskedCards.tokens, ...maskedCodes.tokens];
+  try {
+    const candidates = [];
+    for (let i = 0; i < attempts; i += 1) {
+      const attemptNo = i + 1;
+      const prompt = buildReportPrompt({
+        guideline,
+        md: rewriteInput,
+        mode: "draft",
+        attemptNo,
+      });
+      const out = runCodexText({
+        codexBin,
+        prompt,
+        tempDir,
+        runTag: `attempt-${attemptNo}`,
+        model,
+      });
+      if (!out) continue;
+      const normalized = restoreMaskedSegments(
+        normalizeMarkdownOutput(out),
+        restoreTokens
+      );
+      if (!normalized) continue;
+      if (!isReportRewriteValid(originalMd, normalized)) continue;
+      candidates.push({ score: scoreReportCopy(normalized), md: normalized });
+    }
+    if (!candidates.length) return null;
+    candidates.sort((a, b) => b.score - a.score);
+    const best = candidates[0].md;
+
+    const refinePrompt = buildReportPrompt({
+      guideline,
+      md: maskWithTokens(best, restoreTokens),
+      mode: "refine",
+      attemptNo: 0,
+    });
+    const refinedRaw = runCodexText({
+      codexBin,
+      prompt: refinePrompt,
+      tempDir,
+      runTag: "refine",
+      model,
+    });
+    const refined = refinedRaw
+      ? restoreMaskedSegments(normalizeMarkdownOutput(refinedRaw), restoreTokens)
+      : "";
+    if (refined && isReportRewriteValid(originalMd, refined)) return refined;
+    return best;
+  } finally {
+    if (!keepTmp) fs.rmSync(tempDir, { recursive: true, force: true });
+  }
+}
+
+function buildReportPrompt({ guideline, md, mode, attemptNo }) {
+  const modeText =
+    mode === "refine"
+      ? "리라이트 전용 패스다. 사실/숫자/코드/URL/헤딩/HTML주석(CARD 메타)은 절대 변경하지 말고 자연스러운 한국어 문장으로만 다듬어라."
+      : `초안+리라이트 2패스를 내부에서 수행하라. 현재 시도 번호는 ${attemptNo}다.`;
+  return `${guideline}
+
+너는 리포트 카피 에디터다.
+${modeText}
+
+강제 규칙:
+- 출력은 "리라이트된 Markdown 본문만" 반환한다.
+- 코드블록(\`\`\`) 내부는 한 글자도 바꾸지 않는다.
+- URL 문자열은 원문과 완전히 동일하게 유지한다.
+- 헤딩 줄(#...)은 원문과 완전히 동일하게 유지한다.
+- <!--CARD ... --> 주석 블록은 원문 그대로 유지한다.
+- 불필요한 설명문/코드블록/메타 코멘트 출력 금지.
+
+원문 Markdown:
+${md}
+`;
+}
+
+function runCodexText({ codexBin, prompt, tempDir, runTag, model }) {
+  const promptFile = path.join(tempDir, `${runTag}.prompt.txt`);
+  const outputFile = path.join(tempDir, `${runTag}.out.txt`);
+  fs.writeFileSync(promptFile, prompt, "utf8");
+  const modelFlag = model ? ` --model ${shellQuote(model)}` : "";
+  const cmd = `${shellQuote(codexBin)} exec --skip-git-repo-check --sandbox workspace-write${modelFlag} --output-last-message ${shellQuote(outputFile)} - < ${shellQuote(promptFile)}`;
+  try {
+    execSync(cmd, { stdio: "pipe", timeout: 600000 });
+  } catch (e) {
+    console.warn(`report rewrite: codex exec failed (${runTag}): ${e.message}`);
+    return "";
+  }
+  if (!fs.existsSync(outputFile)) return "";
+  return fs.readFileSync(outputFile, "utf8");
+}
+
+function normalizeMarkdownOutput(text) {
+  const raw = String(text || "").trim();
+  if (!raw) return "";
+  const fenced = raw.match(/```(?:markdown|md)?\s*([\s\S]*?)```/i);
+  const body = (fenced ? fenced[1] : raw).trim();
+  return body ? `${body}\n` : "";
+}
+
+function isReportRewriteValid(originalMd, rewrittenMd) {
+  const originalHeadings = extractLines(originalMd, /^#{1,6}\s.*$/gm);
+  const rewrittenHeadings = extractLines(rewrittenMd, /^#{1,6}\s.*$/gm);
+  if (JSON.stringify(originalHeadings) !== JSON.stringify(rewrittenHeadings)) return false;
+
+  const originalUrls = extractUrls(originalMd);
+  const rewrittenUrls = extractUrls(rewrittenMd);
+  if (JSON.stringify(originalUrls) !== JSON.stringify(rewrittenUrls)) return false;
+
+  const originalCodes = extractCodeBlocks(originalMd);
+  const rewrittenCodes = extractCodeBlocks(rewrittenMd);
+  if (JSON.stringify(originalCodes) !== JSON.stringify(rewrittenCodes)) return false;
+
+  const originalCards = extractCardMetaBlocks(originalMd);
+  const rewrittenCards = extractCardMetaBlocks(rewrittenMd);
+  if (JSON.stringify(originalCards) !== JSON.stringify(rewrittenCards)) return false;
+
+  return true;
+}
+
+function extractLines(text, regex) {
+  return (String(text || "").match(regex) || []).map((x) => x.trim());
+}
+
+function extractUrls(text) {
+  return (String(text || "").match(/https?:\/\/[^\s<>"')\]]+/g) || []).map((x) => x.trim());
+}
+
+function extractCodeBlocks(text) {
+  return (String(text || "").match(/```[\s\S]*?```/g) || []).map((x) => x.trim());
+}
+
+function extractCardMetaBlocks(text) {
+  return (String(text || "").match(/<!--CARD[\s\S]*?-->/g) || []).map((x) => x.trim());
+}
+
+function scoreReportCopy(mdText) {
+  const banned = [
+    "다음과 같습니다",
+    "기반으로",
+    "최적",
+    "솔루션",
+    "효율",
+    "또한",
+    "따라서",
+    "전반적으로",
+  ];
+  let score = 100;
+  for (const word of banned) {
+    const hits = String(mdText).split(word).length - 1;
+    if (hits > 0) score -= hits * 5;
+  }
+  const lines = String(mdText).split(/\r?\n/);
+  let repeat = 0;
+  let prev = "";
+  let streak = 1;
+  for (const line of lines) {
+    const t = line.trim();
+    if (!t || t.startsWith("#") || t.startsWith("```") || t.startsWith("[Source]")) continue;
+    const end = t.match(/(?:요|다)\.?$/)?.[0] || "";
+    if (!end) continue;
+    if (end === prev) {
+      streak += 1;
+      if (streak >= 3) repeat += 1;
+    } else {
+      prev = end;
+      streak = 1;
+    }
+  }
+  score -= repeat * 3;
+  return score;
+}
+
+function maskSegments(text, regex, prefix) {
+  const tokens = [];
+  const masked = String(text || "").replace(regex, (m) => {
+    const token = `${prefix}${tokens.length}__`;
+    tokens.push({ token, value: m });
+    return token;
+  });
+  return { text: masked, tokens };
+}
+
+function restoreMaskedSegments(text, tokens) {
+  let out = String(text || "");
+  for (const t of tokens) {
+    out = out.split(t.token).join(t.value);
+  }
+  return out;
+}
+
+function maskWithTokens(text, tokens) {
+  let out = String(text || "");
+  for (const t of tokens) {
+    out = out.split(t.value).join(t.token);
+  }
+  return out;
+}
+
+function findExecutable(bin) {
+  try {
+    return execSync(`command -v ${shellQuote(bin)}`, { stdio: "pipe" })
+      .toString()
+      .trim();
+  } catch {
+    return "";
+  }
+}
+
+function shellQuote(s) {
+  return `'${String(s).replace(/'/g, `'\\''`)}'`;
 }
 
 function readOptionalTextFile(p) {

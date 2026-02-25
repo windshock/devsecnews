@@ -34,6 +34,7 @@ export DEVSECNEWS_MONTH=2025-12
 2) 조사 + MD 작성(수동/AI 단계)
 - 프롬프트: `prompts/devsecnews-security-researcher-skill.md`
 - 카드 문구 리라이트(선택): `prompts/devsecnews-card-copy-editor-skill.md`
+- 리포트 문구 리라이트(선택): `prompts/devsecnews-report-copy-editor-skill.md`
 - 산출물: `devsecnews-YYYY-MM-node-java.md`
 - 규칙 요약:
   - URL은 Markdown 링크로 감싸지 않고 “문자열 그대로” 씁니다.
@@ -83,10 +84,16 @@ npm run build:cards:html
 node scripts/md2cards.mjs --month "$DEVSECNEWS_MONTH" --rewrite-copy --copy-attempts 3
 ```
 
-`npm run build:cards`는 기본으로 위 리라이트를 포함합니다. 리라이트를 끄려면:
+리포트 문구 자동 리라이트(2패스 + 3회 시도 선택):
 
 ```bash
-node scripts/build-cards.mjs --month "$DEVSECNEWS_MONTH" --no-rewrite-copy
+node scripts/md2html.mjs --month "$DEVSECNEWS_MONTH" --rewrite-report --report-attempts 3
+```
+
+`npm run build:cards`는 기본으로 카드/리포트 리라이트를 모두 포함합니다. 리라이트를 끄려면:
+
+```bash
+node scripts/build-cards.mjs --month "$DEVSECNEWS_MONTH" --no-rewrite-copy --no-rewrite-report
 ```
 
 PNG 캡처(Playwright 필요):
