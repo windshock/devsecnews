@@ -154,6 +154,7 @@ const html = buildCardsHtml({
   title: titleLine,
   cards,
   reportHref: `../../${baseName}.html`,
+  baseName,
 });
 
 const outFile = path.join(outDir, "cards.html");
@@ -278,7 +279,11 @@ function parseCardMetaBlocks(fullMd) {
   return out;
 }
 
-function buildCardsHtml({ title, cards, reportHref }) {
+function buildCardsHtml({ title, cards, reportHref, baseName }) {
+  const siteBase = "https://windshock.github.io/devsecnews";
+  const ogImage = `${siteBase}/cards/${baseName}/card-01.png`;
+  const ogUrl = `${siteBase}/cards/${baseName}/cards.html`;
+  const ogDesc = cards.slice(0, 3).map(c => c.title).join(" · ");
   const cdn = `
   <!-- __TAILWIND_CSS__ -->
   <style>
@@ -536,6 +541,15 @@ function buildCardsHtml({ title, cards, reportHref }) {
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
     <title>${escapeHtml(title)} cards</title>
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="${escapeHtml(title)}" />
+    <meta property="og:description" content="${escapeHtml(ogDesc)}" />
+    <meta property="og:image" content="${ogImage}" />
+    <meta property="og:url" content="${ogUrl}" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="${escapeHtml(title)}" />
+    <meta name="twitter:description" content="${escapeHtml(ogDesc)}" />
+    <meta name="twitter:image" content="${ogImage}" />
     ${cdn}
   </head>
   <body class="bg-slate-950 text-slate-200 w-screen flex flex-col select-none" style="height:100svh;height:100dvh;padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)">

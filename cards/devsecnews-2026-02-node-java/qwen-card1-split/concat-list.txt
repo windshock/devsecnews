@@ -1,0 +1,6 @@
+file '/Users/1004276/Downloads/devsecnews/cards/devsecnews-2026-02-node-java/qwen-card1-split/segments/seg-01_000.wav'
+file '/Users/1004276/Downloads/devsecnews/cards/devsecnews-2026-02-node-java/qwen-card1-split/segments/seg-02_000.wav'
+file '/Users/1004276/Downloads/devsecnews/cards/devsecnews-2026-02-node-java/qwen-card1-split/segments/seg-03_000.wav'
+file '/Users/1004276/Downloads/devsecnews/cards/devsecnews-2026-02-node-java/qwen-card1-split/segments/seg-04_000.wav'
+file '/Users/1004276/Downloads/devsecnews/cards/devsecnews-2026-02-node-java/qwen-card1-split/segments/seg-05_000.wav'
+file '/Users/1004276/Downloads/devsecnews/cards/devsecnews-2026-02-node-java/qwen-card1-split/segments/seg-06_000.wav'
