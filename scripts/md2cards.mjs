@@ -281,7 +281,7 @@ function parseCardMetaBlocks(fullMd) {
 
 function buildCardsHtml({ title, cards, reportHref, baseName }) {
   const siteBase = "https://windshock.github.io/devsecnews";
-  const ogImage = `${siteBase}/media/${baseName.replace(/^devsecnews-/, '').replace(/-node-java$/, '')}/cover.png`;
+  const ogImage = `${siteBase}/media/${baseName.replace(/^devsecnews-/, '').replace(/-node-java$/, '')}/cover.webp`;
   const ogUrl = `${siteBase}/cards/${baseName}/cards.html`;
   const ogDesc = cards.slice(0, 3).map(c => c.title).join(" · ");
   const cdn = `
