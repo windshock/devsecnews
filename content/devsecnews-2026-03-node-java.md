@@ -32,6 +32,7 @@
 세 번째 Pick은 CAPTCHA 우회 PoC입니다. 2025년 대규모 해킹 사건들의 여파로 유출된 ID/PW·신분증 등 개인정보를 활용한 크레덴셜 스터핑과, 급전 목적으로 타인 명의 폰을 개통하는 '내구제' 명의도용이 급증했습니다. 이에 대한 대응으로 CAPTCHA 강화가 확산되고 있지만, Playwright + Whisper + LLM 에이전트 조합이면 비용 $0, 100% 로컬에서 CAPTCHA가 자동 우회됩니다. DOM 난독화는 더 이상 유효한 방어가 아니며, CAPTCHA 의존 전략 자체를 재검토해야 합니다.
 
 - **windshock** — CAPTCHA 우회 PoC와 방어 전략: LLM 에이전트가 바꿔놓은 게임의 규칙. [Source] https://windshock.github.io/ko/post/2026-03-30-captcha-bypass-poc-defense-strategy/ (2026-03-30)
+- **windshock** — captcha-bypass: CAPTCHA 우회 테스트 도구. [Source] https://github.com/windshock/captcha-bypass (2026-03)
 
 크레덴셜 스터핑과 명의도용 관련 참고자료:
 - **BJC저널** — 가전 구독 내구제 대출 사기 실태 보도. '나를 구제하는 대출'의 현재 형태를 취재한 기사입니다. [Source] https://journal.kbjc.net/news/articleView.html?idxno=20638 (2025-08)
@@ -905,7 +906,7 @@ void reverseDnsManipulation_shouldNotBypassHostVerification() {
 {"id":"lesson-3","kind":"insight","domain":"insight","header":"Lessons Learned","title":"③ 프록시와 백엔드가 같은 규칙을 보지 않는다","title_en":"③ Proxy and Backend Don’t Share the Same Rules","bodyMd":"Netty는 chunked extension의 quoted string을 다르게 파싱해 요청 경계가 어긋나고, ZooKeeper는 reverse DNS를 호스트 검증에 사용해 SAN과 불일치합니다.","bodyMd_en":"Netty parses chunked extension quoted strings differently, causing request boundary misalignment. ZooKeeper uses reverse DNS for host verification, creating SAN mismatches.","whyMd":"두 컴포넌트가 같은 입력을 다른 규칙으로 해석하면 경계가 무너집니다. WAFFLED 1,207개 우회도 같은 뿌리.","whyMd_en":"When two components parse the same input with different rules, boundaries collapse. The WAFFLED 1,207 bypasses share the same root cause.","impactMd":"보안 업데이트에 프록시-백엔드 파서 일치 테스트를 묶고, 호스트 검증은 SAN 직접 비교로.","impactMd_en":"Bundle proxy-backend parser alignment tests into security updates. Use direct SAN comparison for host verification.","actionMd":"프록시-백엔드 요청 경계 일치 테스트를 CI에 추가합니다.","actionMd_en":"Add proxy-backend request boundary alignment tests to CI.","source":"https://github.com/netty/netty/security/advisories/GHSA-pwqr-wmgm-9rr8"}
 -->
 <!--CARD
-{"id":"tools-1","kind":"cta","domain":"common","header":"셀프 체크","title":"개발자 셀프 체크 가이드 & 툴","title_en":"Developer Self-Check Guide & Tools","bodyMd":"이번 달 점검을 마친 뒤 아래 도구로 바로 실행하세요.","bodyMd_en":"After completing this month’s review, run these tools right away.","ctaLinks":[{"label":"oh-my-secuaudit — 보안 감사 자동화","href":"https://github.com/windshock/oh-my-secuaudit"},{"label":"waf-ips-ids-retest — WAF 탐지 검증","href":"https://github.com/windshock/waf-ips-ids-retest"},{"label":"npm audit / mvn dependency-check","href":"https://docs.npmjs.com/cli/v10/commands/npm-audit"}],"ctaLinks_en":[{"label":"oh-my-secuaudit — Security Audit Automation","href":"https://github.com/windshock/oh-my-secuaudit"},{"label":"waf-ips-ids-retest — WAF Detection Verification","href":"https://github.com/windshock/waf-ips-ids-retest"},{"label":"npm audit / mvn dependency-check","href":"https://docs.npmjs.com/cli/v10/commands/npm-audit"}],"source":"https://github.com/windshock/oh-my-secuaudit"}
+{"id": "tools-1", "kind": "cta", "domain": "common", "header": "셀프 체크", "title": "개발자 셀프 체크 가이드 & 툴", "title_en": "Developer Self-Check Guide & Tools", "bodyMd": "이번 달 점검을 마친 뒤 아래 도구로 바로 실행하세요.", "bodyMd_en": "After completing this month’s review, run these tools right away.", "ctaLinks": [{"label": "oh-my-secuaudit — 보안 감사 자동화", "href": "https://github.com/windshock/oh-my-secuaudit"}, {"label": "waf-ips-ids-retest — WAF 탐지 검증", "href": "https://github.com/windshock/waf-ips-ids-retest"}, {"label": "captcha-bypass — CAPTCHA 우회 테스트", "href": "https://github.com/windshock/captcha-bypass"}, {"label": "npm audit / mvn dependency-check", "href": "https://docs.npmjs.com/cli/v10/commands/npm-audit"}], "ctaLinks_en": [{"label": "oh-my-secuaudit — Security Audit Automation", "href": "https://github.com/windshock/oh-my-secuaudit"}, {"label": "waf-ips-ids-retest — WAF Detection Verification", "href": "https://github.com/windshock/waf-ips-ids-retest"}, {"label": "captcha-bypass — CAPTCHA Bypass Testing", "href": "https://github.com/windshock/captcha-bypass"}, {"label": "npm audit / mvn dependency-check", "href": "https://docs.npmjs.com/cli/v10/commands/npm-audit"}], "source": "https://github.com/windshock/oh-my-secuaudit"}
 -->
 
 1. `npm ls handlebars node-forge picomatch --depth=3`로 영향 버전을 먼저 확인합니다. [Source] https://github.com/handlebars-lang/handlebars.js/security/advisories/GHSA-2qvq-rjwj-gvw9 (2026-03-26)
@@ -934,6 +935,7 @@ void reverseDnsManipulation_shouldNotBypassHostVerification() {
 
 - https://github.com/windshock/oh-my-secuaudit
 - https://github.com/windshock/waf-ips-ids-retest
+- https://github.com/windshock/captcha-bypass
 
 - https://www.wiz.io/blog/trivy-compromised-teampcp-supply-chain-attack
 - https://www.crowdstrike.com/en-us/blog/from-scanner-to-stealer-inside-the-trivy-action-supply-chain-compromise/
