@@ -110,7 +110,8 @@ ${css}
 `;
 
 
-const title = path.basename(input);
+const h1Match = md.match(/^# (.+)$/m);
+const title = h1Match ? h1Match[1] : path.basename(input);
 
 const cdn = `
 <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
@@ -279,20 +280,18 @@ const html = `<!doctype html>
         }
 
         function initHero() {
-          // Remove first H1 from content if it matches title
           const firstH1 = document.querySelector(".article h1");
-          if (firstH1 && heroTitle && firstH1.textContent.trim() === heroTitle.textContent.trim()) {
-            firstH1.remove();
-          }
+          if (firstH1) firstH1.remove();
         }
 
         function formatSourceLinks() {
           const anchors = Array.from(document.querySelectorAll('.article a[href^="http"]'));
           for (const a of anchors) {
-             // Basic naive source mapping
              if (a.textContent.trim() === a.href) {
                 try {
-                    a.textContent = new URL(a.href).hostname.replace(/^www\./, "");
+                    const url = new URL(a.href);
+                    const parts = url.pathname.split("/").filter(Boolean).slice(0, 2);
+                    a.textContent = url.hostname.replace(/^www\./, "") + (parts.length ? "/" + parts.join("/") : "");
                 } catch {}
              }
           }
@@ -411,7 +410,7 @@ const html = `<!doctype html>
             // or: <p>안전한 대안:</p><pre>...</pre>
             const prev = wrap.previousElementSibling;
             const prevText = (prev && (prev.innerText || prev.textContent) ? (prev.innerText || prev.textContent) : "").trim();
-            if (prevText.startsWith("안 좋은 예")) wrap.classList.add("bad");
+            if (/^(안 좋은 예|취약한 예)/.test(prevText)) wrap.classList.add("bad");
             if (prevText.startsWith("안전한 대안")) wrap.classList.add("good");
 
             const btn = document.createElement("button");
@@ -767,7 +766,11 @@ const html = `<!doctype html>
         // setView is defined above to allow reuse by other UI features.
 
         if (viewToggle) {
-          const order = ["all","summary","node","java"];
+          const order = ["all","summary","node","java"].filter(v => {
+            if (v === "node") return Boolean(document.querySelector(".view-node")?.children.length);
+            if (v === "java") return Boolean(document.querySelector(".view-java")?.children.length);
+            return true;
+          });
           viewToggle.addEventListener("click", () => {
             const cur = document.body.dataset.view || "all";
             const idx = order.indexOf(cur);
@@ -1076,28 +1079,19 @@ function listCardPngs(dir) {
 }
 
 function splitByHeadings(md) {
-  // Goal: keep Summary/Checklist/Rules visible, and toggle Node/Java blocks.
-  // We split using the repo's fixed headings.
-  const idxNode = md.indexOf("# (2) Node.js");
-  const idxJava = md.indexOf("# (3) Java");
-  const idxAfterJava = idxJava !== -1 ? md.length : md.length;
+  // Keyword-based heading search for resilience against section number changes.
+  const idxNode = md.search(/^# \(\d+\) Node\.js/m);
+  const idxJava = md.search(/^# \(\d+\) Java/m);
 
   if (idxNode === -1 || idxJava === -1 || idxJava < idxNode) {
     return { prelude: md, node: "", java: "", rest: "" };
   }
 
   const prelude = md.slice(0, idxNode);
-
-  // Node: from Node heading up to Java heading
   const node = md.slice(idxNode, idxJava);
 
-  // Java: from Java heading up to end
-  // We keep everything after Java as "rest" only if you want common sections always visible.
-  // Current doc has common sections after Java, so we keep them as rest to always show them.
-  const idxCommon = md.indexOf("# (4) 공통 트렌드/권장사항");
-  const idxRefs6 = md.indexOf("# (6) 참고자료");
-  const idxRefs7 = md.indexOf("# (7) 참고자료");
-  const idxRefs = idxRefs6 !== -1 ? idxRefs6 : idxRefs7;
+  const idxCommon = md.search(/^# \(\d+\) 공통 트렌드/m);
+  const idxRefs = md.search(/^# \(\d+\) 참고자료/m);
 
   if (idxCommon !== -1 && idxCommon > idxJava) {
     const java = md.slice(idxJava, idxCommon);
@@ -1105,12 +1099,11 @@ function splitByHeadings(md) {
     return { prelude, node, java, rest };
   }
 
-  // Fallback: keep references always visible if present.
   if (idxRefs !== -1 && idxRefs > idxJava) {
     const java = md.slice(idxJava, idxRefs);
     const rest = md.slice(idxRefs);
     return { prelude, node, java, rest };
   }
 
-  return { prelude, node, java: md.slice(idxJava, idxAfterJava), rest: "" };
+  return { prelude, node, java: md.slice(idxJava), rest: "" };
 }

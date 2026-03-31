@@ -25,7 +25,8 @@ const rewriteReportArgs = rewriteReportEnabled
   : "";
 run(`node scripts/verify.mjs --month ${month}${strictFlag}`);
 run(`node scripts/md2cards.mjs --month ${month}${rewriteCopyArgs}`);
-run(`node scripts/cards2png.mjs --month ${month}`);
+// PNG generation disabled — card HTML is the primary deliverable.
+// run(`node scripts/cards2png.mjs --month ${month}`);
 run(`node scripts/md2html.mjs --month ${month}${rewriteReportArgs}`);
 
 function run(cmd) {

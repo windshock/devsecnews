@@ -1,0 +1,3079 @@
+<!doctype html>
+<html lang="ko" class="scroll-pt-24">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>DevSecNews 2026-03 — Java 보안 요약(개발자용)</title>
+    
+<script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+<script>
+  tailwind.config = {
+    darkMode: 'class',
+    theme: {
+      extend: {
+        fontFamily: {
+          sans: ['-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Noto Sans KR', 'Apple SD Gothic Neo', 'Malgun Gothic', 'system-ui', 'sans-serif'],
+          mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'Liberation Mono', 'Courier New', 'monospace'],
+        },
+      }
+    }
+  }
+</script>
+<style>
+  :root {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+  }
+  
+  /* Smooth anchor scrolling */
+  html { scroll-behavior: smooth; }
+  
+  .details-summary::-webkit-details-marker { display: none; }
+</style>
+
+    <style>
+.markdown-body {
+  --base-size-4: 0.25rem;
+  --base-size-8: 0.5rem;
+  --base-size-16: 1rem;
+  --base-size-24: 1.5rem;
+  --base-size-40: 2.5rem;
+  --base-text-weight-normal: 400;
+  --base-text-weight-medium: 500;
+  --base-text-weight-semibold: 600;
+  --fontStack-monospace: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace;
+  --fgColor-accent: Highlight;
+}
+@media (prefers-color-scheme: dark) {
+  .markdown-body, [data-theme="dark"] {
+    /* dark */
+    color-scheme: dark;
+    --focus-outlineColor: #1f6feb;
+    --fgColor-default: #f0f6fc;
+    --fgColor-muted: #9198a1;
+    --fgColor-accent: #4493f8;
+    --fgColor-success: #3fb950;
+    --fgColor-attention: #d29922;
+    --fgColor-danger: #f85149;
+    --fgColor-done: #ab7df8;
+    --bgColor-default: #0d1117;
+    --bgColor-muted: #151b23;
+    --bgColor-neutral-muted: #656c7633;
+    --bgColor-attention-muted: #bb800926;
+    --borderColor-default: #3d444d;
+    --borderColor-muted: #3d444db3;
+    --borderColor-neutral-muted: #3d444db3;
+    --borderColor-accent-emphasis: #1f6feb;
+    --borderColor-success-emphasis: #238636;
+    --borderColor-attention-emphasis: #9e6a03;
+    --borderColor-danger-emphasis: #da3633;
+    --borderColor-done-emphasis: #8957e5;
+    --color-prettylights-syntax-comment: #9198a1;
+    --color-prettylights-syntax-constant: #79c0ff;
+    --color-prettylights-syntax-constant-other-reference-link: #a5d6ff;
+    --color-prettylights-syntax-entity: #d2a8ff;
+    --color-prettylights-syntax-storage-modifier-import: #f0f6fc;
+    --color-prettylights-syntax-entity-tag: #7ee787;
+    --color-prettylights-syntax-keyword: #ff7b72;
+    --color-prettylights-syntax-string: #a5d6ff;
+    --color-prettylights-syntax-variable: #ffa657;
+    --color-prettylights-syntax-brackethighlighter-unmatched: #f85149;
+    --color-prettylights-syntax-brackethighlighter-angle: #9198a1;
+    --color-prettylights-syntax-invalid-illegal-text: #f0f6fc;
+    --color-prettylights-syntax-invalid-illegal-bg: #8e1519;
+    --color-prettylights-syntax-carriage-return-text: #f0f6fc;
+    --color-prettylights-syntax-carriage-return-bg: #b62324;
+    --color-prettylights-syntax-string-regexp: #7ee787;
+    --color-prettylights-syntax-markup-list: #f2cc60;
+    --color-prettylights-syntax-markup-heading: #1f6feb;
+    --color-prettylights-syntax-markup-italic: #f0f6fc;
+    --color-prettylights-syntax-markup-bold: #f0f6fc;
+    --color-prettylights-syntax-markup-deleted-text: #ffdcd7;
+    --color-prettylights-syntax-markup-deleted-bg: #67060c;
+    --color-prettylights-syntax-markup-inserted-text: #aff5b4;
+    --color-prettylights-syntax-markup-inserted-bg: #033a16;
+    --color-prettylights-syntax-markup-changed-text: #ffdfb6;
+    --color-prettylights-syntax-markup-changed-bg: #5a1e02;
+    --color-prettylights-syntax-markup-ignored-text: #f0f6fc;
+    --color-prettylights-syntax-markup-ignored-bg: #1158c7;
+    --color-prettylights-syntax-meta-diff-range: #d2a8ff;
+    --color-prettylights-syntax-sublimelinter-gutter-mark: #3d444d;
+  }
+}
+@media (prefers-color-scheme: light) {
+  .markdown-body, [data-theme="light"] {
+    /* light */
+    color-scheme: light;
+    --focus-outlineColor: #0969da;
+    --fgColor-default: #1f2328;
+    --fgColor-muted: #59636e;
+    --fgColor-accent: #0969da;
+    --fgColor-success: #1a7f37;
+    --fgColor-attention: #9a6700;
+    --fgColor-danger: #d1242f;
+    --fgColor-done: #8250df;
+    --bgColor-default: #ffffff;
+    --bgColor-muted: #f6f8fa;
+    --bgColor-neutral-muted: #818b981f;
+    --bgColor-attention-muted: #fff8c5;
+    --borderColor-default: #d1d9e0;
+    --borderColor-muted: #d1d9e0b3;
+    --borderColor-neutral-muted: #d1d9e0b3;
+    --borderColor-accent-emphasis: #0969da;
+    --borderColor-success-emphasis: #1a7f37;
+    --borderColor-attention-emphasis: #9a6700;
+    --borderColor-danger-emphasis: #cf222e;
+    --borderColor-done-emphasis: #8250df;
+    --color-prettylights-syntax-comment: #59636e;
+    --color-prettylights-syntax-constant: #0550ae;
+    --color-prettylights-syntax-constant-other-reference-link: #0a3069;
+    --color-prettylights-syntax-entity: #6639ba;
+    --color-prettylights-syntax-storage-modifier-import: #1f2328;
+    --color-prettylights-syntax-entity-tag: #0550ae;
+    --color-prettylights-syntax-keyword: #cf222e;
+    --color-prettylights-syntax-string: #0a3069;
+    --color-prettylights-syntax-variable: #953800;
+    --color-prettylights-syntax-brackethighlighter-unmatched: #82071e;
+    --color-prettylights-syntax-brackethighlighter-angle: #59636e;
+    --color-prettylights-syntax-invalid-illegal-text: #f6f8fa;
+    --color-prettylights-syntax-invalid-illegal-bg: #82071e;
+    --color-prettylights-syntax-carriage-return-text: #f6f8fa;
+    --color-prettylights-syntax-carriage-return-bg: #cf222e;
+    --color-prettylights-syntax-string-regexp: #116329;
+    --color-prettylights-syntax-markup-list: #3b2300;
+    --color-prettylights-syntax-markup-heading: #0550ae;
+    --color-prettylights-syntax-markup-italic: #1f2328;
+    --color-prettylights-syntax-markup-bold: #1f2328;
+    --color-prettylights-syntax-markup-deleted-text: #82071e;
+    --color-prettylights-syntax-markup-deleted-bg: #ffebe9;
+    --color-prettylights-syntax-markup-inserted-text: #116329;
+    --color-prettylights-syntax-markup-inserted-bg: #dafbe1;
+    --color-prettylights-syntax-markup-changed-text: #953800;
+    --color-prettylights-syntax-markup-changed-bg: #ffd8b5;
+    --color-prettylights-syntax-markup-ignored-text: #d1d9e0;
+    --color-prettylights-syntax-markup-ignored-bg: #0550ae;
+    --color-prettylights-syntax-meta-diff-range: #8250df;
+    --color-prettylights-syntax-sublimelinter-gutter-mark: #818b98;
+  }
+}
+
+.markdown-body {
+  -ms-text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+  margin: 0;
+  color: var(--fgColor-default);
+  background-color: var(--bgColor-default);
+  font-family: -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji";
+  font-size: 16px;
+  line-height: 1.5;
+  word-wrap: break-word;
+}
+
+.markdown-body .octicon {
+  display: inline-block;
+  fill: currentColor;
+  vertical-align: text-bottom;
+}
+
+.markdown-body h1:hover .anchor .octicon-link:before,
+.markdown-body h2:hover .anchor .octicon-link:before,
+.markdown-body h3:hover .anchor .octicon-link:before,
+.markdown-body h4:hover .anchor .octicon-link:before,
+.markdown-body h5:hover .anchor .octicon-link:before,
+.markdown-body h6:hover .anchor .octicon-link:before {
+  width: 16px;
+  height: 16px;
+  content: ' ';
+  display: inline-block;
+  background-color: currentColor;
+  -webkit-mask-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' version='1.1' aria-hidden='true'><path fill-rule='evenodd' d='M7.775 3.275a.75.75 0 001.06 1.06l1.25-1.25a2 2 0 112.83 2.83l-2.5 2.5a2 2 0 01-2.83 0 .75.75 0 00-1.06 1.06 3.5 3.5 0 004.95 0l2.5-2.5a3.5 3.5 0 00-4.95-4.95l-1.25 1.25zm-4.69 9.64a2 2 0 010-2.83l2.5-2.5a2 2 0 012.83 0 .75.75 0 001.06-1.06 3.5 3.5 0 00-4.95 0l-2.5 2.5a3.5 3.5 0 004.95 4.95l1.25-1.25a.75.75 0 00-1.06-1.06l-1.25 1.25a2 2 0 01-2.83 0z'></path></svg>");
+  mask-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' version='1.1' aria-hidden='true'><path fill-rule='evenodd' d='M7.775 3.275a.75.75 0 001.06 1.06l1.25-1.25a2 2 0 112.83 2.83l-2.5 2.5a2 2 0 01-2.83 0 .75.75 0 00-1.06 1.06 3.5 3.5 0 004.95 0l2.5-2.5a3.5 3.5 0 00-4.95-4.95l-1.25 1.25zm-4.69 9.64a2 2 0 010-2.83l2.5-2.5a2 2 0 012.83 0 .75.75 0 001.06-1.06 3.5 3.5 0 00-4.95 0l-2.5 2.5a3.5 3.5 0 004.95 4.95l1.25-1.25a.75.75 0 00-1.06-1.06l-1.25 1.25a2 2 0 01-2.83 0z'></path></svg>");
+}
+
+.markdown-body details,
+.markdown-body figcaption,
+.markdown-body figure {
+  display: block;
+}
+
+.markdown-body summary {
+  display: list-item;
+}
+
+.markdown-body [hidden] {
+  display: none !important;
+}
+
+.markdown-body a {
+  background-color: transparent;
+  color: var(--fgColor-accent);
+  text-decoration: none;
+}
+
+.markdown-body abbr[title] {
+  border-bottom: none;
+  -webkit-text-decoration: underline dotted;
+  text-decoration: underline dotted;
+}
+
+.markdown-body b,
+.markdown-body strong {
+  font-weight: var(--base-text-weight-semibold, 600);
+}
+
+.markdown-body dfn {
+  font-style: italic;
+}
+
+.markdown-body h1 {
+  margin: .67em 0;
+  font-weight: var(--base-text-weight-semibold, 600);
+  padding-bottom: .3em;
+  font-size: 2em;
+  border-bottom: 1px solid var(--borderColor-muted);
+}
+
+.markdown-body mark {
+  background-color: var(--bgColor-attention-muted);
+  color: var(--fgColor-default);
+}
+
+.markdown-body small {
+  font-size: 90%;
+}
+
+.markdown-body sub,
+.markdown-body sup {
+  font-size: 75%;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+
+.markdown-body sub {
+  bottom: -0.25em;
+}
+
+.markdown-body sup {
+  top: -0.5em;
+}
+
+.markdown-body img {
+  border-style: none;
+  max-width: 100%;
+  box-sizing: content-box;
+}
+
+.markdown-body code,
+.markdown-body kbd,
+.markdown-body pre,
+.markdown-body samp {
+  font-family: monospace;
+  font-size: 1em;
+}
+
+.markdown-body figure {
+  margin: 1em var(--base-size-40);
+}
+
+.markdown-body hr {
+  box-sizing: content-box;
+  overflow: hidden;
+  background: transparent;
+  border-bottom: 1px solid var(--borderColor-muted);
+  height: .25em;
+  padding: 0;
+  margin: var(--base-size-24) 0;
+  background-color: var(--borderColor-default);
+  border: 0;
+}
+
+.markdown-body input {
+  font: inherit;
+  margin: 0;
+  overflow: visible;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+}
+
+.markdown-body [type=button],
+.markdown-body [type=reset],
+.markdown-body [type=submit] {
+  -webkit-appearance: button;
+  appearance: button;
+}
+
+.markdown-body [type=checkbox],
+.markdown-body [type=radio] {
+  box-sizing: border-box;
+  padding: 0;
+}
+
+.markdown-body [type=number]::-webkit-inner-spin-button,
+.markdown-body [type=number]::-webkit-outer-spin-button {
+  height: auto;
+}
+
+.markdown-body [type=search]::-webkit-search-cancel-button,
+.markdown-body [type=search]::-webkit-search-decoration {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.markdown-body ::-webkit-input-placeholder {
+  color: inherit;
+  opacity: .54;
+}
+
+.markdown-body ::-webkit-file-upload-button {
+  -webkit-appearance: button;
+  appearance: button;
+  font: inherit;
+}
+
+.markdown-body a:hover {
+  text-decoration: underline;
+}
+
+.markdown-body ::placeholder {
+  color: var(--fgColor-muted);
+  opacity: 1;
+}
+
+.markdown-body hr::before {
+  display: table;
+  content: "";
+}
+
+.markdown-body hr::after {
+  display: table;
+  clear: both;
+  content: "";
+}
+
+.markdown-body table {
+  border-spacing: 0;
+  border-collapse: collapse;
+  display: block;
+  width: max-content;
+  max-width: 100%;
+  overflow: auto;
+  font-variant: tabular-nums;
+}
+
+.markdown-body td,
+.markdown-body th {
+  padding: 0;
+}
+
+.markdown-body details summary {
+  cursor: pointer;
+}
+
+.markdown-body a:focus,
+.markdown-body [role=button]:focus,
+.markdown-body input[type=radio]:focus,
+.markdown-body input[type=checkbox]:focus {
+  outline: 2px solid var(--focus-outlineColor);
+  outline-offset: -2px;
+  box-shadow: none;
+}
+
+.markdown-body a:focus:not(:focus-visible),
+.markdown-body [role=button]:focus:not(:focus-visible),
+.markdown-body input[type=radio]:focus:not(:focus-visible),
+.markdown-body input[type=checkbox]:focus:not(:focus-visible) {
+  outline: solid 1px transparent;
+}
+
+.markdown-body a:focus-visible,
+.markdown-body [role=button]:focus-visible,
+.markdown-body input[type=radio]:focus-visible,
+.markdown-body input[type=checkbox]:focus-visible {
+  outline: 2px solid var(--focus-outlineColor);
+  outline-offset: -2px;
+  box-shadow: none;
+}
+
+.markdown-body a:not([class]):focus,
+.markdown-body a:not([class]):focus-visible,
+.markdown-body input[type=radio]:focus,
+.markdown-body input[type=radio]:focus-visible,
+.markdown-body input[type=checkbox]:focus,
+.markdown-body input[type=checkbox]:focus-visible {
+  outline-offset: 0;
+}
+
+.markdown-body kbd {
+  display: inline-block;
+  padding: var(--base-size-4);
+  font: 11px var(--fontStack-monospace, ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace);
+  line-height: 10px;
+  color: var(--fgColor-default);
+  vertical-align: middle;
+  background-color: var(--bgColor-muted);
+  border: solid 1px var(--borderColor-neutral-muted);
+  border-bottom-color: var(--borderColor-neutral-muted);
+  border-radius: 6px;
+  box-shadow: inset 0 -1px 0 var(--borderColor-neutral-muted);
+}
+
+.markdown-body h1,
+.markdown-body h2,
+.markdown-body h3,
+.markdown-body h4,
+.markdown-body h5,
+.markdown-body h6 {
+  margin-top: var(--base-size-24);
+  margin-bottom: var(--base-size-16);
+  font-weight: var(--base-text-weight-semibold, 600);
+  line-height: 1.25;
+}
+
+.markdown-body h2 {
+  font-weight: var(--base-text-weight-semibold, 600);
+  padding-bottom: .3em;
+  font-size: 1.5em;
+  border-bottom: 1px solid var(--borderColor-muted);
+}
+
+.markdown-body h3 {
+  font-weight: var(--base-text-weight-semibold, 600);
+  font-size: 1.25em;
+}
+
+.markdown-body h4 {
+  font-weight: var(--base-text-weight-semibold, 600);
+  font-size: 1em;
+}
+
+.markdown-body h5 {
+  font-weight: var(--base-text-weight-semibold, 600);
+  font-size: .875em;
+}
+
+.markdown-body h6 {
+  font-weight: var(--base-text-weight-semibold, 600);
+  font-size: .85em;
+  color: var(--fgColor-muted);
+}
+
+.markdown-body p {
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+
+.markdown-body blockquote {
+  margin: 0;
+  padding: 0 1em;
+  color: var(--fgColor-muted);
+  border-left: .25em solid var(--borderColor-default);
+}
+
+.markdown-body ul,
+.markdown-body ol {
+  margin-top: 0;
+  margin-bottom: 0;
+  padding-left: 2em;
+}
+
+.markdown-body ol ol,
+.markdown-body ul ol {
+  list-style-type: lower-roman;
+}
+
+.markdown-body ul ul ol,
+.markdown-body ul ol ol,
+.markdown-body ol ul ol,
+.markdown-body ol ol ol {
+  list-style-type: lower-alpha;
+}
+
+.markdown-body dd {
+  margin-left: 0;
+}
+
+.markdown-body tt,
+.markdown-body code,
+.markdown-body samp {
+  font-family: var(--fontStack-monospace, ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace);
+  font-size: 12px;
+}
+
+.markdown-body pre {
+  margin-top: 0;
+  margin-bottom: 0;
+  font-family: var(--fontStack-monospace, ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace);
+  font-size: 12px;
+  word-wrap: normal;
+}
+
+.markdown-body .octicon {
+  display: inline-block;
+  overflow: visible !important;
+  vertical-align: text-bottom;
+  fill: currentColor;
+}
+
+.markdown-body input::-webkit-outer-spin-button,
+.markdown-body input::-webkit-inner-spin-button {
+  margin: 0;
+  appearance: none;
+}
+
+.markdown-body .mr-2 {
+  margin-right: var(--base-size-8, 8px) !important;
+}
+
+.markdown-body::before {
+  display: table;
+  content: "";
+}
+
+.markdown-body::after {
+  display: table;
+  clear: both;
+  content: "";
+}
+
+.markdown-body>*:first-child {
+  margin-top: 0 !important;
+}
+
+.markdown-body>*:last-child {
+  margin-bottom: 0 !important;
+}
+
+.markdown-body a:not([href]) {
+  color: inherit;
+  text-decoration: none;
+}
+
+.markdown-body .absent {
+  color: var(--fgColor-danger);
+}
+
+.markdown-body .anchor {
+  float: left;
+  padding-right: var(--base-size-4);
+  margin-left: -20px;
+  line-height: 1;
+}
+
+.markdown-body .anchor:focus {
+  outline: none;
+}
+
+.markdown-body p,
+.markdown-body blockquote,
+.markdown-body ul,
+.markdown-body ol,
+.markdown-body dl,
+.markdown-body table,
+.markdown-body pre,
+.markdown-body details {
+  margin-top: 0;
+  margin-bottom: var(--base-size-16);
+}
+
+.markdown-body blockquote>:first-child {
+  margin-top: 0;
+}
+
+.markdown-body blockquote>:last-child {
+  margin-bottom: 0;
+}
+
+.markdown-body h1 .octicon-link,
+.markdown-body h2 .octicon-link,
+.markdown-body h3 .octicon-link,
+.markdown-body h4 .octicon-link,
+.markdown-body h5 .octicon-link,
+.markdown-body h6 .octicon-link {
+  color: var(--fgColor-default);
+  vertical-align: middle;
+  visibility: hidden;
+}
+
+.markdown-body h1:hover .anchor,
+.markdown-body h2:hover .anchor,
+.markdown-body h3:hover .anchor,
+.markdown-body h4:hover .anchor,
+.markdown-body h5:hover .anchor,
+.markdown-body h6:hover .anchor {
+  text-decoration: none;
+}
+
+.markdown-body h1:hover .anchor .octicon-link,
+.markdown-body h2:hover .anchor .octicon-link,
+.markdown-body h3:hover .anchor .octicon-link,
+.markdown-body h4:hover .anchor .octicon-link,
+.markdown-body h5:hover .anchor .octicon-link,
+.markdown-body h6:hover .anchor .octicon-link {
+  visibility: visible;
+}
+
+.markdown-body h1 tt,
+.markdown-body h1 code,
+.markdown-body h2 tt,
+.markdown-body h2 code,
+.markdown-body h3 tt,
+.markdown-body h3 code,
+.markdown-body h4 tt,
+.markdown-body h4 code,
+.markdown-body h5 tt,
+.markdown-body h5 code,
+.markdown-body h6 tt,
+.markdown-body h6 code {
+  padding: 0 .2em;
+  font-size: inherit;
+}
+
+.markdown-body summary h1,
+.markdown-body summary h2,
+.markdown-body summary h3,
+.markdown-body summary h4,
+.markdown-body summary h5,
+.markdown-body summary h6 {
+  display: inline-block;
+}
+
+.markdown-body summary h1 .anchor,
+.markdown-body summary h2 .anchor,
+.markdown-body summary h3 .anchor,
+.markdown-body summary h4 .anchor,
+.markdown-body summary h5 .anchor,
+.markdown-body summary h6 .anchor {
+  margin-left: -40px;
+}
+
+.markdown-body summary h1,
+.markdown-body summary h2 {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.markdown-body ul.no-list,
+.markdown-body ol.no-list {
+  padding: 0;
+  list-style-type: none;
+}
+
+.markdown-body ol[type="a s"] {
+  list-style-type: lower-alpha;
+}
+
+.markdown-body ol[type="A s"] {
+  list-style-type: upper-alpha;
+}
+
+.markdown-body ol[type="i s"] {
+  list-style-type: lower-roman;
+}
+
+.markdown-body ol[type="I s"] {
+  list-style-type: upper-roman;
+}
+
+.markdown-body ol[type="1"] {
+  list-style-type: decimal;
+}
+
+.markdown-body div>ol:not([type]) {
+  list-style-type: decimal;
+}
+
+.markdown-body ul ul,
+.markdown-body ul ol,
+.markdown-body ol ol,
+.markdown-body ol ul {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.markdown-body li>p {
+  margin-top: var(--base-size-16);
+}
+
+.markdown-body li+li {
+  margin-top: .25em;
+}
+
+.markdown-body dl {
+  padding: 0;
+}
+
+.markdown-body dl dt {
+  padding: 0;
+  margin-top: var(--base-size-16);
+  font-size: 1em;
+  font-style: italic;
+  font-weight: var(--base-text-weight-semibold, 600);
+}
+
+.markdown-body dl dd {
+  padding: 0 var(--base-size-16);
+  margin-bottom: var(--base-size-16);
+}
+
+.markdown-body table th {
+  font-weight: var(--base-text-weight-semibold, 600);
+}
+
+.markdown-body table th,
+.markdown-body table td {
+  padding: 6px 13px;
+  border: 1px solid var(--borderColor-default);
+}
+
+.markdown-body table td>:last-child {
+  margin-bottom: 0;
+}
+
+.markdown-body table tr {
+  background-color: var(--bgColor-default);
+  border-top: 1px solid var(--borderColor-muted);
+}
+
+.markdown-body table tr:nth-child(2n) {
+  background-color: var(--bgColor-muted);
+}
+
+.markdown-body table img {
+  background-color: transparent;
+}
+
+.markdown-body img[align=right] {
+  padding-left: 20px;
+}
+
+.markdown-body img[align=left] {
+  padding-right: 20px;
+}
+
+.markdown-body .emoji {
+  max-width: none;
+  vertical-align: text-top;
+  background-color: transparent;
+}
+
+.markdown-body span.frame {
+  display: block;
+  overflow: hidden;
+}
+
+.markdown-body span.frame>span {
+  display: block;
+  float: left;
+  width: auto;
+  padding: 7px;
+  margin: 13px 0 0;
+  overflow: hidden;
+  border: 1px solid var(--borderColor-default);
+}
+
+.markdown-body span.frame span img {
+  display: block;
+  float: left;
+}
+
+.markdown-body span.frame span span {
+  display: block;
+  padding: 5px 0 0;
+  clear: both;
+  color: var(--fgColor-default);
+}
+
+.markdown-body span.align-center {
+  display: block;
+  overflow: hidden;
+  clear: both;
+}
+
+.markdown-body span.align-center>span {
+  display: block;
+  margin: 13px auto 0;
+  overflow: hidden;
+  text-align: center;
+}
+
+.markdown-body span.align-center span img {
+  margin: 0 auto;
+  text-align: center;
+}
+
+.markdown-body span.align-right {
+  display: block;
+  overflow: hidden;
+  clear: both;
+}
+
+.markdown-body span.align-right>span {
+  display: block;
+  margin: 13px 0 0;
+  overflow: hidden;
+  text-align: right;
+}
+
+.markdown-body span.align-right span img {
+  margin: 0;
+  text-align: right;
+}
+
+.markdown-body span.float-left {
+  display: block;
+  float: left;
+  margin-right: 13px;
+  overflow: hidden;
+}
+
+.markdown-body span.float-left span {
+  margin: 13px 0 0;
+}
+
+.markdown-body span.float-right {
+  display: block;
+  float: right;
+  margin-left: 13px;
+  overflow: hidden;
+}
+
+.markdown-body span.float-right>span {
+  display: block;
+  margin: 13px auto 0;
+  overflow: hidden;
+  text-align: right;
+}
+
+.markdown-body code,
+.markdown-body tt {
+  padding: .2em .4em;
+  margin: 0;
+  font-size: 85%;
+  white-space: break-spaces;
+  background-color: var(--bgColor-neutral-muted);
+  border-radius: 6px;
+}
+
+.markdown-body code br,
+.markdown-body tt br {
+  display: none;
+}
+
+.markdown-body del code {
+  text-decoration: inherit;
+}
+
+.markdown-body samp {
+  font-size: 85%;
+}
+
+.markdown-body pre code {
+  font-size: 100%;
+}
+
+.markdown-body pre>code {
+  padding: 0;
+  margin: 0;
+  word-break: normal;
+  white-space: pre;
+  background: transparent;
+  border: 0;
+}
+
+.markdown-body .highlight {
+  margin-bottom: var(--base-size-16);
+}
+
+.markdown-body .highlight pre {
+  margin-bottom: 0;
+  word-break: normal;
+}
+
+.markdown-body .highlight pre,
+.markdown-body pre {
+  padding: var(--base-size-16);
+  overflow: auto;
+  font-size: 85%;
+  line-height: 1.45;
+  color: var(--fgColor-default);
+  background-color: var(--bgColor-muted);
+  border-radius: 6px;
+}
+
+.markdown-body pre code,
+.markdown-body pre tt {
+  display: inline;
+  max-width: auto;
+  padding: 0;
+  margin: 0;
+  overflow: visible;
+  line-height: inherit;
+  word-wrap: normal;
+  background-color: transparent;
+  border: 0;
+}
+
+.markdown-body .csv-data td,
+.markdown-body .csv-data th {
+  padding: 5px;
+  overflow: hidden;
+  font-size: 12px;
+  line-height: 1;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.markdown-body .csv-data .blob-num {
+  padding: 10px var(--base-size-8) 9px;
+  text-align: right;
+  background: var(--bgColor-default);
+  border: 0;
+}
+
+.markdown-body .csv-data tr {
+  border-top: 0;
+}
+
+.markdown-body .csv-data th {
+  font-weight: var(--base-text-weight-semibold, 600);
+  background: var(--bgColor-muted);
+  border-top: 0;
+}
+
+.markdown-body [data-footnote-ref]::before {
+  content: "[";
+}
+
+.markdown-body [data-footnote-ref]::after {
+  content: "]";
+}
+
+.markdown-body .footnotes {
+  font-size: 12px;
+  color: var(--fgColor-muted);
+  border-top: 1px solid var(--borderColor-default);
+}
+
+.markdown-body .footnotes ol {
+  padding-left: var(--base-size-16);
+}
+
+.markdown-body .footnotes ol ul {
+  display: inline-block;
+  padding-left: var(--base-size-16);
+  margin-top: var(--base-size-16);
+}
+
+.markdown-body .footnotes li {
+  position: relative;
+}
+
+.markdown-body .footnotes li:target::before {
+  position: absolute;
+  top: calc(var(--base-size-8)*-1);
+  right: calc(var(--base-size-8)*-1);
+  bottom: calc(var(--base-size-8)*-1);
+  left: calc(var(--base-size-24)*-1);
+  pointer-events: none;
+  content: "";
+  border: 2px solid var(--borderColor-accent-emphasis);
+  border-radius: 6px;
+}
+
+.markdown-body .footnotes li:target {
+  color: var(--fgColor-default);
+}
+
+.markdown-body .footnotes .data-footnote-backref g-emoji {
+  font-family: monospace;
+}
+
+.markdown-body body:has(:modal) {
+  padding-right: var(--dialog-scrollgutter) !important;
+}
+
+.markdown-body .pl-c {
+  color: var(--color-prettylights-syntax-comment);
+}
+
+.markdown-body .pl-c1,
+.markdown-body .pl-s .pl-v {
+  color: var(--color-prettylights-syntax-constant);
+}
+
+.markdown-body .pl-e,
+.markdown-body .pl-en {
+  color: var(--color-prettylights-syntax-entity);
+}
+
+.markdown-body .pl-smi,
+.markdown-body .pl-s .pl-s1 {
+  color: var(--color-prettylights-syntax-storage-modifier-import);
+}
+
+.markdown-body .pl-ent {
+  color: var(--color-prettylights-syntax-entity-tag);
+}
+
+.markdown-body .pl-k {
+  color: var(--color-prettylights-syntax-keyword);
+}
+
+.markdown-body .pl-s,
+.markdown-body .pl-pds,
+.markdown-body .pl-s .pl-pse .pl-s1,
+.markdown-body .pl-sr,
+.markdown-body .pl-sr .pl-cce,
+.markdown-body .pl-sr .pl-sre,
+.markdown-body .pl-sr .pl-sra {
+  color: var(--color-prettylights-syntax-string);
+}
+
+.markdown-body .pl-v,
+.markdown-body .pl-smw {
+  color: var(--color-prettylights-syntax-variable);
+}
+
+.markdown-body .pl-bu {
+  color: var(--color-prettylights-syntax-brackethighlighter-unmatched);
+}
+
+.markdown-body .pl-ii {
+  color: var(--color-prettylights-syntax-invalid-illegal-text);
+  background-color: var(--color-prettylights-syntax-invalid-illegal-bg);
+}
+
+.markdown-body .pl-c2 {
+  color: var(--color-prettylights-syntax-carriage-return-text);
+  background-color: var(--color-prettylights-syntax-carriage-return-bg);
+}
+
+.markdown-body .pl-sr .pl-cce {
+  font-weight: bold;
+  color: var(--color-prettylights-syntax-string-regexp);
+}
+
+.markdown-body .pl-ml {
+  color: var(--color-prettylights-syntax-markup-list);
+}
+
+.markdown-body .pl-mh,
+.markdown-body .pl-mh .pl-en,
+.markdown-body .pl-ms {
+  font-weight: bold;
+  color: var(--color-prettylights-syntax-markup-heading);
+}
+
+.markdown-body .pl-mi {
+  font-style: italic;
+  color: var(--color-prettylights-syntax-markup-italic);
+}
+
+.markdown-body .pl-mb {
+  font-weight: bold;
+  color: var(--color-prettylights-syntax-markup-bold);
+}
+
+.markdown-body .pl-md {
+  color: var(--color-prettylights-syntax-markup-deleted-text);
+  background-color: var(--color-prettylights-syntax-markup-deleted-bg);
+}
+
+.markdown-body .pl-mi1 {
+  color: var(--color-prettylights-syntax-markup-inserted-text);
+  background-color: var(--color-prettylights-syntax-markup-inserted-bg);
+}
+
+.markdown-body .pl-mc {
+  color: var(--color-prettylights-syntax-markup-changed-text);
+  background-color: var(--color-prettylights-syntax-markup-changed-bg);
+}
+
+.markdown-body .pl-mi2 {
+  color: var(--color-prettylights-syntax-markup-ignored-text);
+  background-color: var(--color-prettylights-syntax-markup-ignored-bg);
+}
+
+.markdown-body .pl-mdr {
+  font-weight: bold;
+  color: var(--color-prettylights-syntax-meta-diff-range);
+}
+
+.markdown-body .pl-ba {
+  color: var(--color-prettylights-syntax-brackethighlighter-angle);
+}
+
+.markdown-body .pl-sg {
+  color: var(--color-prettylights-syntax-sublimelinter-gutter-mark);
+}
+
+.markdown-body .pl-corl {
+  text-decoration: underline;
+  color: var(--color-prettylights-syntax-constant-other-reference-link);
+}
+
+.markdown-body [role=button]:focus:not(:focus-visible),
+.markdown-body [role=tabpanel][tabindex="0"]:focus:not(:focus-visible),
+.markdown-body button:focus:not(:focus-visible),
+.markdown-body summary:focus:not(:focus-visible),
+.markdown-body a:focus:not(:focus-visible) {
+  outline: none;
+  box-shadow: none;
+}
+
+.markdown-body [tabindex="0"]:focus:not(:focus-visible),
+.markdown-body details-dialog:focus:not(:focus-visible) {
+  outline: none;
+}
+
+.markdown-body g-emoji {
+  display: inline-block;
+  min-width: 1ch;
+  font-family: "Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
+  font-size: 1em;
+  font-style: normal !important;
+  font-weight: var(--base-text-weight-normal, 400);
+  line-height: 1;
+  vertical-align: -0.075em;
+}
+
+.markdown-body g-emoji img {
+  width: 1em;
+  height: 1em;
+}
+
+.markdown-body .task-list-item {
+  list-style-type: none;
+}
+
+.markdown-body .task-list-item label {
+  font-weight: var(--base-text-weight-normal, 400);
+}
+
+.markdown-body .task-list-item.enabled label {
+  cursor: pointer;
+}
+
+.markdown-body .task-list-item+.task-list-item {
+  margin-top: var(--base-size-4);
+}
+
+.markdown-body .task-list-item .handle {
+  display: none;
+}
+
+.markdown-body .task-list-item-checkbox {
+  margin: 0 .2em .25em -1.4em;
+  vertical-align: middle;
+}
+
+.markdown-body ul:dir(rtl) .task-list-item-checkbox {
+  margin: 0 -1.6em .25em .2em;
+}
+
+.markdown-body ol:dir(rtl) .task-list-item-checkbox {
+  margin: 0 -1.6em .25em .2em;
+}
+
+.markdown-body .contains-task-list:hover .task-list-item-convert-container,
+.markdown-body .contains-task-list:focus-within .task-list-item-convert-container {
+  display: block;
+  width: auto;
+  height: 24px;
+  overflow: visible;
+  clip: auto;
+}
+
+.markdown-body ::-webkit-calendar-picker-indicator {
+  filter: invert(50%);
+}
+
+.markdown-body .markdown-alert {
+  padding: var(--base-size-8) var(--base-size-16);
+  margin-bottom: var(--base-size-16);
+  color: inherit;
+  border-left: .25em solid var(--borderColor-default);
+}
+
+.markdown-body .markdown-alert>:first-child {
+  margin-top: 0;
+}
+
+.markdown-body .markdown-alert>:last-child {
+  margin-bottom: 0;
+}
+
+.markdown-body .markdown-alert .markdown-alert-title {
+  display: flex;
+  font-weight: var(--base-text-weight-medium, 500);
+  align-items: center;
+  line-height: 1;
+}
+
+.markdown-body .markdown-alert.markdown-alert-note {
+  border-left-color: var(--borderColor-accent-emphasis);
+}
+
+.markdown-body .markdown-alert.markdown-alert-note .markdown-alert-title {
+  color: var(--fgColor-accent);
+}
+
+.markdown-body .markdown-alert.markdown-alert-important {
+  border-left-color: var(--borderColor-done-emphasis);
+}
+
+.markdown-body .markdown-alert.markdown-alert-important .markdown-alert-title {
+  color: var(--fgColor-done);
+}
+
+.markdown-body .markdown-alert.markdown-alert-warning {
+  border-left-color: var(--borderColor-attention-emphasis);
+}
+
+.markdown-body .markdown-alert.markdown-alert-warning .markdown-alert-title {
+  color: var(--fgColor-attention);
+}
+
+.markdown-body .markdown-alert.markdown-alert-tip {
+  border-left-color: var(--borderColor-success-emphasis);
+}
+
+.markdown-body .markdown-alert.markdown-alert-tip .markdown-alert-title {
+  color: var(--fgColor-success);
+}
+
+.markdown-body .markdown-alert.markdown-alert-caution {
+  border-left-color: var(--borderColor-danger-emphasis);
+}
+
+.markdown-body .markdown-alert.markdown-alert-caution .markdown-alert-title {
+  color: var(--fgColor-danger);
+}
+
+.markdown-body>*:first-child>.heading-element:first-child {
+  margin-top: 0 !important;
+}
+
+.markdown-body .highlight pre:has(+.zeroclipboard-container) {
+  min-height: 52px;
+}
+
+
+/* Highlight.js Light */
+@media (prefers-color-scheme: light) {
+  pre code.hljs {
+  display: block;
+  overflow-x: auto;
+  padding: 1em
+}
+code.hljs {
+  padding: 3px 5px
+}
+/*!
+  Theme: GitHub
+  Description: Light theme as seen on github.com
+  Author: github.com
+  Maintainer: @Hirse
+  Updated: 2021-05-15
+
+  Outdated base version: https://github.com/primer/github-syntax-light
+  Current colors taken from GitHub's CSS
+*/
+.hljs {
+  color: #24292e;
+  background: #ffffff
+}
+.hljs-doctag,
+.hljs-keyword,
+.hljs-meta .hljs-keyword,
+.hljs-template-tag,
+.hljs-template-variable,
+.hljs-type,
+.hljs-variable.language_ {
+  /* prettylights-syntax-keyword */
+  color: #d73a49
+}
+.hljs-title,
+.hljs-title.class_,
+.hljs-title.class_.inherited__,
+.hljs-title.function_ {
+  /* prettylights-syntax-entity */
+  color: #6f42c1
+}
+.hljs-attr,
+.hljs-attribute,
+.hljs-literal,
+.hljs-meta,
+.hljs-number,
+.hljs-operator,
+.hljs-variable,
+.hljs-selector-attr,
+.hljs-selector-class,
+.hljs-selector-id {
+  /* prettylights-syntax-constant */
+  color: #005cc5
+}
+.hljs-regexp,
+.hljs-string,
+.hljs-meta .hljs-string {
+  /* prettylights-syntax-string */
+  color: #032f62
+}
+.hljs-built_in,
+.hljs-symbol {
+  /* prettylights-syntax-variable */
+  color: #e36209
+}
+.hljs-comment,
+.hljs-code,
+.hljs-formula {
+  /* prettylights-syntax-comment */
+  color: #6a737d
+}
+.hljs-name,
+.hljs-quote,
+.hljs-selector-tag,
+.hljs-selector-pseudo {
+  /* prettylights-syntax-entity-tag */
+  color: #22863a
+}
+.hljs-subst {
+  /* prettylights-syntax-storage-modifier-import */
+  color: #24292e
+}
+.hljs-section {
+  /* prettylights-syntax-markup-heading */
+  color: #005cc5;
+  font-weight: bold
+}
+.hljs-bullet {
+  /* prettylights-syntax-markup-list */
+  color: #735c0f
+}
+.hljs-emphasis {
+  /* prettylights-syntax-markup-italic */
+  color: #24292e;
+  font-style: italic
+}
+.hljs-strong {
+  /* prettylights-syntax-markup-bold */
+  color: #24292e;
+  font-weight: bold
+}
+.hljs-addition {
+  /* prettylights-syntax-markup-inserted */
+  color: #22863a;
+  background-color: #f0fff4
+}
+.hljs-deletion {
+  /* prettylights-syntax-markup-deleted */
+  color: #b31d28;
+  background-color: #ffeef0
+}
+.hljs-char.escape_,
+.hljs-link,
+.hljs-params,
+.hljs-property,
+.hljs-punctuation,
+.hljs-tag {
+  /* purposely ignored */
+  
+}
+}
+/* Highlight.js Dark */
+@media (prefers-color-scheme: dark) {
+  pre code.hljs {
+  display: block;
+  overflow-x: auto;
+  padding: 1em
+}
+code.hljs {
+  padding: 3px 5px
+}
+/*!
+  Theme: GitHub Dark
+  Description: Dark theme as seen on github.com
+  Author: github.com
+  Maintainer: @Hirse
+  Updated: 2021-05-15
+
+  Outdated base version: https://github.com/primer/github-syntax-dark
+  Current colors taken from GitHub's CSS
+*/
+.hljs {
+  color: #c9d1d9;
+  background: #0d1117
+}
+.hljs-doctag,
+.hljs-keyword,
+.hljs-meta .hljs-keyword,
+.hljs-template-tag,
+.hljs-template-variable,
+.hljs-type,
+.hljs-variable.language_ {
+  /* prettylights-syntax-keyword */
+  color: #ff7b72
+}
+.hljs-title,
+.hljs-title.class_,
+.hljs-title.class_.inherited__,
+.hljs-title.function_ {
+  /* prettylights-syntax-entity */
+  color: #d2a8ff
+}
+.hljs-attr,
+.hljs-attribute,
+.hljs-literal,
+.hljs-meta,
+.hljs-number,
+.hljs-operator,
+.hljs-variable,
+.hljs-selector-attr,
+.hljs-selector-class,
+.hljs-selector-id {
+  /* prettylights-syntax-constant */
+  color: #79c0ff
+}
+.hljs-regexp,
+.hljs-string,
+.hljs-meta .hljs-string {
+  /* prettylights-syntax-string */
+  color: #a5d6ff
+}
+.hljs-built_in,
+.hljs-symbol {
+  /* prettylights-syntax-variable */
+  color: #ffa657
+}
+.hljs-comment,
+.hljs-code,
+.hljs-formula {
+  /* prettylights-syntax-comment */
+  color: #8b949e
+}
+.hljs-name,
+.hljs-quote,
+.hljs-selector-tag,
+.hljs-selector-pseudo {
+  /* prettylights-syntax-entity-tag */
+  color: #7ee787
+}
+.hljs-subst {
+  /* prettylights-syntax-storage-modifier-import */
+  color: #c9d1d9
+}
+.hljs-section {
+  /* prettylights-syntax-markup-heading */
+  color: #1f6feb;
+  font-weight: bold
+}
+.hljs-bullet {
+  /* prettylights-syntax-markup-list */
+  color: #f2cc60
+}
+.hljs-emphasis {
+  /* prettylights-syntax-markup-italic */
+  color: #c9d1d9;
+  font-style: italic
+}
+.hljs-strong {
+  /* prettylights-syntax-markup-bold */
+  color: #c9d1d9;
+  font-weight: bold
+}
+.hljs-addition {
+  /* prettylights-syntax-markup-inserted */
+  color: #aff5b4;
+  background-color: #033a16
+}
+.hljs-deletion {
+  /* prettylights-syntax-markup-deleted */
+  color: #ffdcd7;
+  background-color: #67060c
+}
+.hljs-char.escape_,
+.hljs-link,
+.hljs-params,
+.hljs-property,
+.hljs-punctuation,
+.hljs-tag {
+  /* purposely ignored */
+  
+}
+}
+:root {
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+
+  --bg-body: #f8fafc;
+  --text-body: #334155;
+  --text-heading: #0f172a;
+  --text-muted: #64748b;
+  
+  --primary: #2563eb;
+  --primary-light: #eff6ff;
+  --primary-border: #bfdbfe;
+  
+  --surface: #ffffff;
+  --surface-translucent: rgba(255, 255, 255, 0.85);
+  --border: #e2e8f0;
+  
+  --code-bg: #f1f5f9;
+  --code-border: #e2e8f0;
+  
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  
+  --radius-lg: 1rem;
+  --radius-md: 0.75rem;
+  --radius-sm: 0.5rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-body: #0f172a;
+    --text-body: #cbd5e1;
+    --text-heading: #f1f5f9;
+    --text-muted: #94a3b8;
+    
+    --primary: #3b82f6;
+    --primary-light: rgba(59, 130, 246, 0.1);
+    --primary-border: rgba(59, 130, 246, 0.2);
+    
+    --surface: #1e293b;
+    --surface-translucent: rgba(30, 41, 59, 0.85);
+    --border: #334155;
+    
+    --code-bg: #1e293b;
+    --code-border: #334155;
+    
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.3), 0 2px 4px -2px rgb(0 0 0 / 0.3);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.3), 0 4px 6px -4px rgb(0 0 0 / 0.3);
+  }
+}
+
+body {
+  margin: 0;
+  background-color: var(--bg-body);
+  color: var(--text-body);
+  font-family: var(--font-sans);
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Background Gradients */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: 
+    radial-gradient(circle at 15% 50%, rgba(37, 99, 235, 0.08), transparent 25%),
+    radial-gradient(circle at 85% 30%, rgba(236, 72, 153, 0.08), transparent 25%);
+  pointer-events: none;
+}
+
+.page {
+  max-width: 1024px;
+  margin: 0 auto;
+  padding: 2rem 1rem 4rem;
+  display: grid;
+  gap: 2rem;
+}
+
+/* Header */
+.page-header {
+  position: sticky;
+  top: 1rem;
+  z-index: 50;
+  background: var(--surface-translucent);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 1rem 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: var(--shadow-md);
+}
+
+.hero {
+  display: flex;
+  flex-direction: column;
+}
+
+.hero-meta {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--primary);
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.hero-title {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--text-heading);
+  margin: 0;
+}
+
+/* Toolbar Buttons */
+.toolbar {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.tool-btn {
+  appearance: none;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  border-radius: var(--radius-sm);
+  padding: 0.375rem 0.75rem;
+  font-size: 0.875rem;
+  font-family: inherit;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.tool-btn:hover {
+  background: var(--primary-light);
+  color: var(--primary);
+  border-color: var(--primary-border);
+}
+
+.tool-hint {
+  display: none;
+}
+
+/* Layout */
+.layout {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+@media (max-width: 860px) {
+  .layout { grid-template-columns: 1fr; }
+  .toc { display: none; }
+  body[data-toc="open"] .toc { 
+    display: block; 
+    position: fixed;
+    top: 5rem; left: 1rem; right: 1rem; bottom: auto;
+    max-height: 60vh;
+    z-index: 100;
+  }
+}
+
+/* TOC */
+.toc {
+  position: sticky;
+  top: 6rem;
+  background: var(--surface); /* Fallback */
+  background: linear-gradient(180deg, var(--surface) 0%, rgba(var(--surface), 0.5) 100%);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem;
+  max-height: calc(100vh - 8rem);
+  overflow-y: auto;
+  box-shadow: var(--shadow-sm);
+}
+
+.toc h4 {
+  margin: 0 0 1rem;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+}
+
+.toc a {
+  display: block;
+  text-decoration: none;
+  color: var(--text-body);
+  font-size: 0.875rem;
+  padding: 0.375rem 0;
+  border-left: 2px solid transparent;
+  padding-left: 0.75rem;
+  margin-left: -0.75rem;
+  transition: all 0.2s;
+}
+
+.toc a:hover {
+  color: var(--primary);
+  border-left-color: var(--primary-border);
+  background: var(--primary-light);
+}
+
+.toc .toc-l3 {
+  padding-left: 1.5rem;
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+}
+
+/* Article / Markdown Body */
+.markdown-body {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 2.5rem;
+  box-shadow: var(--shadow-sm);
+  color: var(--text-body);
+  font-size: 1rem;
+}
+
+.markdown-body h1,
+.markdown-body h2,
+.markdown-body h3,
+.markdown-body h4 {
+  color: var(--text-heading);
+  margin-top: 2em;
+  margin-bottom: 1em;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.markdown-body h1 { font-size: 2rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5em; }
+.markdown-body h2 { font-size: 1.5rem; }
+.markdown-body h3 { font-size: 1.25rem; }
+
+.markdown-body a {
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 500;
+}
+.markdown-body a:hover { text-decoration: underline; }
+
+.markdown-body strong { color: var(--text-heading); font-weight: 600; }
+
+.markdown-body ul, .markdown-body ol { padding-left: 1.5em; }
+.markdown-body li { margin-bottom: 0.5em; }
+
+.markdown-body hr {
+  height: 1px;
+  background-color: var(--border);
+  border: none;
+  margin: 2rem 0;
+}
+
+/* Code Blocks */
+.markdown-body pre {
+  background: var(--code-bg);
+  border: 1px solid var(--code-border);
+  border-radius: var(--radius-md);
+  padding: 1.25rem;
+  overflow-x: auto;
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  line-height: 1.6;
+  margin: 1.5rem 0;
+}
+
+.markdown-body code {
+  background: var(--code-bg);
+  padding: 0.2em 0.4em;
+  border-radius: 0.25rem;
+  font-family: var(--font-mono);
+  font-size: 0.875em;
+  color: var(--text-heading);
+}
+
+.markdown-body pre code {
+  background: transparent;
+  padding: 0;
+  color: inherit;
+  border-radius: 0;
+}
+
+/* Tables */
+.markdown-body table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+  display: block;
+  overflow-x: auto;
+}
+
+.markdown-body th,
+.markdown-body td {
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--border);
+  text-align: left;
+}
+
+.markdown-body th {
+  background: var(--bg-body);
+  font-weight: 600;
+  color: var(--text-heading);
+}
+
+/* Callouts / Blockquotes */
+.markdown-body blockquote {
+  margin: 1.5rem 0;
+  padding: 1rem 1.5rem;
+  border-left: 4px solid var(--primary);
+  background: var(--primary-light);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  color: var(--text-heading);
+}
+.markdown-body blockquote > :first-child { margin-top: 0; }
+.markdown-body blockquote > :last-child { margin-bottom: 0; }
+
+/* Custom: Callout Style */
+.callout {
+  margin: 1.5rem 0;
+  padding: 1.25rem;
+  border: 1px solid #bbf7d0;
+  background: rgba(220, 252, 231, 0.4);
+  border-radius: var(--radius-md);
+}
+@media (prefers-color-scheme: dark) {
+  .callout {
+    border-color: rgba(34, 197, 94, 0.3);
+    background: rgba(34, 197, 94, 0.1);
+  }
+}
+.callout-title {
+  font-weight: 700;
+  color: #15803d;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+@media (prefers-color-scheme: dark) { .callout-title { color: #4ade80; } }
+
+/* Summary Grid */
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+
+.summary-item {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 1rem;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.summary-item:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--primary-border);
+}
+
+.summary-item h5 {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin: 0 0 0.5rem;
+}
+
+.summary-item p {
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  margin: 0;
+  color: var(--text-heading);
+}
+
+.summary-item a {
+  display: inline-block;
+  margin-top: 0.75rem;
+  font-size: 0.8125rem;
+}
+
+/* Copy Button */
+.codeblock { position: relative; }
+.copyBtn {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.codeblock:hover .copyBtn { opacity: 1; }
+
+/* Responsive */
+@media (max-width: 640px) {
+  .page { padding: 1rem 1rem 3rem; }
+  .markdown-body { padding: 1.5rem; }
+  .hero-title { font-size: 1rem; }
+}
+
+/* View Helpers */
+.view-summary, .view-node, .view-java, .view-rest { display: none; }
+body[data-view="all"] .view-summary,
+body[data-view="all"] .view-node,
+body[data-view="all"] .view-java,
+body[data-view="all"] .view-rest { display: block; }
+
+body[data-view="summary"] .view-summary { display: block; }
+body[data-view="node"] .view-node { display: block; }
+body[data-view="java"] .view-java { display: block; }
+
+</style>
+  </head>
+  <body class="bg-gray-50 text-slate-800 dark:bg-slate-950 dark:text-slate-200 antialiased" data-view="all">
+    
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
+      
+      <!-- Header -->
+      <header class="sticky top-4 z-50 mt-4 rounded-2xl bg-white/80 dark:bg-slate-900/80 backdrop-blur border border-slate-200 dark:border-slate-800 shadow-sm p-4 flex flex-wrap gap-4 items-center justify-between">
+        <div>
+          <div class="text-[10px] font-bold tracking-wider text-blue-600 dark:text-blue-400 uppercase mb-0.5">DevSecNews Report</div>
+          <h1 class="text-lg font-bold text-slate-900 dark:text-white leading-tight" id="hero-title">DevSecNews 2026-03 — Java 보안 요약(개발자용)</h1>
+        </div>
+        
+        <div class="flex items-center gap-2">
+           <button type="button" id="view-toggle" class="px-3 py-1.5 text-xs font-medium bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-full hover:bg-gray-50 dark:hover:bg-slate-700 transition-colors">보기: 전체</button>
+           <button type="button" id="toc-toggle" class="px-3 py-1.5 text-xs font-medium bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-full hover:bg-gray-50 dark:hover:bg-slate-700 transition-colors lg:hidden">목차</button>
+        </div>
+      </header>
+
+      <div class="grid grid-cols-1 lg:grid-cols-[260px_1fr] gap-8 mt-8 items-start">
+        
+        <!-- Sidebar TOC -->
+        <aside id="toc-panel" class="hidden lg:block sticky top-28 max-h-[calc(100vh-140px)] overflow-y-auto w-full p-4 bg-white/50 dark:bg-slate-900/50 rounded-xl border border-slate-200 dark:border-slate-800 backdrop-blur-sm">
+          <h4 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">목차</h4>
+          <div id="toc-list" class="space-y-1"></div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="article w-full min-w-0">
+          <article class="prose prose-slate dark:prose-invert max-w-none 
+            prose-headings:font-bold prose-headings:tracking-tight
+            prose-a:text-blue-600 dark:prose-a:text-blue-400 prose-a:no-underline hover:prose-a:underline
+            prose-pre:bg-slate-900 prose-pre:border prose-pre:border-slate-700
+            prose-img:rounded-xl prose-img:shadow-lg
+            prose-blockquote:border-l-4 prose-blockquote:border-blue-500 prose-blockquote:bg-blue-50 dark:prose-blockquote:bg-blue-900/20 prose-blockquote:py-1 prose-blockquote:px-4 prose-blockquote:not-italic
+          ">
+            <section class="view-summary" data-view-section="summary">
+              <h1 id="devsecnews-2026-03-java-보안-요약개발자용">DevSecNews 2026-03 — Java 보안 요약(개발자용)</h1><h2 id="이달의-한-줄-메시지">이달의 한 줄 메시지</h2><p><strong>3월 핵심어: supply-chain trust(공급망 신뢰) · parser differential(파서 해석 차이) · implicit lookup(묵시적 변수 탐색)</strong></p>
+<p>신뢰하던 보안 스캐너가 크리덴셜 탈취 도구로 전락했고, WAF와 백엔드는 같은 요청을 서로 다르게 읽었으며, CAPTCHA는 LLM 에이전트 앞에서 사실상 공짜로 뚫렸습니다. 세 사건 모두 &#39;알아서 안전하게 처리될 것&#39;이라는 암묵적 신뢰에서 비롯됐습니다.</p>
+<p><strong>한 줄 결론: 신뢰하지 말고 검증하세요 — 도구도, 파서도, 사용자 구분도.</strong></p>
+<hr>
+<h1 id="1-editors-pick">(1) Editor’s Pick</h1><p>이번 달 Editor’s Pick은 Trivy 공급망 공격입니다. 3월 19일, 위협 그룹 TeamPCP가 Aqua Security의 Trivy 스캐너를 장악해 CI/CD 파이프라인 수천 개에 크리덴셜 탈취 페이로드를 심었습니다. 보안 스캐너 자체가 공격 벡터가 된 사건으로, GitHub Actions의 mutable tag 신뢰 모델과 시크릿 관리의 구조적 취약점이 드러났습니다. 아래 분석 글을 권장합니다.</p>
+<ul>
+<li><strong>Wiz Research</strong> — 공격 타임라인과 다중 생태계 확산 경로를 정리한 기술 분석입니다. [Source] <a href="https://www.wiz.io/blog/trivy-compromised-teampcp-supply-chain-attack">https://www.wiz.io/blog/trivy-compromised-teampcp-supply-chain-attack</a> (2026-03-20)</li>
+<li><strong>CrowdStrike</strong> — trivy-action 태그 포이즈닝의 탐지·조사·대응 절차를 다룹니다. [Source] <a href="https://www.crowdstrike.com/en-us/blog/from-scanner-to-stealer-inside-the-trivy-action-supply-chain-compromise/">https://www.crowdstrike.com/en-us/blog/from-scanner-to-stealer-inside-the-trivy-action-supply-chain-compromise/</a> (2026-03-21)</li>
+<li><strong>Microsoft Security</strong> — 영향 판별, 시크릿 회전, 파이프라인 격리에 대한 방어 가이드입니다. [Source] <a href="https://www.microsoft.com/en-us/security/blog/2026/03/24/detecting-investigating-defending-against-trivy-supply-chain-compromise/">https://www.microsoft.com/en-us/security/blog/2026/03/24/detecting-investigating-defending-against-trivy-supply-chain-compromise/</a> (2026-03-24)</li>
+</ul>
+<p>두 번째 Pick은 이번 호 Netty HRS(CVE-2026-33870)와 직결되는 WAF/IPS/IDS 탐지 공백 분석입니다. 시그니처 우회가 아니라 WAF–프록시–백엔드 간 파싱 불일치가 진짜 원인이라는 점을 1,207개 우회 사례로 입증합니다. 함께 읽으면 좋은 참고자료: @JeppW의 Funky Chunks 연구(chunk extension 모호성을 이용한 HRS), xclow3n의 Cloudflare Pingora request smuggling 분석, nginx chunk-line CRLF 엄격화 패치 논의.</p>
+<ul>
+<li><strong>windshock</strong> — WAF/IPS/IDS 탐지 공백 구조 분석: 프로토콜 비동기화부터 경로 정규화까지. [Source] <a href="https://windshock.github.io/ko/post/2026-03-13-waf-ips-ids-detection-gap-analysis/">https://windshock.github.io/ko/post/2026-03-13-waf-ips-ids-detection-gap-analysis/</a> (2026-03-13)</li>
+<li><strong>windshock</strong> — waf-ips-ids-retest: 가설 기반 WAF 탐지 공백 재테스트 프레임워크. [Source] <a href="https://github.com/windshock/waf-ips-ids-retest">https://github.com/windshock/waf-ips-ids-retest</a> (2026-03)</li>
+<li><strong>@JeppW</strong> — Funky Chunks: 모호한 chunk line terminator를 악용한 request smuggling 원본 연구. [Source] <a href="https://w4ke.info/2025/06/18/funky-chunks.html">https://w4ke.info/2025/06/18/funky-chunks.html</a> (2025-06-18)</li>
+<li><strong>xclow3n</strong> — Breaking Pingora: Cloudflare 프록시의 HTTP request smuggling과 cache poisoning 분석. [Source] <a href="https://xclow3n.github.io/post/6/">https://xclow3n.github.io/post/6/</a> (2026-02-25)</li>
+<li><strong>Cloudflare</strong> — Pingora request smuggling 취약점 대응 및 패치 블로그. [Source] <a href="https://blog.cloudflare.com/resolving-a-request-smuggling-vulnerability-in-pingora/">https://blog.cloudflare.com/resolving-a-request-smuggling-vulnerability-in-pingora/</a> (2026-03-04)</li>
+<li><strong>Netty Advisory</strong> — GHSA-pwqr-wmgm-9rr8 / CVE-2026-33870: chunk extension 파싱 오류 기반 request smuggling. [Source] <a href="https://github.com/netty/netty/security/advisories/GHSA-pwqr-wmgm-9rr8">https://github.com/netty/netty/security/advisories/GHSA-pwqr-wmgm-9rr8</a> (2026-03-26)</li>
+<li><strong>nginx-devel</strong> — chunk-size line CRLF 엄격 적용 패치 논의 (RFC 9112 §7.1 준수). [Source] <a href="https://mailman.nginx.org/pipermail/nginx-devel/2024-January/5CQQCHFYQMXTBAK7H2FITLVQQS5ECFFM.html">https://mailman.nginx.org/pipermail/nginx-devel/2024-January/5CQQCHFYQMXTBAK7H2FITLVQQS5ECFFM.html</a> (2024-01)</li>
+</ul>
+<p>세 번째 Pick은 CAPTCHA 우회 PoC입니다. 2025년 대규모 해킹 사건들의 여파로 유출된 ID/PW·신분증 등 개인정보를 활용한 크레덴셜 스터핑과, 급전 목적으로 타인 명의 폰을 개통하는 &#39;내구제&#39; 명의도용이 급증했습니다. 이에 대한 대응으로 CAPTCHA 강화가 확산되고 있지만, Playwright + Whisper + LLM 에이전트 조합이면 비용 $0, 100% 로컬에서 CAPTCHA가 자동 우회됩니다. DOM 난독화는 더 이상 유효한 방어가 아니며, CAPTCHA 의존 전략 자체를 재검토해야 합니다.</p>
+<ul>
+<li><strong>windshock</strong> — CAPTCHA 우회 PoC와 방어 전략: LLM 에이전트가 바꿔놓은 게임의 규칙. [Source] <a href="https://windshock.github.io/ko/post/2026-03-30-captcha-bypass-poc-defense-strategy/">https://windshock.github.io/ko/post/2026-03-30-captcha-bypass-poc-defense-strategy/</a> (2026-03-30)</li>
+</ul>
+<p>크레덴셜 스터핑과 명의도용 관련 참고자료:</p>
+<ul>
+<li><strong>BJC저널</strong> — 가전 구독 내구제 대출 사기 실태 보도. &#39;나를 구제하는 대출&#39;의 현재 형태를 취재한 기사입니다. [Source] <a href="https://journal.kbjc.net/news/articleView.html?idxno=20638">https://journal.kbjc.net/news/articleView.html?idxno=20638</a> (2025-08)</li>
+<li><strong>일요시사</strong> — 2025년 통신분쟁 2123건 역대 최대, 명의도용 217건(10.2%)이며 미해결률 39.8%. [Source] <a href="https://www.ilyosisa.co.kr/news/article.html?no=254600">https://www.ilyosisa.co.kr/news/article.html?no=254600</a> (2026-02)</li>
+<li><strong>서울경제</strong> — SKT·KT·쿠팡 유출 여파로 M-safer 가입제한 서비스 이용이 2년 만에 16배 급증. [Source] <a href="https://v.daum.net/v/20251202154625602">https://v.daum.net/v/20251202154625602</a> (2025-12)</li>
+</ul>
+<h1 id="2-이번-달-요약">(2) 이번 달 요약</h1><h2 id="핵심-뉴스-top-5">핵심 뉴스 TOP 5</h2><ol>
+<li><p><strong>Spring 관리 경로·보안 헤더 취약점 (CVE-2026-22731 / 22732 / 22733)</strong><br>Actuator 경로와 애플리케이션 경로가 겹치면서 인증 우회와 보안 헤더 누락이 동시에 발생합니다. 관리 경로 하위에 비즈니스 엔드포인트를 배치한 경우 두 문제가 한꺼번에 열립니다.<br>[Source] <a href="https://spring.io/security/cve-2026-22731">https://spring.io/security/cve-2026-22731</a> (2026-03-19) · <a href="https://spring.io/security/cve-2026-22732">https://spring.io/security/cve-2026-22732</a> (2026-03-19) · <a href="https://spring.io/security/cve-2026-22733">https://spring.io/security/cve-2026-22733</a> (2026-03-19)</p>
+<p><code>basicConstraints</code> 우회, RSA-PKCS 서명 위조, Ed25519 서명 위조가 같은 날 공개됐습니다. PKI 검증은 보안의 마지막 보루입니다—하나만 뚫려도 신뢰 체계 전체가 무너집니다.<br>[Source] <a href="https://github.com/digitalbazaar/forge/security/advisories/GHSA-2328-f5f3-gj25">https://github.com/digitalbazaar/forge/security/advisories/GHSA-2328-f5f3-gj25</a> (2026-03-26)</p>
+</li>
+<li><p><strong>Netty · ZooKeeper 네트워크 경계 해석 차이 (CVE-2026-33870 / 24281)</strong><br>Netty는 chunked extension 파싱 불일치로 request smuggling이, ZooKeeper는 reverse DNS 의존 호스트 검증에서 우회가 발생했습니다. 프록시와 백엔드가 요청 경계를 다르게 해석하는 순간 네트워크 방어는 의미를 잃습니다.<br>[Source] <a href="https://github.com/netty/netty/security/advisories/GHSA-pwqr-wmgm-9rr8">https://github.com/netty/netty/security/advisories/GHSA-pwqr-wmgm-9rr8</a> (2026-03-26) · <a href="https://lists.apache.org/thread/088ddsbrzhd5lxzbqf5n24yg0mwh9jt2">https://lists.apache.org/thread/088ddsbrzhd5lxzbqf5n24yg0mwh9jt2</a> (2026-03-07)</p>
+<p>prototype이 오염된 상태에서 partial 이름을 프로퍼티 직접 조회로 찾아 XSS로 이어집니다. 템플릿 엔진이 &quot;이름을 알아서 찾아주는&quot; 편의 기능이 곧 공격 경로가 됩니다.<br>[Source] <a href="https://github.com/handlebars-lang/handlebars.js/security/advisories/GHSA-2qvq-rjwj-gvw9">https://github.com/handlebars-lang/handlebars.js/security/advisories/GHSA-2qvq-rjwj-gvw9</a> (2026-03-26)</p>
+<p>POSIX 문자 클래스 처리 오류로 glob 매칭 범위가 의도와 다르게 넓어집니다. glob를 권한 판단의 단일 근거로 쓰면, edge case 하나로 허용 범위가 늘어납니다.<br>[Source] <a href="https://github.com/micromatch/picomatch/security/advisories/GHSA-3v7f-55p6-f55p">https://github.com/micromatch/picomatch/security/advisories/GHSA-3v7f-55p6-f55p</a> (2026-03-25)</p>
+</li>
+</ol>
+<hr>
+<!--CARD
+{"id":"top5-1","kind":"summary","domain":"common","header":"핵심 뉴스","title":"3월 핵심 뉴스 TOP 5","bodyMd":"1. **Spring** — Actuator 경로 충돌로 인증 우회 + 보안 헤더 누락 (CVE-2026-22731/22732/22733)\n2. **node-forge** — 인증서 체인·RSA·Ed25519 서명 검증 3종 실패 (CVE-2026-33896/33894/33895)\n3. **Netty·ZooKeeper** — chunked extension 파싱 불일치 + reverse DNS 우회 (CVE-2026-33870/24281)\n4. **Handlebars** — prototype 오염 + implicit lookup → XSS (CVE-2026-33916)\n5. **Picomatch** — POSIX 클래스 처리 오류로 glob 매칭 범위 확대 (CVE-2026-33672)","actionMd":"각 항목의 상세 분석과 패치 가이드는 본문 (2) Node.js, (3) Java 섹션을 참고하세요.","source":"https://spring.io/security/cve-2026-22731"}
+-->
+
+<hr>
+<h2 id="왜-반복되는가">왜 반복되는가</h2><p>3월에 나온 취약점들은 모두 “라이브러리 또는 인프라가 알아서 처리해줄 것”이라는 기대에서 비롯됐습니다. prototype chain lookup, parser differential, reverse DNS fallback — 이 세 패턴의 공통점은 편의를 위해 암묵적으로 열어둔 경로입니다.</p>
+<p><strong>세 가지 구조적 원칙을 이번 달 PR에 반영하세요.</strong></p>
+<ol>
+<li><p><strong>암묵적 경로를 끊으세요.</strong><br>이름 조회에는 <code>hasOwn</code>, 경로 판단에는 prefix 분리, DNS 검증에는 SAN 직접 비교. 편의를 위한 fallback은 보안 경계 밖으로 내보냅니다.<br>[Source] <a href="https://github.com/handlebars-lang/handlebars.js/security/advisories/GHSA-2qvq-rjwj-gvw9">https://github.com/handlebars-lang/handlebars.js/security/advisories/GHSA-2qvq-rjwj-gvw9</a> (2026-03-26) · <a href="https://github.com/netty/netty/security/advisories/GHSA-pwqr-wmgm-9rr8">https://github.com/netty/netty/security/advisories/GHSA-pwqr-wmgm-9rr8</a> (2026-03-26)</p>
+</li>
+<li><p><strong>관리 경로와 비즈니스 경로를 URI prefix부터 분리하세요.</strong><br>Actuator · CloudFoundry · Health group 경로 하위에 비즈니스 엔드포인트를 배치하지 않습니다. 두 경로는 다른 접근 제어 정책을 가져야 합니다.<br>[Source] <a href="https://spring.io/security/cve-2026-22731">https://spring.io/security/cve-2026-22731</a> (2026-03-19) · <a href="https://spring.io/security/cve-2026-22733">https://spring.io/security/cve-2026-22733</a> (2026-03-19)</p>
+</li>
+<li><p><strong>보안 의존성 업데이트에는 경계 테스트를 묶으세요.</strong><br>버전을 올리는 것만으로는 부족합니다. 보안 헤더 존재, 요청 경계 일치, 호스트 검증, 인증서/서명 검증 테스트를 같은 PR에 포함해야 다음 릴리스에서 같은 경로가 다시 열리지 않습니다.<br>[Source] <a href="https://spring.io/security/cve-2026-22732">https://spring.io/security/cve-2026-22732</a> (2026-03-19) · <a href="https://github.com/digitalbazaar/forge/security/advisories/GHSA-2328-f5f3-gj25">https://github.com/digitalbazaar/forge/security/advisories/GHSA-2328-f5f3-gj25</a> (2026-03-26)</p>
+</li>
+</ol>
+<h2 id="이번-달-취약-개발-패턴-top-10">이번 달 취약 개발 패턴 Top 10</h2><h3 id="nodejs">Node.js</h3><h3 id="1-partialtemplate-이름을-plain-property-lookup으로-해석">1) partial/template 이름을 plain property lookup으로 해석</h3><p>3월 Handlebars XSS의 직접 원인입니다. <code>object[key]</code> 형태의 동적 조회는 prototype 체인까지 탐색합니다. <strong>템플릿 이름 조회에는 반드시 <code>Object.hasOwn()</code> 검사를 추가하세요.</strong></p>
+<pre><code class="language-js"><span class="hljs-comment">// ❌ 취약</span>
+<span class="hljs-keyword">const</span> partial = options.<span class="hljs-property">partials</span>[name]
+
+<span class="hljs-comment">// ✅ 안전</span>
+<span class="hljs-keyword">if</span> (!<span class="hljs-title class_">Object</span>.<span class="hljs-title function_">hasOwn</span>(options.<span class="hljs-property">partials</span> ?? {}, name)) <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Error</span>(<span class="hljs-string">&#x27;blocked&#x27;</span>)
+<span class="hljs-keyword">const</span> partial = options.<span class="hljs-property">partials</span>[name]
+</code></pre>
+<p>[Source] <a href="https://github.com/handlebars-lang/handlebars.js/security/advisories/GHSA-2qvq-rjwj-gvw9">https://github.com/handlebars-lang/handlebars.js/security/advisories/GHSA-2qvq-rjwj-gvw9</a> (2026-03-26)</p>
+<hr>
+<h3 id="2-인증서-제약-조건을-체인-검증에-통합하지-않음">2) 인증서 제약 조건을 체인 검증에 통합하지 않음</h3><p><code>basicConstraints</code>가 불일치하는 인증서를 체인에 섞어 검증을 우회합니다. <strong>체인 검증 이후 <code>basicConstraints</code> · keyUsage 검사를 별도 단계로 명시적으로 추가하세요.</strong></p>
+<pre><code class="language-js"><span class="hljs-comment">// ❌ 취약: 체인 검증만으로 끝</span>
+<span class="hljs-keyword">if</span> (forge.<span class="hljs-property">pki</span>.<span class="hljs-title function_">verifyCertificateChain</span>(caStore, chain)) <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>
+
+<span class="hljs-comment">// ✅ 안전: 체인 검증 + 제약 조건 검사</span>
+<span class="hljs-keyword">if</span> (!forge.<span class="hljs-property">pki</span>.<span class="hljs-title function_">verifyCertificateChain</span>(caStore, chain)) <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Error</span>(<span class="hljs-string">&#x27;chain invalid&#x27;</span>)
+<span class="hljs-title function_">assertBasicConstraints</span>(chain)   <span class="hljs-comment">// cA 플래그, pathLen 확인</span>
+<span class="hljs-title function_">assertKeyUsage</span>(chain)           <span class="hljs-comment">// 서명 용도 일치 확인</span>
+</code></pre>
+<p>[Source] <a href="https://github.com/digitalbazaar/forge/security/advisories/GHSA-2328-f5f3-gj25">https://github.com/digitalbazaar/forge/security/advisories/GHSA-2328-f5f3-gj25</a> (2026-03-26)</p>
+<hr>
+<h3 id="3-서명-형식-오류를-사전-차단하지-않고-검증-함수에-바로-전달">3) 서명 형식 오류를 사전 차단하지 않고 검증 함수에 바로 전달</h3><p>ASN.1 extra field나 Ed25519 경계값이 붙은 서명이 검증 함수를 통과합니다. <strong>서명 검증 경로에 canonical encoding 확인을 별도 게이트로 추가하세요.</strong></p>
+<pre><code class="language-js"><span class="hljs-comment">// ❌ 취약: malformed 입력이 그대로 전달됨</span>
+publicKey.<span class="hljs-title function_">verify</span>(digest, signature)
+
+<span class="hljs-comment">// ✅ 안전: encoding 검사 → 길이 확인 → 검증</span>
+<span class="hljs-keyword">if</span> (!<span class="hljs-title function_">isCanonicalEncoding</span>(signature)) <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Error</span>(<span class="hljs-string">&#x27;blocked&#x27;</span>)
+<span class="hljs-keyword">if</span> (signature.<span class="hljs-property">length</span> !== expectedLen) <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Error</span>(<span class="hljs-string">&#x27;blocked&#x27;</span>)
+publicKey.<span class="hljs-title function_">verify</span>(digest, signature)
+</code></pre>
+<p>[Source] <a href="https://github.com/digitalbazaar/forge/security/advisories/GHSA-ppp5-5v6c-4jwp">https://github.com/digitalbazaar/forge/security/advisories/GHSA-ppp5-5v6c-4jwp</a> (2026-03-26) · <a href="https://github.com/digitalbazaar/forge/security/advisories/GHSA-q67f-28xg-22rw">https://github.com/digitalbazaar/forge/security/advisories/GHSA-q67f-28xg-22rw</a> (2026-03-26)</p>
+<hr>
+<h3 id="4-glob-결과를-권한-판단의-단일-근거로-사용">4) glob 결과를 권한 판단의 단일 근거로 사용</h3><p>glob 엔진의 edge case 하나로 경로 필터를 벗어납니다. <strong>glob는 후보를 줄이는 1차 필터로만 쓰고, 최종 판단은 정규화된 경로 prefix 비교로 확정하세요.</strong></p>
+<pre><code class="language-js"><span class="hljs-comment">// ❌ 취약: glob 하나로 접근 허용 결정</span>
+<span class="hljs-keyword">if</span> (<span class="hljs-title function_">isMatch</span>(userPath, pattern)) <span class="hljs-title function_">allow</span>()
+
+<span class="hljs-comment">// ✅ 안전: 정규화 → prefix 검사 → glob (방어 순서 준수)</span>
+<span class="hljs-keyword">const</span> resolved = path.<span class="hljs-title function_">resolve</span>(<span class="hljs-variable constant_">ROOT</span>, userPath)
+<span class="hljs-keyword">if</span> (!resolved.<span class="hljs-title function_">startsWith</span>(<span class="hljs-variable constant_">ROOT</span> + path.<span class="hljs-property">sep</span>)) <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Error</span>(<span class="hljs-string">&#x27;traversal blocked&#x27;</span>)
+<span class="hljs-keyword">if</span> (!<span class="hljs-title function_">isMatch</span>(resolved, pattern)) <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Error</span>(<span class="hljs-string">&#x27;pattern blocked&#x27;</span>)
+<span class="hljs-title function_">allow</span>()
+</code></pre>
+<p>[Source] <a href="https://github.com/micromatch/picomatch/security/advisories/GHSA-3v7f-55p6-f55p">https://github.com/micromatch/picomatch/security/advisories/GHSA-3v7f-55p6-f55p</a> (2026-03-25)</p>
+<hr>
+<h3 id="5-패치-적용-후-보안-회귀-테스트를-생략">5) 패치 적용 후 보안 회귀 테스트를 생략</h3><p>버전만 올리고 테스트를 추가하지 않으면, 다음 릴리스에서 같은 경로로 다시 열립니다. <strong>보안 관련 의존성 업데이트는 회귀 테스트 추가와 같은 PR에서 처리하세요.</strong></p>
+<pre><code class="language-js"><span class="hljs-comment">// ❌ 취약: 버전 업데이트만 반영</span>
+<span class="hljs-comment">// package.json: &quot;handlebars&quot;: &quot;^4.7.9&quot;  — 테스트 없음</span>
+
+<span class="hljs-comment">// ✅ 안전: 업데이트 PR에 아래 테스트 케이스를 함께 포함</span>
+<span class="hljs-comment">// ① prototype pollution → hasOwn 차단 확인</span>
+<span class="hljs-comment">// ② chain validation → basicConstraints·keyUsage 검사 통과 확인</span>
+<span class="hljs-comment">// ③ signature → malformed ASN.1 / S &gt;= L 입력 거부 확인</span>
+<span class="hljs-comment">// ④ glob + path → traversal 시도 차단 확인</span>
+</code></pre>
+<p>[Source] <a href="https://github.com/digitalbazaar/forge/security/advisories/GHSA-2328-f5f3-gj25">https://github.com/digitalbazaar/forge/security/advisories/GHSA-2328-f5f3-gj25</a> (2026-03-26) · <a href="https://github.com/micromatch/picomatch/security/advisories/GHSA-3v7f-55p6-f55p">https://github.com/micromatch/picomatch/security/advisories/GHSA-3v7f-55p6-f55p</a> (2026-03-25)</p>
+<hr>
+<h3 id="java">Java</h3><h3 id="6-보안-헤더가-응답에-포함됐다고-가정">6) 보안 헤더가 응답에 포함됐다고 가정</h3><p>헤더를 설정 코드에 추가했다고 실제 응답에 들어간다는 보장이 없습니다. <strong>설정 코드와 응답 검증 테스트를 항상 함께 유지하세요.</strong></p>
+<pre><code class="language-java"><span class="hljs-comment">// ❌ 취약</span>
+http.headers(h -&gt; h.frameOptions(f -&gt; f.sameOrigin()));
+<span class="hljs-comment">// 여기서 끝 — 실제 응답에 포함됐는지 미확인</span>
+
+<span class="hljs-comment">// ✅ 안전: 응답 검증 테스트를 같은 PR에 포함</span>
+mockMvc.perform(get(<span class="hljs-string">&quot;/secure&quot;</span>))
+    .andExpect(header().string(<span class="hljs-string">&quot;X-Frame-Options&quot;</span>, <span class="hljs-string">&quot;SAMEORIGIN&quot;</span>))
+    .andExpect(header().exists(<span class="hljs-string">&quot;Cache-Control&quot;</span>));
+</code></pre>
+<p>[Source] <a href="https://spring.io/security/cve-2026-22732">https://spring.io/security/cve-2026-22732</a> (2026-03-19)</p>
+<hr>
+<h3 id="7-애플리케이션-경로를-인프라-경로-하위에-배치">7) 애플리케이션 경로를 인프라 경로 하위에 배치</h3><p>인프라 경로(Actuator, CF) 하위에 비즈니스 엔드포인트가 있으면, 인프라 접근 제어 정책이 비즈니스 로직에 의도치 않게 적용됩니다. <strong>관리 경로와 비즈니스 경로는 URI prefix부터 분리하세요.</strong></p>
+<pre><code class="language-yaml"><span class="hljs-comment"># ❌ 취약: 비즈니스 엔드포인트가 Actuator 경로 하위에 위치</span>
+<span class="hljs-string">management.endpoint.health.group.liveness.additional-path=server:/healthz</span>
+<span class="hljs-comment"># 비즈니스 컨트롤러: /healthz/admin (→ Actuator permitAll 적용됨)</span>
+
+<span class="hljs-comment"># ✅ 안전: 인프라 전용 prefix로 분리</span>
+<span class="hljs-string">management.endpoint.health.group.liveness.additional-path=server:/infra/healthz</span>
+<span class="hljs-comment"># 비즈니스 컨트롤러: /api/admin (별도 보안 정책 적용)</span>
+</code></pre>
+<p>[Source] <a href="https://spring.io/security/cve-2026-22731">https://spring.io/security/cve-2026-22731</a> (2026-03-19) · <a href="https://spring.io/security/cve-2026-22733">https://spring.io/security/cve-2026-22733</a> (2026-03-19)</p>
+<hr>
+<h3 id="8-프록시와-백엔드가-동일한-요청-경계를-파싱한다고-가정">8) 프록시와 백엔드가 동일한 요청 경계를 파싱한다고 가정</h3><p>구성 요소마다 HTTP 파서가 다릅니다. 한쪽이 다르게 해석하면 그 틈이 smuggling 경로가 됩니다. <strong>HTTP 파서 관련 업데이트에는 프록시-백엔드 일치 통합 테스트를 필수로 포함하세요.</strong></p>
+<pre><code class="language-java"><span class="hljs-comment">// ❌ 취약: 파서 업데이트 후 일치 검증 없음</span>
+pipeline.addLast(<span class="hljs-keyword">new</span> <span class="hljs-title class_">HttpServerCodec</span>());
+<span class="hljs-comment">// → 패치 전 버전에서 프록시와 백엔드가 다르게 파싱 가능</span>
+
+<span class="hljs-comment">// ✅ 안전: 파서 업데이트 + 통합 테스트 세트</span>
+pipeline.addLast(<span class="hljs-keyword">new</span> <span class="hljs-title class_">HttpServerCodec</span>());  <span class="hljs-comment">// 4.1.132.Final 이상</span>
+<span class="hljs-comment">// + chunked extension CRLF 포함 요청에 대한 400 응답 테스트</span>
+</code></pre>
+<p>[Source] <a href="https://github.com/netty/netty/security/advisories/GHSA-pwqr-wmgm-9rr8">https://github.com/netty/netty/security/advisories/GHSA-pwqr-wmgm-9rr8</a> (2026-03-26)</p>
+<hr>
+<h3 id="9-reverse-dns-결과를-신뢰-경계로-사용">9) reverse DNS 결과를 신뢰 경계로 사용</h3><p>PTR 레코드는 누구나 설정할 수 있습니다. <strong>TLS 호스트 검증은 접속 대상 인증서의 SAN/CN 직접 비교로 수행하세요.</strong></p>
+<pre><code class="language-java"><span class="hljs-comment">// ❌ 취약: reverse DNS로 호스트 확인 — PTR 레코드 조작으로 우회</span>
+<span class="hljs-type">String</span> <span class="hljs-variable">host</span> <span class="hljs-operator">=</span> inetAddress.getCanonicalHostName();  <span class="hljs-comment">// reverse DNS 조회</span>
+verifyCertificate(host, cert);
+
+<span class="hljs-comment">// ✅ 안전: 요청한 호스트명을 그대로 사용 — reverse DNS 조회 없음</span>
+<span class="hljs-type">String</span> <span class="hljs-variable">host</span> <span class="hljs-operator">=</span> requestedHostname;  <span class="hljs-comment">// 사용자가 지정한 호스트명</span>
+verifySAN(host, cert);
+</code></pre>
+<p>[Source] <a href="https://lists.apache.org/thread/088ddsbrzhd5lxzbqf5n24yg0mwh9jt2">https://lists.apache.org/thread/088ddsbrzhd5lxzbqf5n24yg0mwh9jt2</a> (2026-03-07)</p>
+<hr>
+<h3 id="10-패치-적용-후-경계-테스트를-배포-게이트에서-제외">10) 패치 적용 후 경계 테스트를 배포 게이트에서 제외</h3><p>수정된 버전이라도 경계 테스트 없이 배포하면 누락이 남습니다. <strong>보안 패치는 경계 테스트 추가와 같은 배포 단위로 묶으세요.</strong></p>
+<pre><code class="language-java"><span class="hljs-comment">// ❌ 취약: dependency 버전만 올리고 끝</span>
+<span class="hljs-comment">// pom.xml: spring-security-web → 6.5.9 (테스트 없음)</span>
+
+<span class="hljs-comment">// ✅ 안전: 아래 4가지를 같은 PR/릴리스 게이트에 포함</span>
+<span class="hljs-comment">// ① 보안 헤더 → X-Frame-Options, Cache-Control 응답 포함 확인</span>
+<span class="hljs-comment">// ② Actuator 경로 → 비즈니스 엔드포인트 404 확인</span>
+<span class="hljs-comment">// ③ chunked extension → 프록시-백엔드 파싱 일치 확인</span>
+<span class="hljs-comment">// ④ TLS 호스트 → SAN/CN 불일치 인증서 거부 확인</span>
+</code></pre>
+<p>[Source] <a href="https://spring.io/security/cve-2026-22732">https://spring.io/security/cve-2026-22732</a> (2026-03-19) · <a href="https://github.com/netty/netty/security/advisories/GHSA-pwqr-wmgm-9rr8">https://github.com/netty/netty/security/advisories/GHSA-pwqr-wmgm-9rr8</a> (2026-03-26)</p>
+<hr>
+<h3 id="한-문장-결론">한 문장 결론</h3><blockquote>
+<p>이름 조회에 <code>hasOwn</code>, 경로 매핑에 prefix 분리, 파서에 일치 테스트, 호스트 검증에 SAN 직접 비교 — 이 네 가지를 이번 달 PR에 넣으면 3월 이슈 전부를 커버합니다.</p>
+</blockquote>
+<hr>
+<h1 id="3-java">(3) Java</h1><p>3월 Java 쪽에서는 관리 경로 충돌, parser differential, reverse DNS fallback — 운영 편의를 위해 남겨둔 우회 경로가 공격 표면이 된 패턴이 반복됐습니다.<br>Spring은 인프라 경로와 비즈니스 경로가 섞였고, Netty · ZooKeeper는 파서/DNS 해석 차이가 원인이었습니다.</p>
+<p><strong>공통 교훈: 편의용 우회 경로는 신뢰 경계 밖으로 빼야 합니다.</strong></p>
+<h2 id="31-cve-요약-표">(3.1) CVE 요약 표</h2><table>
+<thead>
+<tr>
+<th>CVE</th>
+<th>영향 버전</th>
+<th>공격 영향 (C/I/A)</th>
+<th>실제 악용</th>
+<th>권장 조치</th>
+<th>출처</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>CVE-2026-22732</td>
+<td><code>spring-security-web</code> &lt;= 5.7.14 / 5.8.0<del>5.8.16 / 6.0.0</del>6.3.10 / 6.4.0<del>6.4.13 / 6.5.0</del>6.5.8 / 7.0.0~7.0.3</td>
+<td>C/I</td>
+<td>보고 없음</td>
+<td><code>spring-security-web</code> 6.5.9 / 7.0.4 이상으로 업데이트. 응답에 보안 헤더 포함 여부 테스트 추가.</td>
+<td><a href="https://spring.io/security/cve-2026-22732">https://spring.io/security/cve-2026-22732</a> (2026-03-19)</td>
+</tr>
+<tr>
+<td>CVE-2026-22731</td>
+<td><code>spring-boot-starter-actuator</code> 3.4.0<del>3.4.14 / 3.5.0</del>3.5.11 / 4.0.0~4.0.3</td>
+<td>I</td>
+<td>보고 없음</td>
+<td><code>spring-boot-starter-actuator</code> 3.5.12 / 4.0.4 이상으로 업데이트. 애플리케이션 경로를 Actuator 경로 하위에 배치하지 않음.</td>
+<td><a href="https://spring.io/security/cve-2026-22731">https://spring.io/security/cve-2026-22731</a> (2026-03-19)</td>
+</tr>
+<tr>
+<td>CVE-2026-22733</td>
+<td><code>spring-boot-starter-actuator</code> 2.7.0<del>2.7.31 / 3.3.0</del>3.3.17 / 3.4.0<del>3.4.14 / 3.5.0</del>3.5.11 / 4.0.0~4.0.3</td>
+<td>I</td>
+<td>보고 없음</td>
+<td><code>spring-boot-starter-actuator</code> 3.5.12 / 4.0.4 이상으로 업데이트. CloudFoundry Actuator 경로와 애플리케이션 경로 분리.</td>
+<td><a href="https://spring.io/security/cve-2026-22733">https://spring.io/security/cve-2026-22733</a> (2026-03-19)</td>
+</tr>
+<tr>
+<td>CVE-2026-33870</td>
+<td><code>netty-codec-http</code> &lt;= 4.1.131.Final / &lt;= 4.2.10.Final</td>
+<td>I</td>
+<td>보고 없음</td>
+<td><code>netty-codec-http</code> 4.1.132.Final / 4.2.12.Final 이상으로 업데이트. 프록시-백엔드 파싱 일치 테스트 추가.</td>
+<td><a href="https://github.com/netty/netty/security/advisories/GHSA-pwqr-wmgm-9rr8">https://github.com/netty/netty/security/advisories/GHSA-pwqr-wmgm-9rr8</a> (2026-03-26)</td>
+</tr>
+<tr>
+<td>CVE-2026-24281</td>
+<td><code>zookeeper</code> &gt;= 3.8.0, &lt; 3.8.6 / &gt;= 3.9.0, &lt; 3.9.5</td>
+<td>C/I</td>
+<td>보고 없음</td>
+<td><code>zookeeper</code> 3.8.6 / 3.9.5 이상으로 업데이트. reverse DNS fallback 의존 호스트 검증 제거.</td>
+<td><a href="https://github.com/advisories/GHSA-7xrh-hqfc-g7qr">https://github.com/advisories/GHSA-7xrh-hqfc-g7qr</a> (2026-03-07)</td>
+</tr>
+</tbody></table>
+<h2 id="32-항목별-상세-설명">(3.2) 항목별 상세 설명</h2><h3 id="빠른-영향-확인">빠른 영향 확인</h3><pre><code class="language-bash"><span class="hljs-comment"># Maven 의존 트리에서 영향 패키지 확인</span>
+mvn -q -DskipTests dependency:tree \
+  | grep -Ei <span class="hljs-string">&quot;spring-security-web|spring-boot-starter-actuator|netty-codec-http|org.apache.zookeeper:zookeeper&quot;</span> \
+  || <span class="hljs-literal">true</span>
+</code></pre>
+<p>영향 버전이 확인되면 패치 버전으로 즉시 업데이트합니다.</p>
+<hr>
+<p><a id="java-cve-2026-22732"></a></p>
+<h3 id="cve-2026-22732-spring-security-보안-헤더-미기록">CVE-2026-22732: Spring Security 보안 헤더 미기록</h3><p><strong>무엇이 문제인가</strong></p>
+<p>Spring Security가 설정된 보안 헤더를 실제 응답에 포함시키지 않는 버그입니다. <code>Cache-Control</code>, <code>X-Frame-Options</code>, <code>X-Content-Type-Options</code> 등이 누락될 수 있습니다. 헤더를 설정했다고 해서 실제로 기록된다고 보장할 수 없습니다.</p>
+<p><strong>패치 방법</strong>: <code>spring-security-web</code> 6.5.9 / 7.0.4 이상으로 업데이트. 보안 헤더가 응답에 실제로 포함되는지 검증하는 테스트를 추가합니다.</p>
+<pre><code class="language-java"><span class="hljs-comment">// ❌ 취약: 설정만 하고 응답에 실제로 들어가는지 확인하지 않음</span>
+<span class="hljs-meta">@Bean</span>
+<span class="hljs-keyword">public</span> SecurityFilterChain <span class="hljs-title function_">securityFilterChain</span><span class="hljs-params">(HttpSecurity http)</span> <span class="hljs-keyword">throws</span> Exception {
+    http.headers(headers -&gt; headers
+        .frameOptions(frame -&gt; frame.sameOrigin())
+        .cacheControl(Customizer.withDefaults())
+        .contentTypeOptions(Customizer.withDefaults())
+    );
+    <span class="hljs-comment">// 헤더가 설정됐다고 응답에 포함되는 것은 아님 (CVE-2026-22732)</span>
+    <span class="hljs-keyword">return</span> http.build();
+}
+
+<span class="hljs-comment">// ✅ 안전: 설정 코드 + 응답 검증 테스트를 세트로 유지</span>
+<span class="hljs-comment">// [보안 설정 — 변경 없음]</span>
+<span class="hljs-meta">@Bean</span>
+<span class="hljs-keyword">public</span> SecurityFilterChain <span class="hljs-title function_">securityFilterChain</span><span class="hljs-params">(HttpSecurity http)</span> <span class="hljs-keyword">throws</span> Exception {
+    http.headers(headers -&gt; headers
+        .frameOptions(frame -&gt; frame.sameOrigin())
+        .cacheControl(Customizer.withDefaults())
+        .contentTypeOptions(Customizer.withDefaults())
+    );
+    <span class="hljs-keyword">return</span> http.build();
+}
+
+<span class="hljs-comment">// [필수 추가] 응답 헤더 존재 여부를 테스트로 고정</span>
+<span class="hljs-meta">@SpringBootTest</span>
+<span class="hljs-meta">@AutoConfigureMockMvc</span>
+<span class="hljs-keyword">class</span> <span class="hljs-title class_">SecurityHeadersTest</span> {
+
+    <span class="hljs-meta">@Autowired</span> MockMvc mockMvc;
+
+    <span class="hljs-meta">@Test</span>
+    <span class="hljs-keyword">void</span> <span class="hljs-title function_">secureEndpoint_shouldIncludeAllSecurityHeaders</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> Exception {
+        mockMvc.perform(get(<span class="hljs-string">&quot;/api/data&quot;</span>))
+            <span class="hljs-comment">// 브라우저 클릭재킹 방어</span>
+            .andExpect(header().string(<span class="hljs-string">&quot;X-Frame-Options&quot;</span>, <span class="hljs-string">&quot;SAMEORIGIN&quot;</span>))
+            <span class="hljs-comment">// 캐시 제어 (인증 정보 노출 방지)</span>
+            .andExpect(header().exists(<span class="hljs-string">&quot;Cache-Control&quot;</span>))
+            <span class="hljs-comment">// MIME 스니핑 방지</span>
+            .andExpect(header().string(<span class="hljs-string">&quot;X-Content-Type-Options&quot;</span>, <span class="hljs-string">&quot;nosniff&quot;</span>));
+    }
+}
+</code></pre>
+<p>[Source] <a href="https://spring.io/security/cve-2026-22732">https://spring.io/security/cve-2026-22732</a> (2026-03-19)</p>
+<hr>
+<p><a id="java-cve-2026-22731"></a></p>
+<h3 id="cve-2026-22731-spring-boot-actuator-health-group-경로-인증-우회">CVE-2026-22731: Spring Boot Actuator Health group 경로 인증 우회</h3><p><strong>무엇이 문제인가</strong></p>
+<p>Actuator Health group의 <code>additional-path</code>로 지정한 경로 하위에 비즈니스 엔드포인트가 있으면, Actuator의 접근 제어가 해당 엔드포인트에 잘못 적용되어 인증 없이 접근됩니다.</p>
+<p><strong>패치 방법</strong>: <code>spring-boot-starter-actuator</code> 3.5.12 / 4.0.4 이상으로 업데이트. 비즈니스 엔드포인트를 Actuator 경로 하위에서 빼냅니다.</p>
+<pre><code class="language-yaml"><span class="hljs-comment"># ❌ 취약: /healthz 하위에 비즈니스 엔드포인트가 존재</span>
+<span class="hljs-comment"># application.yaml</span>
+<span class="hljs-attr">management:</span>
+  <span class="hljs-attr">endpoint:</span>
+    <span class="hljs-attr">health:</span>
+      <span class="hljs-attr">group:</span>
+        <span class="hljs-attr">liveness:</span>
+          <span class="hljs-attr">additional-path:</span> <span class="hljs-string">&quot;server:/healthz&quot;</span>
+
+<span class="hljs-comment"># 비즈니스 컨트롤러가 /healthz/admin 에 매핑돼 있다면</span>
+<span class="hljs-comment"># → Actuator의 permitAll() 정책이 /admin 에도 적용됨 (의도치 않은 인증 우회)</span>
+</code></pre>
+<pre><code class="language-java"><span class="hljs-comment">// ✅ 안전: 인프라 경로와 비즈니스 경로 URI prefix부터 분리</span>
+
+<span class="hljs-comment">// [application.yaml 수정]</span>
+<span class="hljs-comment">// management.endpoint.health.group.liveness.additional-path=server:/infra/healthz</span>
+<span class="hljs-comment">// 비즈니스 컨트롤러는 /api/** 또는 /admin/** 에 배치</span>
+
+<span class="hljs-comment">// [검증 테스트]</span>
+<span class="hljs-meta">@Test</span>
+<span class="hljs-keyword">void</span> <span class="hljs-title function_">actuatorPath_shouldNotExposeBusinessEndpoints</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> Exception {
+    <span class="hljs-comment">// Actuator 경로(/actuator/**)에서 비즈니스 엔드포인트가 노출되지 않아야 함</span>
+    mockMvc.perform(get(<span class="hljs-string">&quot;/actuator/admin&quot;</span>))
+        .andExpect(status().isNotFound());   <span class="hljs-comment">// 404여야 함</span>
+
+    <span class="hljs-comment">// 비즈니스 엔드포인트는 인증 필요</span>
+    mockMvc.perform(get(<span class="hljs-string">&quot;/api/admin&quot;</span>))
+        .andExpect(status().isUnauthorized());  <span class="hljs-comment">// 401이어야 함</span>
+}
+</code></pre>
+<p>[Source] <a href="https://spring.io/security/cve-2026-22731">https://spring.io/security/cve-2026-22731</a> (2026-03-19)</p>
+<hr>
+<p><a id="java-cve-2026-22733"></a></p>
+<h3 id="cve-2026-22733-spring-boot-cloudfoundry-actuator-경로-인증-우회">CVE-2026-22733: Spring Boot CloudFoundry Actuator 경로 인증 우회</h3><p><strong>무엇이 문제인가</strong></p>
+<p>CVE-2026-22731과 같은 패턴이지만 CloudFoundry Actuator 경로에서 발생합니다. CF 환경에서 <code>/cloudfoundryapplication</code> 하위에 비즈니스 엔드포인트가 있으면 인증이 우회됩니다.</p>
+<p><strong>패치 방법</strong>: <code>spring-boot-starter-actuator</code> 3.5.12 / 4.0.4 이상으로 업데이트. CloudFoundry 경로와 애플리케이션 경로를 완전히 분리합니다.</p>
+<pre><code class="language-java"><span class="hljs-comment">// ❌ 취약: CF 환경에서 비즈니스 엔드포인트가 /cloudfoundryapplication 하위에 위치</span>
+<span class="hljs-comment">// /cloudfoundryapplication/admin → 인증 우회 가능</span>
+
+<span class="hljs-comment">// ✅ 안전: CF 경로를 명시적으로 차단하고 일반 보안 정책과 분리</span>
+<span class="hljs-meta">@Bean</span>
+<span class="hljs-keyword">public</span> SecurityFilterChain <span class="hljs-title function_">cfSecurityFilterChain</span><span class="hljs-params">(HttpSecurity http)</span> <span class="hljs-keyword">throws</span> Exception {
+    http
+        <span class="hljs-comment">// CF Actuator 경로는 CF 내부 접근만 허용</span>
+        .securityMatcher(<span class="hljs-string">&quot;/cloudfoundryapplication/**&quot;</span>)
+        .authorizeHttpRequests(auth -&gt; auth
+            .anyRequest().hasRole(<span class="hljs-string">&quot;CF_INTERNAL&quot;</span>)
+        );
+    <span class="hljs-keyword">return</span> http.build();
+}
+
+<span class="hljs-comment">// [검증 테스트]</span>
+<span class="hljs-meta">@Test</span>
+<span class="hljs-keyword">void</span> <span class="hljs-title function_">cfActuatorPath_shouldRejectExternalAccess</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> Exception {
+    mockMvc.perform(get(<span class="hljs-string">&quot;/cloudfoundryapplication/admin&quot;</span>))
+        .andExpect(status().isForbidden());  <span class="hljs-comment">// 일반 사용자는 접근 불가</span>
+}
+</code></pre>
+<p>[Source] <a href="https://spring.io/security/cve-2026-22733">https://spring.io/security/cve-2026-22733</a> (2026-03-19)</p>
+<hr>
+<p><a id="java-cve-2026-33870"></a></p>
+<h3 id="cve-2026-33870-netty-http-request-smuggling">CVE-2026-33870: Netty HTTP Request Smuggling</h3><p><strong>무엇이 문제인가</strong></p>
+<p>chunked transfer encoding의 extension 값에서 quoted-string 안에 CR/LF가 들어가면, 프록시와 Netty 백엔드가 요청 경계를 다르게 해석합니다. 이 불일치를 이용해 밀수 요청(smuggled request)을 끼워 넣을 수 있습니다.</p>
+<p><strong>패치 방법</strong>: <code>netty-codec-http</code> 4.1.132.Final / 4.2.12.Final 이상으로 업데이트. 프록시-백엔드 파싱 일치 테스트를 추가합니다.</p>
+<pre><code class="language-java"><span class="hljs-comment">// ❌ 취약: HttpServerCodec 단독 사용, 파싱 일치 검증 없음</span>
+pipeline.addLast(<span class="hljs-keyword">new</span> <span class="hljs-title class_">HttpServerCodec</span>());
+pipeline.addLast(<span class="hljs-keyword">new</span> <span class="hljs-title class_">HttpObjectAggregator</span>(<span class="hljs-number">65536</span>));
+pipeline.addLast(<span class="hljs-keyword">new</span> <span class="hljs-title class_">MyBusinessHandler</span>());
+<span class="hljs-comment">// → 프록시가 다르게 파싱한 요청이 MyBusinessHandler에 도달할 수 있음</span>
+
+<span class="hljs-comment">// ✅ 안전: 패치 버전 사용 + 통합 테스트로 파싱 일치 확인</span>
+pipeline.addLast(<span class="hljs-keyword">new</span> <span class="hljs-title class_">HttpServerCodec</span>());
+pipeline.addLast(<span class="hljs-keyword">new</span> <span class="hljs-title class_">HttpObjectAggregator</span>(<span class="hljs-number">65536</span>));
+pipeline.addLast(<span class="hljs-keyword">new</span> <span class="hljs-title class_">MyBusinessHandler</span>());
+
+<span class="hljs-comment">// [필수 추가] 프록시-백엔드 파싱 일치 통합 테스트</span>
+<span class="hljs-meta">@Test</span>
+<span class="hljs-keyword">void</span> <span class="hljs-title function_">chunkedExtensionWithCRLF_shouldBeRejectedByBackend</span><span class="hljs-params">()</span> {
+    <span class="hljs-comment">// CR/LF가 포함된 chunked extension을 가진 요청 구성</span>
+    <span class="hljs-type">String</span> <span class="hljs-variable">smuggledRequest</span> <span class="hljs-operator">=</span>
+        <span class="hljs-string">&quot;POST /api/transfer HTTP/1.1\r\n&quot;</span> +
+        <span class="hljs-string">&quot;Host: backend\r\n&quot;</span> +
+        <span class="hljs-string">&quot;Transfer-Encoding: chunked\r\n\r\n&quot;</span> +
+        <span class="hljs-string">&quot;5;ext=\&quot;foo\r\nGET /admin HTTP/1.1\r\nHost: backend\r\n\r\n\&quot;\r\n&quot;</span> +
+        <span class="hljs-string">&quot;hello\r\n0\r\n\r\n&quot;</span>;
+
+    <span class="hljs-comment">// 정상 처리되면 smuggling 가능 → 테스트 실패여야 함</span>
+    assertThat(sendToBackend(smuggledRequest).statusCode())
+        .isEqualTo(<span class="hljs-number">400</span>);  <span class="hljs-comment">// 잘못된 요청으로 거부해야 함</span>
+}
+</code></pre>
+<p>[Source] <a href="https://github.com/netty/netty/security/advisories/GHSA-pwqr-wmgm-9rr8">https://github.com/netty/netty/security/advisories/GHSA-pwqr-wmgm-9rr8</a> (2026-03-26)</p>
+<hr>
+<p><a id="java-cve-2026-24281"></a></p>
+<h3 id="cve-2026-24281-zookeeper-호스트-검증-우회">CVE-2026-24281: ZooKeeper 호스트 검증 우회</h3><p><strong>무엇이 문제인가</strong></p>
+<p>TLS 호스트 검증 시 <code>InetAddress.getCanonicalHostName()</code>을 통한 reverse DNS 조회를 사용하면, 공격자가 PTR 레코드를 조작해 검증을 우회할 수 있습니다. reverse DNS는 신뢰할 수 있는 검증 수단이 아닙니다.</p>
+<p><strong>패치 방법</strong>: <code>zookeeper</code> 3.8.6 / 3.9.5 이상으로 업데이트. 호스트 검증을 TLS 인증서의 SAN(Subject Alternative Name) / CN 직접 비교로 고정합니다.</p>
+<pre><code class="language-java"><span class="hljs-comment">// ❌ 취약: reverse DNS 결과로 호스트 검증 — PTR 레코드 조작으로 우회 가능</span>
+<span class="hljs-keyword">public</span> <span class="hljs-type">boolean</span> <span class="hljs-title function_">verifyHostname</span><span class="hljs-params">(InetAddress address, X509Certificate cert)</span> {
+    <span class="hljs-comment">// getCanonicalHostName()은 reverse DNS 조회를 수행함</span>
+    <span class="hljs-comment">// 공격자가 PTR 레코드를 &#x27;trusted.internal.corp&#x27;로 조작하면 통과됨</span>
+    <span class="hljs-type">String</span> <span class="hljs-variable">resolvedHost</span> <span class="hljs-operator">=</span> address.getCanonicalHostName();
+    <span class="hljs-keyword">return</span> verifyAgainstCert(resolvedHost, cert);
+}
+
+<span class="hljs-comment">// ✅ 안전: 연결 대상 호스트명을 인증서 SAN/CN과 직접 비교</span>
+<span class="hljs-keyword">public</span> <span class="hljs-type">boolean</span> <span class="hljs-title function_">verifyHostname</span><span class="hljs-params">(String requestedHost, X509Certificate cert)</span> {
+    <span class="hljs-comment">// reverse DNS 조회 없이, 사용자가 요청한 호스트명을 그대로 사용</span>
+    <span class="hljs-comment">// → PTR 레코드 조작 공격 원천 차단</span>
+
+    <span class="hljs-comment">// 1단계: SAN에서 dNSName 목록 추출</span>
+    Collection&lt;List&lt;?&gt;&gt; sans = cert.getSubjectAlternativeNames();
+    <span class="hljs-keyword">if</span> (sans != <span class="hljs-literal">null</span>) {
+        <span class="hljs-keyword">for</span> (List&lt;?&gt; san : sans) {
+            <span class="hljs-type">Integer</span> <span class="hljs-variable">type</span> <span class="hljs-operator">=</span> (Integer) san.get(<span class="hljs-number">0</span>);
+            <span class="hljs-keyword">if</span> (type == <span class="hljs-number">2</span>) {  <span class="hljs-comment">// dNSName</span>
+                <span class="hljs-type">String</span> <span class="hljs-variable">dnsName</span> <span class="hljs-operator">=</span> (String) san.get(<span class="hljs-number">1</span>);
+                <span class="hljs-keyword">if</span> (hostnameMatches(requestedHost, dnsName)) <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;
+            }
+        }
+    }
+
+    <span class="hljs-comment">// 2단계: SAN이 없는 경우 CN으로 폴백 (레거시 호환)</span>
+    <span class="hljs-type">String</span> <span class="hljs-variable">cn</span> <span class="hljs-operator">=</span> extractCN(cert.getSubjectX500Principal().getName());
+    <span class="hljs-keyword">if</span> (cn != <span class="hljs-literal">null</span> &amp;&amp; hostnameMatches(requestedHost, cn)) <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;
+
+    <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">SSLException</span>(
+        <span class="hljs-string">&quot;Hostname verification failed: &#x27;&quot;</span> + requestedHost + <span class="hljs-string">&quot;&#x27; not in cert SAN/CN&quot;</span>
+    );
+}
+
+<span class="hljs-keyword">private</span> <span class="hljs-type">boolean</span> <span class="hljs-title function_">hostnameMatches</span><span class="hljs-params">(String hostname, String pattern)</span> {
+    <span class="hljs-comment">// 와일드카드 매칭 지원 (*.example.com 형태)</span>
+    <span class="hljs-keyword">if</span> (pattern.startsWith(<span class="hljs-string">&quot;*.&quot;</span>)) {
+        <span class="hljs-type">String</span> <span class="hljs-variable">domain</span> <span class="hljs-operator">=</span> pattern.substring(<span class="hljs-number">2</span>);
+        <span class="hljs-keyword">return</span> hostname.endsWith(<span class="hljs-string">&quot;.&quot;</span> + domain) &amp;&amp;
+               hostname.indexOf(<span class="hljs-string">&#x27;.&#x27;</span>) == hostname.lastIndexOf(<span class="hljs-string">&quot;.&quot;</span> + domain) - hostname.length() + domain.length() + <span class="hljs-number">1</span>;
+    }
+    <span class="hljs-keyword">return</span> hostname.equalsIgnoreCase(pattern);
+}
+
+<span class="hljs-comment">// [검증 테스트]</span>
+<span class="hljs-meta">@Test</span>
+<span class="hljs-keyword">void</span> <span class="hljs-title function_">reverseDnsManipulation_shouldNotBypassHostVerification</span><span class="hljs-params">()</span> {
+    <span class="hljs-comment">// PTR 레코드가 trusted.corp를 가리켜도, SAN에 없으면 거부</span>
+    <span class="hljs-type">X509Certificate</span> <span class="hljs-variable">cert</span> <span class="hljs-operator">=</span> loadCert(<span class="hljs-string">&quot;attacker.example.com&quot;</span>);
+    assertThrows(SSLException.class,
+        () -&gt; verifyHostname(<span class="hljs-string">&quot;trusted.corp&quot;</span>, cert));
+}
+</code></pre>
+<p>[Source] <a href="https://lists.apache.org/thread/088ddsbrzhd5lxzbqf5n24yg0mwh9jt2">https://lists.apache.org/thread/088ddsbrzhd5lxzbqf5n24yg0mwh9jt2</a> (2026-03-07)</p>
+<hr>
+<hr>
+<h1 id="4-개발자-체크리스트">(4) 개발자 체크리스트</h1><!--CARD
+{"id":"lesson-1","kind":"insight","domain":"insight","header":"이번 달 교훈","title":"① 암묵적 경로를 신뢰한다","bodyMd":"Handlebars는 partial 이름을 prototype chain에서 찾고, Picomatch는 glob 결과를 권한 판단에 그대로 씁니다. node-forge는 malformed 입력을 사전 차단 없이 검증 함수에 넘깁니다.\n\n**공통점:** \"라이브러리가 알아서 걸러줄 것\"이라는 기대가 공격 경로를 만듭니다.\n\n**원칙:** 이름 조회에 `hasOwn`, glob에 정규화 경로 교차 검증, 서명에 형식 사전 검사를 기본값으로 적용하세요.","actionMd":"obj[name] 대신 Object.hasOwn(obj, name) 검사를 추가합니다.","source":"https://github.com/handlebars-lang/handlebars.js/security/advisories/GHSA-2qvq-rjwj-gvw9"}
+-->
+<!--CARD
+{"id":"lesson-2","kind":"insight","domain":"insight","header":"이번 달 교훈","title":"② 관리 경로와 비즈니스 경로가 섞여 있다","bodyMd":"Spring Boot Actuator의 health group 경로 아래에 비즈니스 엔드포인트가 배치되면, Actuator의 permitAll() 정책이 그대로 적용됩니다.\n\n**공통점:** 관리 인프라와 애플리케이션이 URI prefix를 공유하면 접근 제어가 의도치 않게 상속됩니다.\n\n**원칙:** management.endpoints.web.base-path를 /internal/mgmt 등 전용 prefix로 분리하고, 비즈니스 경로는 /api/** 에만 배치하세요.","actionMd":"Actuator 경로 아래 비즈니스 엔드포인트를 즉시 제거합니다.","source":"https://spring.io/security/cve-2026-22731"}
+-->
+<!--CARD
+{"id":"lesson-3","kind":"insight","domain":"insight","header":"이번 달 교훈","title":"③ 프록시와 백엔드가 같은 규칙을 보지 않는다","bodyMd":"Netty는 chunked extension의 quoted string을 다르게 파싱해 요청 경계가 어긋납니다. ZooKeeper는 reverse DNS 결과를 호스트 검증에 사용해 인증서 SAN과 불일치합니다.\n\n**공통점:** 두 컴포넌트가 같은 입력을 다른 규칙으로 해석하면 경계가 무너집니다. WAFFLED 연구의 1,207개 우회 사례도 같은 뿌리입니다.\n\n**원칙:** 보안 업데이트에 프록시-백엔드 파서 일치 테스트를 묶고, 호스트 검증은 SAN 직접 비교로 전환하세요.","actionMd":"프록시-백엔드 요청 경계 일치 테스트를 CI에 추가합니다.","source":"https://github.com/netty/netty/security/advisories/GHSA-pwqr-wmgm-9rr8"}
+-->
+<!--CARD
+{"id":"tools-1","kind":"insight","domain":"common","header":"셀프 체크","title":"개발자 셀프 체크 가이드 & 툴","bodyMd":"1. **보안 감사 자동화** — oh-my-secuaudit\nSAST·SCA·DAST·아키텍처 리뷰 통합 스킬\n\n2. **WAF 탐지 검증** — waf-ips-ids-retest\nTC-24 smuggling 프로브 포함 재테스트\n\n3. **의존성 점검** — npm audit · mvn dependency-check\n\n4. **내구제·명의도용 실태** — BJC저널 / 일요시사\n통신분쟁 역대 최대, 미해결률 39.8%\n\n5. **유출 영향 확인** — M-safer 가입제한\n2년 만에 16배 급증 (서울경제)","actionMd":"위 도구들을 CI/CD와 개인 점검에 활용하세요.","source":"https://github.com/windshock/oh-my-secuaudit"}
+-->
+
+<ol>
+<li><code>npm ls handlebars node-forge picomatch --depth=3</code>로 영향 버전을 먼저 확인합니다. [Source] <a href="https://github.com/handlebars-lang/handlebars.js/security/advisories/GHSA-2qvq-rjwj-gvw9">https://github.com/handlebars-lang/handlebars.js/security/advisories/GHSA-2qvq-rjwj-gvw9</a> (2026-03-26)</li>
+<li><code>handlebars</code>를 4.7.9 이상으로 업데이트하고, partial 이름 조회에 <code>Object.hasOwn()</code> 검사를 추가합니다. [Source] <a href="https://github.com/advisories/GHSA-2qvq-rjwj-gvw9">https://github.com/advisories/GHSA-2qvq-rjwj-gvw9</a> (2026-03-26)</li>
+<li><code>node-forge</code>를 1.4.0 이상으로 업데이트하고, 인증서 체인 검증 테스트를 다시 실행합니다. [Source] <a href="https://github.com/digitalbazaar/forge/security/advisories/GHSA-2328-f5f3-gj25">https://github.com/digitalbazaar/forge/security/advisories/GHSA-2328-f5f3-gj25</a> (2026-03-26)</li>
+<li>서명 검증 로직이 malformed RSA-PKCS 및 Ed25519 입력을 거부하는지 회귀 테스트를 추가합니다. [Source] <a href="https://github.com/digitalbazaar/forge/security/advisories/GHSA-q67f-28xg-22rw">https://github.com/digitalbazaar/forge/security/advisories/GHSA-q67f-28xg-22rw</a> (2026-03-26)</li>
+<li><code>picomatch</code>를 4.0.4 / 3.0.2 / 2.3.2 이상으로 업데이트하고, glob 결과를 권한 판단의 단일 근거로 사용하지 않습니다. [Source] <a href="https://github.com/micromatch/picomatch/security/advisories/GHSA-3v7f-55p6-f55p">https://github.com/micromatch/picomatch/security/advisories/GHSA-3v7f-55p6-f55p</a> (2026-03-25)</li>
+<li><code>mvn -q -DskipTests dependency:tree | grep -Ei &quot;spring-security-web|spring-boot-starter-actuator|netty-codec-http|org.apache.zookeeper:zookeeper&quot; || true</code>로 영향 버전을 확인합니다. [Source] <a href="https://spring.io/security/cve-2026-22732">https://spring.io/security/cve-2026-22732</a> (2026-03-19)</li>
+<li><code>spring-security-web</code>을 6.5.9 / 7.0.4 이상으로 업데이트하고, 응답에 보안 헤더가 실제로 포함되는지 테스트를 추가합니다. [Source] <a href="https://spring.io/security/cve-2026-22732">https://spring.io/security/cve-2026-22732</a> (2026-03-19)</li>
+<li><code>spring-boot-starter-actuator</code>를 3.5.12 / 4.0.4 이상으로 업데이트하고, 애플리케이션 엔드포인트를 Actuator 경로 하위에서 제거합니다. [Source] <a href="https://spring.io/security/cve-2026-22731">https://spring.io/security/cve-2026-22731</a> (2026-03-19)</li>
+<li><code>netty-codec-http</code>를 4.1.132.Final / 4.2.12.Final 이상으로 업데이트하고, 프록시-백엔드 파서 일치 테스트를 추가합니다. [Source] <a href="https://github.com/netty/netty/security/advisories/GHSA-pwqr-wmgm-9rr8">https://github.com/netty/netty/security/advisories/GHSA-pwqr-wmgm-9rr8</a> (2026-03-26)</li>
+<li><code>zookeeper</code>를 3.8.6 / 3.9.5 이상으로 업데이트하고, reverse DNS에 의존하는 호스트 검증 구성을 제거합니다. [Source] <a href="https://lists.apache.org/thread/088ddsbrzhd5lxzbqf5n24yg0mwh9jt2">https://lists.apache.org/thread/088ddsbrzhd5lxzbqf5n24yg0mwh9jt2</a> (2026-03-07)</li>
+</ol>
+<hr>
+<hr>
+<h1 id="5-참고자료">(5) 참고자료</h1><ul>
+<li><a href="https://www.wiz.io/blog/trivy-compromised-teampcp-supply-chain-attack">https://www.wiz.io/blog/trivy-compromised-teampcp-supply-chain-attack</a></li>
+<li><a href="https://www.crowdstrike.com/en-us/blog/from-scanner-to-stealer-inside-the-trivy-action-supply-chain-compromise/">https://www.crowdstrike.com/en-us/blog/from-scanner-to-stealer-inside-the-trivy-action-supply-chain-compromise/</a></li>
+<li><a href="https://www.microsoft.com/en-us/security/blog/2026/03/24/detecting-investigating-defending-against-trivy-supply-chain-compromise/">https://www.microsoft.com/en-us/security/blog/2026/03/24/detecting-investigating-defending-against-trivy-supply-chain-compromise/</a></li>
+<li><a href="https://windshock.github.io/ko/post/2026-03-13-waf-ips-ids-detection-gap-analysis/">https://windshock.github.io/ko/post/2026-03-13-waf-ips-ids-detection-gap-analysis/</a></li>
+<li><a href="https://github.com/windshock/waf-ips-ids-retest">https://github.com/windshock/waf-ips-ids-retest</a></li>
+<li><a href="https://w4ke.info/2025/06/18/funky-chunks.html">https://w4ke.info/2025/06/18/funky-chunks.html</a></li>
+<li><a href="https://xclow3n.github.io/post/6/">https://xclow3n.github.io/post/6/</a></li>
+<li><a href="https://blog.cloudflare.com/resolving-a-request-smuggling-vulnerability-in-pingora/">https://blog.cloudflare.com/resolving-a-request-smuggling-vulnerability-in-pingora/</a></li>
+<li><a href="https://github.com/netty/netty/security/advisories/GHSA-pwqr-wmgm-9rr8">https://github.com/netty/netty/security/advisories/GHSA-pwqr-wmgm-9rr8</a></li>
+<li><a href="https://mailman.nginx.org/pipermail/nginx-devel/2024-January/5CQQCHFYQMXTBAK7H2FITLVQQS5ECFFM.html">https://mailman.nginx.org/pipermail/nginx-devel/2024-January/5CQQCHFYQMXTBAK7H2FITLVQQS5ECFFM.html</a></li>
+<li><a href="https://windshock.github.io/ko/post/2026-03-30-captcha-bypass-poc-defense-strategy/">https://windshock.github.io/ko/post/2026-03-30-captcha-bypass-poc-defense-strategy/</a></li>
+<li><a href="https://journal.kbjc.net/news/articleView.html?idxno=20638">https://journal.kbjc.net/news/articleView.html?idxno=20638</a></li>
+<li><a href="https://www.ilyosisa.co.kr/news/article.html?no=254600">https://www.ilyosisa.co.kr/news/article.html?no=254600</a></li>
+<li><a href="https://v.daum.net/v/20251202154625602">https://v.daum.net/v/20251202154625602</a></li>
+<li><a href="https://spring.io/security/cve-2026-22731">https://spring.io/security/cve-2026-22731</a></li>
+<li><a href="https://spring.io/security/cve-2026-22732">https://spring.io/security/cve-2026-22732</a></li>
+<li><a href="https://spring.io/security/cve-2026-22733">https://spring.io/security/cve-2026-22733</a></li>
+<li><a href="https://github.com/digitalbazaar/forge/security/advisories/GHSA-2328-f5f3-gj25">https://github.com/digitalbazaar/forge/security/advisories/GHSA-2328-f5f3-gj25</a></li>
+<li><a href="https://lists.apache.org/thread/088ddsbrzhd5lxzbqf5n24yg0mwh9jt2">https://lists.apache.org/thread/088ddsbrzhd5lxzbqf5n24yg0mwh9jt2</a></li>
+<li><a href="https://github.com/handlebars-lang/handlebars.js/security/advisories/GHSA-2qvq-rjwj-gvw9">https://github.com/handlebars-lang/handlebars.js/security/advisories/GHSA-2qvq-rjwj-gvw9</a></li>
+<li><a href="https://github.com/micromatch/picomatch/security/advisories/GHSA-3v7f-55p6-f55p">https://github.com/micromatch/picomatch/security/advisories/GHSA-3v7f-55p6-f55p</a></li>
+<li><a href="https://spring.io/security/cve-2026-22731%22%7D">https://spring.io/security/cve-2026-22731&quot;}</a></li>
+<li><a href="https://github.com/digitalbazaar/forge/security/advisories/GHSA-ppp5-5v6c-4jwp">https://github.com/digitalbazaar/forge/security/advisories/GHSA-ppp5-5v6c-4jwp</a></li>
+<li><a href="https://github.com/digitalbazaar/forge/security/advisories/GHSA-q67f-28xg-22rw">https://github.com/digitalbazaar/forge/security/advisories/GHSA-q67f-28xg-22rw</a></li>
+<li><a href="https://github.com/advisories/GHSA-7xrh-hqfc-g7qr">https://github.com/advisories/GHSA-7xrh-hqfc-g7qr</a></li>
+<li><a href="https://github.com/handlebars-lang/handlebars.js/security/advisories/GHSA-2qvq-rjwj-gvw9%22%7D">https://github.com/handlebars-lang/handlebars.js/security/advisories/GHSA-2qvq-rjwj-gvw9&quot;}</a></li>
+<li><a href="https://github.com/netty/netty/security/advisories/GHSA-pwqr-wmgm-9rr8%22%7D">https://github.com/netty/netty/security/advisories/GHSA-pwqr-wmgm-9rr8&quot;}</a></li>
+<li><a href="https://github.com/windshock/oh-my-secuaudit%22%7D">https://github.com/windshock/oh-my-secuaudit&quot;}</a></li>
+<li><a href="https://github.com/advisories/GHSA-2qvq-rjwj-gvw9">https://github.com/advisories/GHSA-2qvq-rjwj-gvw9</a></li>
+</ul>
+
+            </section>
+            <section class="view-node" data-view-section="node">
+              
+            </section>
+            <section class="view-java" data-view-section="java">
+              
+            </section>
+            <section class="view-rest" data-view-section="rest">
+              
+            </section>
+          </article>
+        </main>
+
+      </div>
+    </div>
+    <script>
+      (function () {
+        const KEY = "devsecnews:view";
+        const viewToggle = document.getElementById("view-toggle");
+        const tocToggle = document.getElementById("toc-toggle");
+        const tocPanel = document.getElementById("toc-panel");
+        const tocList = document.getElementById("toc-list");
+        const heroTitle = document.getElementById("hero-title");
+
+        function setView(v, persist) {
+          if (!["summary","all","node","java"].includes(v)) v = "all";
+          document.body.dataset.view = v;
+          if (viewToggle) viewToggle.textContent = "보기: " + (v === "all" ? "전체" : v === "summary" ? "요약" : v === "node" ? "Node.js" : "Java");
+          if (persist) {
+            try { localStorage.setItem(KEY, v); } catch {}
+          }
+          // URL Update
+          try { history.replaceState(null, "", v === "all" ? "#all" : ("#" + v)); } catch {}
+          buildToc();
+        }
+
+        function getSectionsForView(view) {
+          if (view === "summary") return [document.querySelector(".view-summary")];
+          if (view === "node") return [document.querySelector(".view-node")];
+          if (view === "java") return [document.querySelector(".view-java")];
+          return [
+            document.querySelector(".view-summary"),
+            document.querySelector(".view-node"),
+            document.querySelector(".view-java"),
+            document.querySelector(".view-rest"),
+          ];
+        }
+
+        function buildToc() {
+          if (!tocList) return;
+          const view = document.body.dataset.view || "all";
+          const sections = getSectionsForView(view);
+          const items = [];
+          for (const s of sections) {
+            if (!s) continue;
+            const heads = Array.from(s.querySelectorAll("h1,h2,h3"));
+            for (const h of heads) {
+              const text = (h.innerText || h.textContent || "").trim();
+              if (!text) continue;
+              if (!h.id) continue;
+              items.push({ level: h.tagName.toLowerCase(), text, id: h.id });
+            }
+          }
+          tocList.innerHTML = "";
+          if (!items.length) {
+            tocList.innerHTML = '<div class="text-xs text-slate-500">표시할 목차가 없습니다.</div>';
+            return;
+          }
+          for (const it of items) {
+            const a = document.createElement("a");
+            a.href = "#" + it.id;
+            a.textContent = it.text;
+            a.className = "block text-sm py-1 border-l-2 border-transparent pl-3 text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:border-blue-500 transition-all truncate";
+            if (it.level === "h3") {
+              a.classList.add("ml-3", "text-xs");
+            }
+            a.addEventListener("click", () => {
+              if (window.innerWidth < 1024 && tocPanel) tocPanel.classList.add("hidden");
+            });
+            tocList.appendChild(a);
+          }
+        }
+
+        if (tocToggle && tocPanel) {
+          tocToggle.addEventListener("click", () => {
+            tocPanel.classList.toggle("hidden");
+            // Check if it has classes for mobile positioning
+            if (!tocPanel.classList.contains("fixed")) {
+                tocPanel.classList.add("fixed", "inset-x-4", "top-20", "z-40", "shadow-xl", "bg-white", "dark:bg-slate-900");
+                tocPanel.classList.remove("sticky");
+            }
+          });
+        }
+
+        function initHero() {
+          const firstH1 = document.querySelector(".article h1");
+          if (firstH1) firstH1.remove();
+        }
+
+        function formatSourceLinks() {
+          const anchors = Array.from(document.querySelectorAll('.article a[href^="http"]'));
+          for (const a of anchors) {
+             if (a.textContent.trim() === a.href) {
+                try {
+                    const url = new URL(a.href);
+                    const parts = url.pathname.split("/").filter(Boolean).slice(0, 2);
+                    a.textContent = url.hostname.replace(/^www./, "") + (parts.length ? "/" + parts.join("/") : "");
+                } catch {}
+             }
+          }
+        }
+
+        function buildSummaryGrid() {
+          const summary = document.querySelector(".view-summary");
+          if (!summary) return;
+          const heading = Array.from(summary.querySelectorAll("h1,h2,h3")).find((x) =>
+            (x.textContent || "").includes("(1) Summary")
+          );
+          if (!heading) return;
+          const list = heading.nextElementSibling && heading.nextElementSibling.tagName === "UL"
+            ? heading.nextElementSibling
+            : null;
+          if (!list) return;
+          const nodeHeading = document.querySelector(".view-node h1, .view-node h2, .view-node h3");
+          const javaHeading = document.querySelector(".view-java h1, .view-java h2, .view-java h3");
+          function resolveTargetIdBySourceHref(href, excludeEl) {
+            const links = Array.from(document.querySelectorAll('a[href="' + href.replace(/"/g, '\"') + '"]'));
+            for (const l of links) {
+              if (excludeEl && excludeEl.contains(l)) continue;
+              const heading =
+                l.closest("section")?.querySelector("h1,h2,h3") ||
+                l.closest("h1,h2,h3");
+              if (heading && heading.id) return heading.id;
+            }
+            return null;
+          }
+          const items = Array.from(list.querySelectorAll("li"));
+          const grid = document.createElement("div");
+          grid.className = "summary-grid";
+          for (const li of items) {
+            const clone = li.cloneNode(true);
+            const link = clone.querySelector('a[href^="http"]');
+            clone.querySelectorAll("a").forEach((a) => a.remove());
+            let text = (clone.textContent || "").replace("[Source]", "").trim();
+            if (!text) continue;
+            const item = document.createElement("div");
+            item.className = "summary-item";
+            const h5 = document.createElement("h5");
+            h5.textContent = "요약";
+            const p = document.createElement("p");
+            p.textContent = text;
+            item.appendChild(h5);
+            item.appendChild(p);
+            if (link && link.getAttribute("href")) {
+              const a = document.createElement("a");
+              a.href = link.getAttribute("href");
+              a.target = "_blank";
+              a.rel = "noopener";
+              a.textContent = "Source · " + new URL(a.href).hostname.replace(/^www./, "");
+              item.appendChild(a);
+            }
+            const jump = document.createElement("a");
+            let target = null;
+            if (/node.?js/i.test(text) && nodeHeading && nodeHeading.id) target = nodeHeading.id;
+            if (/java/i.test(text) && javaHeading && javaHeading.id) target = javaHeading.id;
+            if (!target && link && link.getAttribute("href")) {
+              target = resolveTargetIdBySourceHref(link.getAttribute("href"), li);
+            }
+            if (target) {
+              jump.href = "#" + target;
+              jump.textContent = "자세히";
+              item.appendChild(jump);
+            }
+            grid.appendChild(item);
+          }
+          list.classList.add("summary-list");
+          list.hidden = true;
+          list.setAttribute("aria-hidden", "true");
+          // Remove the list entirely in JS-enabled mode to prevent duplicate rendering.
+          list.remove();
+          heading.insertAdjacentElement("afterend", grid);
+        }
+
+        function buildCallouts() {
+          const headings = Array.from(document.querySelectorAll(".markdown-body h2, .markdown-body h3"));
+          for (const h of headings) {
+            const text = (h.textContent || "").trim();
+            if (!/영향 여부 자가진단/.test(text)) continue;
+            const parent = h.parentNode;
+            if (!parent) continue;
+            const callout = document.createElement("div");
+            callout.className = "callout";
+            const title = document.createElement("div");
+            title.className = "callout-title";
+            title.textContent = "✅ 빠른 확인";
+            callout.appendChild(title);
+            parent.insertBefore(callout, h);
+            callout.appendChild(h);
+            let cur = callout.nextElementSibling;
+            while (cur && !/^H[1-3]$/.test(cur.tagName)) {
+              const next = cur.nextElementSibling;
+              callout.appendChild(cur);
+              cur = next;
+            }
+          }
+        }
+
+        // Code block: add copy buttons
+        (function initCopyButtons() {
+          const blocks = Array.from(document.querySelectorAll("pre"));
+          for (const pre of blocks) {
+            const code = pre.querySelector("code");
+            if (!code) continue;
+            // Wrap to position button
+            if (!pre.parentElement || pre.parentElement.classList.contains("codeblock")) continue;
+            const wrap = document.createElement("div");
+            wrap.className = "codeblock";
+            pre.parentElement.insertBefore(wrap, pre);
+            wrap.appendChild(pre);
+
+            // Tag codeblock based on preceding label text (Korean)
+            // Typical Markdown structure is: <p>안 좋은 예:</p><pre>...</pre>
+            // or: <p>안전한 대안:</p><pre>...</pre>
+            const prev = wrap.previousElementSibling;
+            const prevText = (prev && (prev.innerText || prev.textContent) ? (prev.innerText || prev.textContent) : "").trim();
+            if (/^(안 좋은 예|취약한 예)/.test(prevText)) wrap.classList.add("bad");
+            if (prevText.startsWith("안전한 대안")) wrap.classList.add("good");
+
+            const btn = document.createElement("button");
+            btn.type = "button";
+            btn.className = "copyBtn";
+            btn.textContent = "복사";
+            btn.setAttribute("aria-label", "코드 복사");
+            wrap.appendChild(btn);
+
+            btn.addEventListener("click", async () => {
+              const text = (code.innerText || code.textContent || "").trimEnd();
+              if (!text) return;
+              try {
+                await navigator.clipboard.writeText(text);
+                const old = btn.textContent;
+                btn.textContent = "복사됨";
+                setTimeout(() => (btn.textContent = old), 900);
+              } catch {
+                // Fallback
+                try {
+                  const ta = document.createElement("textarea");
+                  ta.value = text;
+                  ta.style.position = "fixed";
+                  ta.style.left = "-9999px";
+                  document.body.appendChild(ta);
+                  ta.focus();
+                  ta.select();
+                  document.execCommand("copy");
+                  document.body.removeChild(ta);
+                  const old = btn.textContent;
+                  btn.textContent = "복사됨";
+                  setTimeout(() => (btn.textContent = old), 900);
+                } catch {
+                  btn.setAttribute("aria-disabled", "true");
+                }
+              }
+            });
+          }
+        })();
+
+        // Checklist → details jump (by Source URL)
+        (function initChecklistJump() {
+          const summary = document.querySelector(".view-summary");
+          if (!summary) return;
+
+          // Find the checklist section by heading text.
+          const h = Array.from(summary.querySelectorAll("h1,h2,h3")).find((x) =>
+            (x.innerText || "").includes("(5) 이번 달 개발자 체크리스트")
+          );
+          if (!h) return;
+
+          const ol = h.nextElementSibling && h.nextElementSibling.tagName === "OL"
+            ? h.nextElementSibling
+            : summary.querySelector("ol");
+          if (!ol) return;
+          ol.classList.add("checklist");
+
+          // Add a tiny hint once.
+          if (!summary.querySelector(".jumpHint")) {
+            const hint = document.createElement("div");
+            hint.className = "jumpHint";
+            hint.textContent = "체크리스트 항목을 클릭하면 본문으로 이동합니다.";
+            ol.parentElement.insertBefore(hint, ol.nextSibling);
+          }
+
+          const items = Array.from(ol.querySelectorAll("li"));
+          for (const li of items) {
+            const link = li.querySelector('a[href^="http"]');
+            if (!link) continue;
+            const href = link.getAttribute("href");
+            if (!href) continue;
+            const links = Array.from(document.querySelectorAll('a[href="' + href.replace(/"/g, '\"') + '"]'));
+            let target = null;
+            for (const l of links) {
+              if (li.contains(l)) continue;
+              target = l;
+              break;
+            }
+            if (!target) continue;
+            const heading = target.closest("section")?.querySelector("h1,h2,h3") || target.closest("h1,h2,h3");
+            if (!heading || !heading.id) continue;
+            const clone = li.cloneNode(true);
+            clone.querySelectorAll("a").forEach((a) => a.remove());
+            let text = (clone.textContent || "").replace("[Source]", "").trim();
+            if (!text) continue;
+            li.innerHTML = "";
+            const jump = document.createElement("a");
+            jump.href = "#" + heading.id;
+            jump.className = "jump-link";
+            jump.textContent = text;
+            jump.addEventListener("click", (e) => {
+              if (typeof setView === "function") {
+                e.preventDefault();
+                setView("all", true);
+                setTimeout(() => {
+                  const target = document.getElementById(heading.id);
+                  if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
+                }, 80);
+              }
+            });
+            li.appendChild(jump);
+          }
+        })();
+
+        // TTS (Web Speech API)
+        const synth = window.speechSynthesis;
+        const ttsBtn = document.getElementById("tts-toggle");
+        const rateSel = null;
+        const voiceSel = null;
+        const skipUrlsChk = null;
+        const skipRefsChk = null;
+        let queue = [];
+        let speaking = false;
+        let ttsState = "idle"; // idle | playing | paused
+
+        function getActiveView() {
+          return document.body.dataset.view || "all";
+        }
+
+        function extractReadableLines(root, opts) {
+          const lines = [];
+          if (!root) return lines;
+
+          const stopAtRefs = !!opts.stopAtRefs;
+          const skipUrls = !!opts.skipUrls;
+          const nodes = root.querySelectorAll("h1,h2,h3,p,li");
+          for (const el of nodes) {
+            // Skip code and tables.
+            if (el.closest("pre, code, table")) continue;
+            let t = (el.innerText || "").trim();
+            if (!t) continue;
+            if (stopAtRefs && /참고자료/.test(t)) break;
+
+            // Remove trailing [Source] ... from a line (keeps the readable sentence).
+            const srcIdx = t.lastIndexOf(" [Source] ");
+            if (srcIdx !== -1) t = t.slice(0, srcIdx).trim();
+
+            // Drop standalone source lines or URL-only lines.
+            // NOTE: This script is embedded into an HTML template string, so avoid regex literals
+            // containing backslash escapes unless they are double-escaped.
+            if (t.startsWith("[Source]")) continue;
+            if ((t.startsWith("http://") || t.startsWith("https://")) && !t.includes(" ")) continue;
+
+            // If URL skipping is enabled, strip URL-like tokens embedded in text.
+            if (skipUrls) {
+              const normalized = t.replaceAll("\n", " ").replaceAll("\t", " ");
+              const parts = normalized.split(" ");
+              const out = [];
+              for (const raw of parts) {
+                const tok = raw.trim();
+                if (!tok) continue;
+                if (tok.startsWith("http://") || tok.startsWith("https://")) continue;
+                out.push(tok);
+              }
+              t = out.join(" ").trim();
+            }
+
+            // Minor cleanup for TTS: remove inline code backticks.
+            // NOTE: This JS snippet lives inside an HTML template string in this script,
+            // so we must not embed a raw backtick character here.
+            const BT = String.fromCharCode(96);
+            t = t.split(BT).join("").trim();
+
+            if (!t) continue;
+            lines.push(t);
+          }
+          return lines;
+        }
+
+        function buildTextForCurrentView() {
+          const view = getActiveView();
+          const sections = getSectionsForView(view);
+          const stopAtRefs = !!(skipRefsChk && skipRefsChk.checked);
+          const skipUrls = !!(skipUrlsChk && skipUrlsChk.checked);
+          const lines = [];
+          for (const s of sections) {
+            lines.push(...extractReadableLines(s, { stopAtRefs, skipUrls }));
+          }
+          return lines.join("\n");
+        }
+
+        function chunkText(text) {
+          const cleaned = text
+            .replace(/\s+\n/g, "\n")
+            .replace(/\n{3,}/g, "\n\n")
+            .trim();
+          if (!cleaned) return [];
+
+          // Prefer Intl.Segmenter sentence splitting (more natural for Korean).
+          let sentences = [];
+          try {
+            if (typeof Intl !== "undefined" && Intl.Segmenter) {
+              const seg = new Intl.Segmenter("ko", { granularity: "sentence" });
+              sentences = Array.from(seg.segment(cleaned))
+                .map((x) => String(x.segment || "").trim())
+                .filter(Boolean);
+            }
+          } catch {}
+
+          // Fallback: split by paragraphs and punctuation.
+          if (!sentences.length) {
+            const paras = cleaned.split(/\n\n+/);
+            for (const p of paras) {
+              const sents = p
+                .split(/(?<=[\.!?])\s+|\n+/)
+                .map((s) => s.trim())
+                .filter(Boolean);
+              sentences.push(...sents);
+            }
+          }
+
+          // Merge sentences into small utterances (shorter sounds more natural and avoids long-utterance bugs).
+          const chunks = [];
+          let buf = "";
+          for (const s of sentences) {
+            const next = (buf ? buf + " " : "") + s;
+            if (next.length > 180 && buf) {
+              chunks.push(buf);
+              buf = s;
+            } else {
+              buf = next;
+            }
+          }
+          if (buf) chunks.push(buf);
+          return chunks;
+        }
+
+        function populateVoices() {
+          if (!voiceSel) return;
+          const voices = synth.getVoices ? synth.getVoices() : [];
+          // Clear, keep auto.
+          const keep0 = voiceSel.options[0];
+          voiceSel.innerHTML = "";
+          voiceSel.appendChild(keep0);
+
+          // Prefer Korean first.
+          const ko = voices.filter(v => (v.lang || "").toLowerCase().startsWith("ko"));
+          const rest = voices.filter(v => !(v.lang || "").toLowerCase().startsWith("ko"));
+          const ordered = [...ko, ...rest];
+          for (const v of ordered) {
+            const opt = document.createElement("option");
+            opt.value = v.name;
+            opt.textContent = v.name + " (" + v.lang + ")";
+            voiceSel.appendChild(opt);
+          }
+        }
+
+        function pickVoice() {
+          const voices = synth.getVoices ? synth.getVoices() : [];
+          if (!voices.length) return null;
+          
+          const ua = (navigator.userAgent || "").toLowerCase();
+          const isSafari = ua.includes("safari") && !ua.includes("chrome") && !ua.includes("chromium");
+
+          // Prefer Yuna (name match) on all browsers if available.
+          const yuna = voices.find(v => String(v.name || "").toLowerCase().includes("yuna"));
+          if (yuna) return yuna;
+
+          // Safari: prefer system default Korean voice if available.
+          if (isSafari) {
+            const koVoices = voices.filter(v => (v.lang || "").toLowerCase().startsWith("ko"));
+            const defKo = koVoices.find(v => v.default);
+            return defKo || koVoices[0] || voices[0] || null;
+          }
+
+          // Fallback: any Korean voice, then first available.
+          const ko = voices.find(v => (v.lang || "").toLowerCase().startsWith("ko"));
+          return ko || voices[0] || null;
+        }
+
+        function setButtonsState() {
+          if (!ttsBtn) return;
+          ttsBtn.textContent = ttsState === "playing" ? "일시정지" : "읽기";
+        }
+
+        function stopTts() {
+          try { synth.cancel(); } catch {}
+          queue = [];
+          speaking = false;
+          ttsState = "idle";
+          setButtonsState();
+        }
+
+        function speakNext() {
+          if (!queue.length) {
+            speaking = false;
+            ttsState = "idle";
+            setButtonsState();
+            return;
+          }
+          const text = queue.shift();
+          const u = new SpeechSynthesisUtterance(text);
+          const v = pickVoice();
+          if (v) u.voice = v;
+          u.lang = (v && v.lang) ? v.lang : "ko-KR";
+          u.rate = rateSel ? Number(rateSel.value || "1") : 1;
+          u.pitch = 1;
+          u.volume = 1;
+          u.onend = () => speakNext();
+          u.onerror = () => speakNext();
+          speaking = true;
+          ttsState = "playing";
+          setButtonsState();
+          synth.speak(u);
+        }
+
+        function startTts() {
+          // Resume if paused
+          if (ttsState === "paused") {
+            synth.resume();
+            speaking = true;
+            ttsState = "playing";
+            setButtonsState();
+            return;
+          }
+          stopTts();
+          const text = buildTextForCurrentView();
+          queue = chunkText(text);
+          if (!queue.length) {
+            ttsState = "idle";
+            setButtonsState();
+            return;
+          }
+          // Some browsers need a micro-delay after cancel() before speak().
+          setTimeout(() => speakNext(), 60);
+        }
+
+        if (synth && ttsBtn) {
+          populateVoices();
+          if (typeof speechSynthesis !== "undefined" && speechSynthesis.onvoiceschanged !== undefined) {
+            speechSynthesis.onvoiceschanged = () => populateVoices();
+          }
+          ttsBtn.addEventListener("click", () => {
+            if (ttsState === "playing") {
+              try { synth.pause(); } catch {}
+              ttsState = "paused";
+              setButtonsState();
+              return;
+            }
+            if (ttsState === "paused") {
+              try { synth.resume(); } catch {}
+              ttsState = "playing";
+              setButtonsState();
+              return;
+            }
+            startTts();
+          });
+        } else {
+          // No TTS support: hide controls
+          if (ttsBtn) ttsBtn.style.display = "none";
+        }
+
+        // setView is defined above to allow reuse by other UI features.
+
+        if (viewToggle) {
+          const order = ["all","summary","node","java"].filter(v => {
+            if (v === "node") return Boolean(document.querySelector(".view-node")?.children.length);
+            if (v === "java") return Boolean(document.querySelector(".view-java")?.children.length);
+            return true;
+          });
+          viewToggle.addEventListener("click", () => {
+            const cur = document.body.dataset.view || "all";
+            const idx = order.indexOf(cur);
+            const next = order[(idx + 1) % order.length];
+            setView(next, true);
+          });
+        }
+
+        const hash = (location.hash || "").replace("#", "");
+        if (["summary","all","node","java"].includes(hash)) {
+          setView(hash, false);
+          return;
+        }
+        try {
+          const saved = localStorage.getItem(KEY);
+          if (saved) setView(saved, false);
+        } catch {}
+        document.body.classList.add("js");
+        initHero();
+        buildSummaryGrid();
+        buildCallouts();
+        formatSourceLinks();
+        if (window.innerWidth <= 720) document.body.dataset.toc = "closed";
+        buildToc();
+      })();
+    </script>
+  </body>
+</html>

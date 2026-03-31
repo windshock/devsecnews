@@ -37,7 +37,8 @@ const refUrls = new Set(extractUrlsFromRefs(refs));
 const missingInRefs = [...bodyUrls].filter((u) => !refUrls.has(u));
 const missingInBody = [...refUrls].filter((u) => !bodyUrls.has(u));
 
-const markdownLinkMatches = [...body.matchAll(/\[([^\]]+)\]\(([^)]+)\)/g)];
+const bodyForLinkCheck = body.replace(/<!--CARD[\s\S]*?-->/g, "");
+const markdownLinkMatches = [...bodyForLinkCheck.matchAll(/\[([^\]]+)\]\(([^)]+)\)/g)];
 const disallowedMarkdownLinks = markdownLinkMatches.filter(
   (m) => !(m[2] || "").trim().startsWith("#")
 );
@@ -90,11 +91,12 @@ console.log("OK: URL 목록이 본문과 참고자료에 일치합니다.");
 if (strict) console.log("OK: URL 실접속 검증도 통과했습니다.");
 
 function indexOfRefs(s) {
-  const i6 = s.indexOf("# (6) 참고자료");
-  const i7 = s.indexOf("# (7) 참고자료");
-  if (i6 === -1) return i7;
-  if (i7 === -1) return i6;
-  return Math.min(i6, i7);
+  const candidates = [
+    s.indexOf("# (5) 참고자료"),
+    s.indexOf("# (6) 참고자료"),
+    s.indexOf("# (7) 참고자료"),
+  ].filter((i) => i !== -1);
+  return candidates.length ? Math.min(...candidates) : -1;
 }
 
 function extractUrls(s) {

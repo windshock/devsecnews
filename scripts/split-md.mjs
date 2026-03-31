@@ -23,28 +23,148 @@ if (!fs.existsSync(input)) {
 const md = fs.readFileSync(input, "utf8");
 fs.mkdirSync(CONTENT_DIR, { recursive: true });
 
-// We split by top-level numbered headings used in this repo.
-const idxNode = md.indexOf("# (2) Node.js");
-const idxJava = md.indexOf("# (3) Java");
-const idxCommon = md.indexOf("# (4) 공통 트렌드/권장사항");
-const idxRefs6 = md.indexOf("# (6) 참고자료");
-const idxRefs7 = md.indexOf("# (7) 참고자료");
-const idxRefs = idxRefs6 !== -1 ? idxRefs6 : idxRefs7;
+// Keyword-based heading search for resilience against section number changes.
+const idxNode = md.search(/^# \(\d+\) Node\.js/m);
+const idxJava = md.search(/^# \(\d+\) Java/m);
+const idxCommon = md.search(/^# \(\d+\) 공통 트렌드/m);
+const idxRefs = md.search(/^# \(\d+\) 참고자료/m);
 
 if (idxNode === -1 || idxJava === -1 || idxRefs === -1) {
   console.error(
-    "Expected headings not found: # (2) Node.js, # (3) Java, # (6) 참고자료 or # (7) 참고자료"
+    "Expected headings not found: # (N) Node.js, # (N) Java, # (N) 참고자료"
   );
   process.exit(1);
 }
 
 const header = md.slice(0, idxNode);
 const nodeSection = md.slice(idxNode, idxJava);
-const javaSection = idxCommon !== -1 ? md.slice(idxJava, idxCommon) : md.slice(idxJava, idxRefs);
+const javaSection = idxCommon !== -1
+  ? md.slice(idxJava, idxCommon)
+  : md.slice(idxJava, idxRefs);
+const commonSection = idxCommon !== -1
+  ? md.slice(idxCommon, idxRefs)
+  : "";
 
-// Create slim docs: Header + Summary/Checklist/Rules + one language section + References.
-const nodeDoc = header + nodeSection;
-const javaDoc = header + javaSection;
+// Filter header (Summary/Checklist/CARD blocks) by platform domain.
+function filterHeaderByDomain(rawHeader, keepDomain) {
+  const lines = rawHeader.split("\n");
+  const out = [];
+  let i = 0;
+  while (i < lines.length) {
+    const line = lines[i];
+
+    // Filter CARD blocks by domain field
+    if (line.trim().startsWith("<!--CARD")) {
+      const cardLines = [line];
+      let j = i + 1;
+      while (j < lines.length && !lines[j].includes("-->")) {
+        cardLines.push(lines[j]);
+        j++;
+      }
+      if (j < lines.length) cardLines.push(lines[j]);
+      const cardBlock = cardLines.join("\n");
+      const domainMatch = cardBlock.match(/"domain"\s*:\s*"([^"]+)"/);
+      const domain = domainMatch ? domainMatch[1] : "common";
+      if (domain === keepDomain || domain === "common") {
+        out.push(...cardLines);
+      }
+      i = j + 1;
+      continue;
+    }
+    out.push(line);
+    i++;
+  }
+  return out.join("\n");
+}
+
+// Filter numbered list items in Summary TOP 5 and Checklist by platform context.
+function filterListItems(text, keepDomain) {
+  const nodeKeywords = /\b(npm|node-forge|handlebars|picomatch)\b/i;
+  const javaKeywords = /\b(mvn|spring-security-web|spring-boot-starter-actuator|netty-codec-http|zookeeper|spring)\b/i;
+
+  const lines = text.split("\n");
+  const out = [];
+  let inSummaryOrChecklist = false;
+  let skipUntilNextNumbered = false;
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+
+    // Detect Summary or Checklist sections
+    if (/^#.*Summary|^#.*핵심 뉴스|^#.*체크리스트|^##.*바로 할 일/.test(line)) {
+      inSummaryOrChecklist = true;
+      skipUntilNextNumbered = false;
+      out.push(line);
+      continue;
+    }
+    if (/^#\s/.test(line) && !line.includes("Summary") && !line.includes("체크리스트")) {
+      inSummaryOrChecklist = false;
+      skipUntilNextNumbered = false;
+    }
+
+    if (inSummaryOrChecklist) {
+      const isNumbered = /^\d+\.\s/.test(line.trim());
+      if (isNumbered) {
+        const isNode = nodeKeywords.test(line);
+        const isJava = javaKeywords.test(line);
+        if (keepDomain === "node" && isJava && !isNode) {
+          skipUntilNextNumbered = true;
+          continue;
+        }
+        if (keepDomain === "java" && isNode && !isJava) {
+          skipUntilNextNumbered = true;
+          continue;
+        }
+        skipUntilNextNumbered = false;
+      } else if (skipUntilNextNumbered) {
+        // Skip continuation lines (e.g. [Source] lines after a filtered item)
+        if (line.trim() === "" || /^\[Source\]/.test(line.trim())) continue;
+        skipUntilNextNumbered = false;
+      }
+    }
+
+    out.push(line);
+  }
+  return out.join("\n");
+}
+
+// Rewrite platform-specific header (title line)
+function rewriteHeader(text, platform) {
+  const label = platform === "node" ? "Node.js" : "Java";
+  return text.replace(
+    /^(# DevSecNews \d{4}-\d{2} —) .+$/m,
+    `$1 ${label} 보안 요약(개발자용)`
+  );
+}
+
+// Renumber sections sequentially: (1), (2), (3), ...
+function renumberSections(text) {
+  let counter = 0;
+  return text.replace(/^# \((\d+)\)/gm, () => {
+    counter++;
+    return `# (${counter})`;
+  });
+}
+
+// Build split documents
+function buildSplitDoc(platform) {
+  let filteredHeader = filterHeaderByDomain(header, platform);
+  filteredHeader = filterListItems(filteredHeader, platform);
+  filteredHeader = rewriteHeader(filteredHeader, platform);
+
+  const platformSection = platform === "node" ? nodeSection : javaSection;
+  let doc = filteredHeader + platformSection;
+
+  // Include common trends section for both platforms
+  if (commonSection) {
+    doc += commonSection;
+  }
+
+  return doc;
+}
+
+const nodeDoc = buildSplitDoc("node");
+const javaDoc = buildSplitDoc("java");
 
 const nodeOut = defaultSplitMd(month, "node");
 const javaOut = defaultSplitMd(month, "java");
@@ -58,21 +178,19 @@ function writeWithRefs(outFile, contentWithoutRefs) {
   const urls = extractUrls(contentWithoutRefs);
   const refs = formatRefs(urls);
 
-  const out = stripExistingRefs(contentWithoutRefs).trimEnd() + "\n\n" + refs + "\n";
+  let out = stripExistingRefs(contentWithoutRefs).trimEnd() + "\n\n" + refs + "\n";
+  out = renumberSections(out);
   fs.mkdirSync(path.dirname(outFile), { recursive: true });
   fs.writeFileSync(outFile, out, "utf8");
 }
 
 function stripExistingRefs(s) {
-  const i6 = s.indexOf("# (6) 참고자료");
-  const i7 = s.indexOf("# (7) 참고자료");
-  const i = i6 !== -1 ? i6 : i7;
-  if (i === -1) return s;
-  return s.slice(0, i);
+  const idx = s.search(/^# \(\d+\) 참고자료/m);
+  if (idx === -1) return s;
+  return s.slice(0, idx);
 }
 
 function extractUrls(s) {
-  // Keep URLs as-is; we only de-dupe exact strings.
   const re = /https?:\/\/[^\s)]+/g;
   const found = s.match(re) ?? [];
   const uniq = [];
