@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="320" viewBox="0 0 1600 320">
+<defs>
+<linearGradient id="bg" x1="0" x2="1" y1="0" y2="1"><stop offset="0%" stop-color="#020617"/><stop offset="58%" stop-color="#061827"/><stop offset="100%" stop-color="#020617"/></linearGradient>
+<radialGradient id="g1" cx="74%" cy="45%" r="50%"><stop offset="0%" stop-color="#22d3ee" stop-opacity=".28"/><stop offset="100%" stop-color="#22d3ee" stop-opacity="0"/></radialGradient>
+<style>
+.kr{font-family:Inter,'Noto Sans KR',Arial,sans-serif}
+.brand{font-size:18px;font-weight:900;fill:#bdf7ff}
+.small{font-size:15px;font-weight:800;fill:#aab8c6}
+.h{font-size:43px;font-weight:900;fill:#f8fbff}
+.q{font-size:57px;font-weight:900;fill:#22d3ee}
+.body{font-size:20px;fill:#cdd9e4}
+.chip{font-size:20px;font-weight:900;fill:#f8fbff}
+.trace{font-size:15px;fill:#aab8c6}
+.cta{font-size:22px;font-weight:900;fill:#001f25}
+</style>
+</defs>
+<rect width="1600" height="320" fill="url(#bg)"/><rect width="1600" height="320" fill="url(#g1)"/>
+<g opacity=".11" stroke="#22d3ee"><path d="M0 40H1600M0 80H1600M0 120H1600M0 160H1600M0 200H1600M0 240H1600M0 280H1600"/><path d="M40 0V320M80 0V320M120 0V320M160 0V320M200 0V320M240 0V320M280 0V320M320 0V320M360 0V320M400 0V320M440 0V320M480 0V320M520 0V320M560 0V320M600 0V320M640 0V320M680 0V320M720 0V320M760 0V320M800 0V320M840 0V320M880 0V320M920 0V320M960 0V320M1000 0V320M1040 0V320M1080 0V320M1120 0V320M1160 0V320M1200 0V320M1240 0V320M1280 0V320M1320 0V320M1360 0V320M1400 0V320M1440 0V320M1480 0V320M1520 0V320M1560 0V320"/></g>
+<rect x="30" y="18" width="144" height="32" rx="7" fill="#22d3ee" opacity=".16" stroke="#22d3ee" stroke-opacity=".55"/>
+<text x="47" y="40" class="kr brand">DEVSECNEWS</text>
+<text x="190" y="40" class="kr small">2026년 4월호 · Security Default Design</text>
+<text x="54" y="114" class="kr h">설치 완료.</text>
+<text x="54" y="167" class="kr h">설정 저장.</text>
+<text x="54" y="220" class="kr h">로그인 성공.</text>
+<text x="54" y="286" class="kr q">정말 끝난 걸까요?</text>
+<text x="54" y="306" class="kr body">정상 처리 뒤에서 무엇이 실행되고, 무엇이 기록되지 않았는지 봅니다.</text>
+<g class="kr">
+<rect x="870" y="82" width="282" height="50" rx="13" fill="#0f172a" opacity=".92" stroke="#22d3ee" stroke-width="2"/><circle cx="896" cy="107" r="8" fill="#22d3ee"/><text x="916" y="114" class="chip">npm install</text>
+<rect x="870" y="148" width="282" height="50" rx="13" fill="#0f172a" opacity=".92" stroke="#a78bfa" stroke-width="2"/><circle cx="896" cy="173" r="8" fill="#a78bfa"/><text x="916" y="180" class="chip">AI 도구 설정</text>
+<rect x="870" y="214" width="282" height="50" rx="13" fill="#0f172a" opacity=".92" stroke="#fb923c" stroke-width="2"/><circle cx="896" cy="239" r="8" fill="#fb923c"/><text x="916" y="246" class="chip">로그인 성공</text>
+<text x="1192" y="111" font-size="15" fill="#22d3ee">postinstall?</text>
+<text x="1192" y="177" font-size="15" fill="#a78bfa">tool call?</text>
+<text x="1192" y="243" font-size="15" fill="#fb923c">value transfer?</text>
+<text x="1412" y="110" class="trace" opacity=".72">not always visible</text>
+<text x="1412" y="176" class="trace" opacity=".72">not always visible</text>
+<text x="1412" y="242" class="trace" opacity=".72">not always visible</text>
+</g>
+<rect x="1280" y="258" width="282" height="44" rx="10" fill="#22d3ee"/>
+<text x="1302" y="287" class="kr cta">4월호에서 확인하기 →</text>
+</svg>
