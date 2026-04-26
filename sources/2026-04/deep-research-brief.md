@@ -2,6 +2,8 @@
 
 용도: 다른 LLM / Deep Research / 수동 조사자에게 넘길 4월호 보강 지시서.
 
+> 상태 업데이트: 1차 Deep Research 결과는 `sources/2026-04/deep-research-result.md`에 보존했다. 이 brief는 이제 “무엇이 이미 확보됐고, 다음 LLM이 무엇을 반영하면 되는지”를 표시하는 인수인계 문서로 사용한다.
+
 ## 현재 확정된 4월호 편집 프레임
 
 ```text
@@ -66,103 +68,127 @@
 - CaaS
 - PointPivot
 
-## 추가 조사가 필요한 부분
+## Deep Research 결과로 확보된 항목
 
-### 1. Node.js / npm 4월 공식 보안 이슈
+자세한 조사 결과와 reference inventory는 `sources/2026-04/deep-research-result.md`를 본다.
 
-필수 조건:
+### Node.js / npm
 
-- 공식 공지/어드바이저리 게시일이 2026-04-01 ~ 2026-04-30이어야 한다.
-- 단순 DoS-only 이슈는 제외한다.
-- devsecnews repo의 `all_package_list.txt`가 있으면 패키지명이 정확히 포함되는지 확인한다.
-- 포함 시 최소 1개 공식 URL, 가능하면 GHSA/NVD/CVE Program 보조 URL을 붙인다.
+- Axios npm 공급망 공격은 4월호 Node.js/npm 핵심 항목으로 유지한다.
+- Node.js core 공식 vulnerability feed 기준으로는 2026년 4월 신규 core 보안 릴리스가 뚜렷하게 확인되지 않았다.
+- 따라서 Node.js 섹션은 억지로 core CVE를 채우기보다 `Axios 공급망 사고 + build-log evidence + npm trusted publishing/provenance` 중심으로 정리한다.
 
-권장 검색어:
-
-```text
-site:github.com/advisories npm GHSA April 2026 postinstall
-site:github.com/advisories npm GHSA April 2026 prototype pollution
-site:github.com/advisories npm GHSA April 2026 command injection
-site:nodejs.org security release April 2026 Node.js
-site:github.com/nodejs/security-wg April 2026 npm malicious package
-npm supply chain attack April 2026 GitHub Advisory
-```
-
-### 2. Java / Spring / JVM 4월 공식 보안 이슈
-
-필수 조건:
-
-- 공식 공지/어드바이저리 게시일이 2026-04-01 ~ 2026-04-30이어야 한다.
-- Java 개발자가 코드/빌드/런타임 설정을 바꿔야 하는 항목을 우선한다.
-- OS/미들웨어 운영 패치만 있는 항목은 제외한다.
-
-권장 검색어:
+주요 source 후보:
 
 ```text
-site:spring.io/security CVE 2026 April Spring Security
-site:spring.io/security CVE 2026 April Spring Boot
-site:lists.apache.org Java CVE April 2026 security advisory
-site:github.com/advisories maven Java GHSA April 2026 RCE
-site:github.com/advisories Maven GHSA April 2026 deserialization
-site:openjdk.org security April 2026 Java CPU
-Oracle Java Critical Patch Update April 2026
+https://github.com/axios/axios/issues/10636
+https://github.com/advisories/GHSA-fw8c-xr5c-95f9
+https://cloud.google.com/blog/topics/threat-intelligence/north-korea-threat-actor-targets-axios-npm-package
+https://www.microsoft.com/en-us/security/blog/2026/04/01/mitigating-the-axios-npm-supply-chain-compromise/
+https://docs.npmjs.com/trusted-publishers
+https://nodejs.org/en/blog/vulnerability
 ```
 
-### 3. MCP / AI 개발환경 공식/고신뢰 자료
+주의:
 
-현재 자료는 사용자 작성 브리핑 중심이다. 외부 근거를 보강할 수 있으면 좋다.
+- CISA Axios alert URL은 확인됐지만 본문 접근이 제한적이었다. 세부 내용은 maintainer issue, GHSA, Microsoft, Google 근거를 우선한다.
 
-권장 검색어:
+### Java / Spring / JVM
+
+다음 항목은 `content/devsecnews-2026-04-node-java.md`의 Java placeholder를 교체하는 데 사용할 수 있다.
+
+1. Spring Security Authorization Server metadata validation flaw
+   - CVE: `CVE-2026-22752`
+   - 공지일: 2026-04-21
+   - Source: https://spring.io/security/cve-2026-22752/
+
+2. Spring Security JdbcOneTimeTokenService race condition
+   - CVE: `CVE-2026-22751`
+   - 공지일: 2026-04-21
+   - Source: https://spring.io/security/cve-2026-22751/
+
+3. Spring Boot default security filter chain flaw
+   - CVE: `CVE-2026-40976`
+   - 공지일: 2026-04-23
+   - Source: https://spring.io/security/cve-2026-40976/
+
+4. Spring Boot RabbitMQ TLS hostname verification flaw
+   - CVE: `CVE-2026-40971`
+   - 공지일: 2026-04-23
+   - Source: https://spring.io/security/cve-2026-40971/
+
+5. Oracle Java SE April 2026 Critical Patch Update
+   - 공지일: 2026-04-21
+   - Sources:
+     - https://www.oracle.com/security-alerts/cpuapr2026.html
+     - https://docs.oracle.com/en-us/iaas/releasenotes/java-management/jdk-cpu-april-2026.htm
+     - https://blogs.oracle.com/security/april-2026-critical-patch-update-released
+
+### MCP / AI 개발환경
+
+외부 근거 보강용으로 다음을 사용할 수 있다.
 
 ```text
-Model Context Protocol security risks 2026
-MCP server security prompt injection tool execution
-AI IDE supply chain attack MCP JSON configuration
-MCP tool poisoning attack security advisory
-Shadow AI development environment security risk
+https://modelcontextprotocol.io/specification/2025-06-18/server
+https://modelcontextprotocol.io/docs/learn/server-concepts
+https://modelcontextprotocol.io/docs/tutorials/security/security_best_practices
+https://github.com/modelcontextprotocol/modelcontextprotocol/issues/1024
+https://blog.modelcontextprotocol.io/posts/2025-11-03-using-server-instructions/
+https://blog.modelcontextprotocol.io/posts/2026-03-16-tool-annotations/
+https://www.ox.security/blog/the-mother-of-all-ai-supply-chains-critical-systemic-vulnerability-at-the-core-of-the-mcp/
+https://www.ox.security/blog/mcp-supply-chain-advisory-rce-vulnerabilities-across-the-ai-ecosystem/
 ```
 
-포함 기준:
+주의:
 
-- MCP 설정, tool execution, prompt/tool injection, 외부 컨텐츠가 내부 명령 실행으로 이어지는 구조를 다룬 자료
-- 제품 홍보성 글보다 기술 분석, 공식 문서, 보안 리서치 우선
+- MCP 구조 리스크는 공식 MCP 문서와 issue를 우선한다.
+- OX Security의 2026-04-15 글은 좋은 보강자료지만 영향 수치와 규모 주장은 중간 신뢰도로 표시한다.
 
-### 4. ATO / CaaS / credential stuffing 보강 자료
+### ATO / Credential Stuffing
 
-현재 자체 글과 PointPivot이 있으므로, 국내 맥락 보강용 자료가 있으면 좋다.
-
-권장 검색어:
+다음 자료를 공통 트렌드에 사용할 수 있다.
 
 ```text
-credential stuffing stored value gift card fraud Korea 2026
-account takeover gift card fraud cryptocurrency reinvestment
-Korea prepaid SIM fraud credential stuffing gifticon
-M-safer identity theft Korea 2026
+https://windshock.github.io/ko/post/2026-04-07-dismantling-ato-supply-chain/
+https://github.com/windshock/pointpivot
+https://github.com/windshock/pointpivot/blob/main/data/campaigns.md
+https://github.com/windshock/pointpivot/blob/main/reports/summary.md
+https://github.com/windshock/pointpivot/blob/main/data/ioc_registry.md
+https://windshock.github.io/ko/post/2026-03-30-captcha-bypass-poc-defense-strategy/
 ```
 
-## 결과물 작성 규칙
+주의:
 
-조사 결과는 다음 형식으로 정리한다.
+- PointPivot은 OSINT 기반 도구로 설명한다.
+- 범죄 조직 귀속은 확정 표현보다 “관찰된 캠페인/클러스터” 표현을 사용한다.
 
-```markdown
-## 후보 항목명
+## 다음 LLM이 반영할 작업
 
-- 분류: Node.js / Java / Common
-- 공식 공지일: YYYY-MM-DD
-- 포함 판단: 포함 / 제외 / 보류
-- 이유:
-- 개발자 조치:
-- Source:
-  - URL (YYYY-MM-DD)
-  - URL (YYYY-MM-DD)
+1. `content/devsecnews-2026-04-node-java.md`의 Java placeholder를 Spring Security/Spring Boot/Oracle CPU 항목으로 교체한다.
+2. Node.js 섹션의 “추가 Node.js/npm 4월 항목” placeholder를 제거하고, “Node.js core 신규 공식 릴리스 부재 + Axios 공급망 중심”으로 정리한다.
+3. MCP 섹션에는 공식 MCP security docs와 OX 2026-04-15 자료를 reference로 추가한다.
+4. ATO 섹션에는 PointPivot OSINT 자료를 reference로 추가하되 귀속 표현을 보수적으로 쓴다.
+5. 참고자료에는 본문에 실제 사용한 URL만 남기고, URL 문자열을 본문과 완전히 일치시킨다.
+6. 최종 편집 후 아래 명령을 실행한다.
+
+```bash
+npm run verify -- --month 2026-04
+npm run build:cards -- --month 2026-04
+npm run deploy -- --month 2026-04
 ```
 
-## 이번 초안에서 의도적으로 남긴 구멍
+## 남은 공백
 
-- Java/Spring/JVM 4월 공식 보안 항목 2개 이상
-- Node.js/npm 4월 공식 보안 항목 1개 이상 추가
-- MCP 외부 신뢰 자료 1~2개
-- ATO 국내 자료 1~2개
+- 국내 정책/공문 1차 출처 대조:
+  - PDF의 “과기정통부 사이버침해대응과-721”, “침해사고 24시간 내 신고”, “매출액 3% 과징금” 공개 문서 확인 필요.
+- MCP 공식 대응 추적:
+  - 2026-04-15 이후 Anthropic / MCP maintainers / SDK repos의 공식 advisory, issue, patch, governance update 확인 필요.
+- ATO 공급망 외부 검증:
+  - PointPivot/블로그의 OSINT 결론을 언론 보도, 수사기관 자료, 판결문 수준 자료로 교차 검증하면 신뢰도 상승.
+- Java 섹션 확장 후보:
+  - Apache Tomcat / Jetty / Netty / Quarkus / Red Hat 계열 2026-04 공식 advisory 추가 탐색.
+- 도구 링크 공백:
+  - `mcpguard` 공개 URL 미확인.
 
 ## 최종 문서에 반영할 때 주의
 
