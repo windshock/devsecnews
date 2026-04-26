@@ -65,21 +65,48 @@ This is not a summary of all issues. It is the interpretive lens for the month.
 ### Requirements
 
 - One memorable sentence.
-- Avoid package names in the first line unless the package itself is the story.
+- Avoid abstract security slogans.
+- Prefer concrete surfaces from the month: commands, settings, flows, interfaces, permissions, evidence.
 - Avoid direct instruction too early.
-- Prefer a sentence that creates curiosity and frames the rest of the report.
+- Prefer a sentence or question that creates curiosity and frames the rest of the report.
 
-### 2026-04 example
+### 2026-04 recommended title
+
+```text
+개발 패키지 설치 명령(npm install), AI 도구 설정, 로그인 성공 — 어디까지 보이고 있습니까?
+```
+
+This title is intentionally concrete. It names the three surfaces that made April different:
+
+```text
+Build: 개발 패키지 설치 명령(npm install)
+Config: AI 도구 설정
+Account: 로그인 성공
+```
+
+It avoids the generic phrase `공격 경로` in the headline and turns the issue into a visibility question.
+
+### Supporting line
+
+```text
+4월호는 설치, 설정, 계정 흐름 뒤에서 실제로 무엇이 실행되고 기록되는지 묻습니다.
+```
+
+### Avoid as opening thesis
 
 ```text
 실행은 조용히 지나가고, 사고는 나중에 보입니다.
 ```
 
-Alternative:
+This is conceptually accurate, but too literary and not clickable enough as a headline.
+
+Also avoid:
 
 ```text
-보이지 않는 실행 경로가 이번 달의 공통 신호였습니다.
+평범한 흐름이 공격 경로가 됐다
 ```
+
+This is too generic and can describe almost any security incident.
 
 ## 2. Pattern
 
@@ -234,10 +261,10 @@ What does this incident teach us about visibility, ownership, defaults, or decis
 
 ```markdown
 # DevSecNews 2026-04
-## 실행은 조용히 지나가고, 사고는 나중에 보입니다
+## 개발 패키지 설치 명령(npm install), AI 도구 설정, 로그인 성공 — 어디까지 보이고 있습니까?
 
 ## 1. Signal
-보이지 않는 실행 경로가 이번 달의 공통 신호였습니다.
+4월호는 설치, 설정, 계정 흐름 뒤에서 실제로 무엇이 실행되고 기록되는지 묻습니다.
 
 ## 2. Pattern
 - Axios: 설치가 실행이 되었습니다.
@@ -296,13 +323,13 @@ Each monthly issue should contain one polished thesis, not many competing slogan
 For 2026-04, recommended thesis:
 
 ```text
-실행은 조용히 지나가고, 사고는 나중에 보입니다.
+개발 패키지 설치 명령(npm install), AI 도구 설정, 로그인 성공 — 어디까지 보이고 있습니까?
 ```
 
 Supporting line:
 
 ```text
-보이지 않는 실행 경로는 기본적으로 기록되고 소유되어야 합니다.
+4월호는 설치, 설정, 계정 흐름 뒤에서 실제로 무엇이 실행되고 기록되는지 묻습니다.
 ```
 
 Avoid leading with:
