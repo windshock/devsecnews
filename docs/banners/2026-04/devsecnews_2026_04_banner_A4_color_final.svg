@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="320" viewBox="0 0 1600 320">
+<defs>
+<linearGradient id="bg" x1="0" x2="1"><stop offset="0%" stop-color="#03070b"/><stop offset="62%" stop-color="#06121a"/><stop offset="100%" stop-color="#03070b"/></linearGradient>
+<radialGradient id="g1" cx="78%" cy="66%" r="52%"><stop offset="0%" stop-color="#11c7cd" stop-opacity=".18"/><stop offset="100%" stop-color="#11c7cd" stop-opacity="0"/></radialGradient>
+<radialGradient id="g2" cx="38%" cy="18%" r="45%"><stop offset="0%" stop-color="#f8f5ef" stop-opacity=".08"/><stop offset="100%" stop-color="#f8f5ef" stop-opacity="0"/></radialGradient>
+<filter id="shadow"><feDropShadow dx="0" dy="10" stdDeviation="8" flood-color="#000000" flood-opacity="0.35"/></filter>
+<style>
+.kr{font-family:Inter,'Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',Arial,sans-serif}
+.brand{font-size:17px;font-weight:900;fill:#f6f8fa;letter-spacing:.02em}.small{font-size:14px;font-weight:800;fill:#bec1c8}.status{font-size:35px;font-weight:900;fill:#0b121d}.micro{font-size:13px;fill:#aeb2b8}.q{font-size:65px;font-weight:900;fill:#f8f5ef}.sub{font-size:21px;font-weight:900;fill:#f6f8fa}.sub2{font-size:18px;fill:#b4bac3}.cta{font-size:22px;font-weight:900;fill:#26e1e6}.label{font-size:13px;font-weight:900;fill:#26e1e6;letter-spacing:.04em}
+</style>
+</defs>
+<rect width="1600" height="320" fill="url(#bg)"/><rect width="1600" height="320" fill="url(#g1)"/><rect width="1600" height="320" fill="url(#g2)"/>
+<g stroke="#ffffff" opacity=".025"><path d="M0 120H1600M0 240H1600"/><path d="M120 0V320M240 0V320M360 0V320M480 0V320M600 0V320M720 0V320M840 0V320M960 0V320M1080 0V320M1200 0V320M1320 0V320M1440 0V320M1560 0V320"/></g>
+<text x="42" y="43" class="kr brand">DEVSECNEWS</text><text x="168" y="43" class="kr small">2026년 4월호</text>
+<rect x="1360" y="24" width="185" height="28" rx="14" fill="#000000" opacity=".35" stroke="#11c7cd" stroke-opacity=".65"/>
+<text x="1380" y="43" class="kr label">DEFAULT DESIGN</text>
+<g class="kr" filter="url(#shadow)">
+<rect x="60" y="76" width="350" height="86" rx="20" fill="#f8f5ef" stroke="#11c7cd" stroke-opacity=".55"/>
+<circle cx="102" cy="119" r="15" fill="#11c7cd"/><path d="M94 119 L100 126 L112 110" stroke="#f8f5ef" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="138" y="132" class="status">설치 완료</text><text x="78" y="185" class="micro">postinstall은 기록됐습니까?</text><rect x="298" y="181" width="80" height="3" rx="2" fill="#11c7cd" opacity=".55"/>
+<rect x="442" y="76" width="350" height="86" rx="20" fill="#f8f5ef" stroke="#11c7cd" stroke-opacity=".55"/>
+<circle cx="484" cy="119" r="15" fill="#11c7cd"/><path d="M476 119 L482 126 L494 110" stroke="#f8f5ef" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="520" y="132" class="status">설정 저장</text><text x="460" y="185" class="micro">도구 호출은 승인됐습니까?</text><rect x="680" y="181" width="80" height="3" rx="2" fill="#11c7cd" opacity=".55"/>
+<rect x="824" y="76" width="350" height="86" rx="20" fill="#f8f5ef" stroke="#11c7cd" stroke-opacity=".55"/>
+<circle cx="866" cy="119" r="15" fill="#11c7cd"/><path d="M858 119 L864 126 L876 110" stroke="#f8f5ef" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="902" y="132" class="status">로그인 성공</text><text x="842" y="185" class="micro">이후 흐름은 보입니까?</text><rect x="1062" y="181" width="80" height="3" rx="2" fill="#11c7cd" opacity=".55"/>
+</g>
+<g class="kr"><text x="62" y="287" class="q">정말 끝난 걸까요?</text><rect x="64" y="306" width="416" height="5" rx="3" fill="#26e1e6"/>
+<text x="650" y="259" class="sub">완료 뒤의 실행과 기록을 봅니다.</text><text x="650" y="289" class="sub2">npm install · AI 도구 설정 · 로그인 이후 흐름</text>
+<rect x="1240" y="230" width="278" height="42" rx="12" fill="#050c11" opacity=".92" stroke="#26e1e6" stroke-width="2"/><text x="1264" y="259" class="cta">4월호에서 확인하기 →</text></g>
+</svg>
