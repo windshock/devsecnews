@@ -1,0 +1,10 @@
+{
+  "_note": "Single-clip narration for the 8s banner. Plays over the full composition (240 frames @ 30fps). Korean transliterates English brand names to Hangul.",
+  "duration_seconds": 8,
+  "en": {
+    "all": "DevSecNews. Monthly Node and Java vulnerability digest. CVE intel with patch context. Read this month."
+  },
+  "ko": {
+    "all": "데브섹뉴스. 노드와 자바 취약점 월간 다이제스트. 큐레이션된 시브이이 정보와 패치 맥락. 이번 호 보세요."
+  }
+}

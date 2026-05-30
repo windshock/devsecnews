@@ -1,4 +1,4 @@
-import { AbsoluteFill } from "remotion";
+import { AbsoluteFill, Audio, staticFile } from "remotion";
 import { TransitionSeries, linearTiming } from "@remotion/transitions";
 import { fade } from "@remotion/transitions/fade";
 import { FadeOutOverlay } from "remotion-kit-lib";
@@ -8,20 +8,29 @@ import { Title } from "../scenes/Title.jsx";
 import { Content } from "../scenes/Content.jsx";
 import { Cta } from "../scenes/Cta.jsx";
 
-// 8s timeline (240 frames @ 30fps), 3 scenes + 2 cross-fades. Each scene 90
-// frames, last scene padded for transition absorption (90 + 0 since last
-// scene has no transition after it — the math works out because each
-// transition steals from both sides of its boundary):
-//   Title:   0–90 (3s)
-//   Content: 75–165 (3s, starts 15f early due to preceding fade absorb)
-//   Cta:     150–240 (3s, padded to fill the trailing 30f)
+// 8s timeline (240 frames @ 30fps), 3 scenes + 2 cross-fades.
+//   Title:   0–90  (3s)
+//   Content: 75–165 (3s, 15f cross-fade absorbed at boundary)
+//   Cta:     150–240 (3s, +30f padding so the last frame is filled)
+//
+// Audio: single narration mp3 per language covers the full 8 s (no per-scene
+// split since the banner is too short to cut narration). BGM plays underneath
+// at volume 0.1 — Pixabay license-free Tech Ambient Corporate, trimmed to 8s.
+//
+// Korean narration transliterates English brand names to Hangul (MeloTTS KR
+// butchers raw English) — see public/audio/script.json.
 
 const TRANSITION_FRAMES = 15;
 
 export const Main = ({ lang }) => {
   return (
     <AbsoluteFill style={{ background: theme.bg }}>
-      {/* Static backdrop behind every scene */}
+      {/* BGM underlay */}
+      <Audio src={staticFile("audio/bgm.mp3")} volume={0.1} />
+
+      {/* Narration spans the whole composition */}
+      <Audio src={staticFile(`audio/narr-${lang}.mp3`)} />
+
       <GridBackdrop />
 
       <TransitionSeries>

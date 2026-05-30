@@ -1,0 +1,15 @@
+# BGM source
+
+Track:   "Tech Ambient Corporate" (Pixabay ID 156126)
+URL:     https://pixabay.com/music/corporate-tech-ambient-corporate-156126/
+File:    cdn.pixabay.com/download/audio/2023/06/29/audio_6dc0794530.mp3
+License: Pixabay Content License (free for commercial use; no attribution required)
+
+Processing:
+- ffmpeg -t 8     (first 8 seconds)
+- afade in 1s + afade out 1s
+- libmp3lame qscale 4   (~140 kbps)
+
+To swap: replace public/audio/bgm.mp3 keeping the filename — Main.jsx picks it
+up automatically. For a fully silent banner remove the <Audio> for bgm in
+src/compositions/Main.jsx.
