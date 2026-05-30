@@ -1,0 +1,20 @@
+{
+  "name": "devsecnews-promo",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Remotion-based promo/banner video for devsecnews-promo.",
+  "scripts": {
+    "studio": "remotion studio src/index.jsx",
+    "render": "remotion render src/index.jsx Main dist/devsecnews-promo.mp4",
+    "render:ko": "remotion render src/index.jsx MainKO dist/devsecnews-promo-ko.mp4"
+  },
+  "dependencies": {
+    "@remotion/cli": "^4.0.0",
+    "@remotion/transitions": "^4.0.0",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "remotion": "^4.0.0",
+    "remotion-kit-lib": "file:/Users/1004276/Downloads/remotion-kit/lib"
+  }
+}
