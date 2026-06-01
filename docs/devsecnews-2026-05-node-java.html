@@ -1,0 +1,428 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>DevSecNews 2026-05 | 취약점 인플레이션</title>
+<meta name="description" content="발견이 공짜가 되자 우리는 신뢰를 자동화했고, 5월에 그 신뢰가 위조됐다" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;700;900&family=Noto+Sans+KR:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+<style>
+:root{
+  --ink:#0a0d12; --ink-2:#0f141b; --panel:#10161f; --line:rgba(180,196,214,.12);
+  --paper:#e9e7e1; --muted:#9aa7b4; --dim:#5d6b78;
+  --red:#ff4b5c; --amber:#f5a524;
+  --serif:"Noto Serif KR",Georgia,serif;
+  --sans:"Noto Sans KR",system-ui,sans-serif;
+  --display:"Pretendard","Noto Sans KR",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  --wrap:920px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--ink);color:var(--paper);font-family:var(--sans);
+  font-size:17px;line-height:1.75;-webkit-font-smoothing:antialiased;
+  background-image:radial-gradient(120% 80% at 50% -8%,rgba(255,75,92,.06),transparent 46%);
+}
+/* grain */
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:1;opacity:.035;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");z-index:3;}
+.wrap{max-width:var(--wrap);margin:0 auto;padding:0 24px;position:relative;z-index:2}
+
+/* ---------- cover ---------- */
+/* sticky scroll-over hero: cover pins full-screen, content slides up over it */
+.cover{border-bottom:1px solid var(--line);background:linear-gradient(180deg,#05080d, var(--ink) 70%);
+  position:sticky;top:0;z-index:0;min-height:100vh;display:flex;flex-direction:column;justify-content:center}
+.scroller{position:relative;z-index:2;background:var(--ink)}
+.cover__bar{display:flex;justify-content:space-between;align-items:center;
+  font-family:var(--mono);font-size:12px;letter-spacing:.28em;text-transform:uppercase;
+  color:var(--muted);padding:22px 0 18px}
+.cover__bar .brand{color:var(--red);font-weight:600}
+.cover__media{border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#000;
+  box-shadow:0 30px 80px -40px rgba(255,75,92,.4),0 10px 40px -20px rgba(0,0,0,.8)}
+.cover__media video,.cover__media img{display:block;width:100%;height:auto}
+.cover__theme{font-family:var(--display);font-weight:900;letter-spacing:-.02em;line-height:1.04;
+  font-size:clamp(40px,8vw,84px);margin:34px 0 0}
+.cover__sub{font-size:clamp(16px,2.4vw,21px);color:var(--muted);max-width:34em;margin:16px 0 0;line-height:1.6}
+.cover__tag{font-family:var(--mono);color:var(--red);font-size:clamp(13px,1.7vw,16px);
+  letter-spacing:.02em;margin:22px 0 0;padding-left:16px;border-left:3px solid var(--red)}
+.cover__foot{display:flex;gap:22px;flex-wrap:wrap;font-family:var(--mono);font-size:12px;
+  color:var(--dim);text-transform:uppercase;letter-spacing:.2em;padding:30px 0 40px}
+.cover .wrap{will-change:transform,opacity,filter}
+.cover__media{will-change:transform}
+.cover__scroll{position:absolute;left:50%;bottom:22px;font-family:var(--mono);font-size:22px;
+  color:var(--muted);z-index:1;pointer-events:none;animation:bob 1.6s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(9px)}}
+
+/* ---------- contents ---------- */
+.contents{padding:46px 0;border-bottom:1px solid var(--line)}
+.contents__label{font-family:var(--mono);font-size:12px;letter-spacing:.3em;text-transform:uppercase;color:var(--dim);margin-bottom:20px}
+.toc{display:grid;grid-template-columns:repeat(2,1fr);gap:2px 36px}
+.toc__item{display:grid;grid-template-columns:34px auto;align-items:baseline;gap:0 14px;
+  padding:13px 0;border-top:1px solid var(--line);text-decoration:none;color:var(--paper);transition:.15s}
+.toc__item:hover{color:var(--red);transform:translateX(3px)}
+.toc__num{font-family:var(--mono);color:var(--red);font-size:13px}
+.toc__kicker{grid-column:2;font-family:var(--mono);font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--dim)}
+.toc__head{grid-column:2;font-weight:700;font-size:15.5px;line-height:1.4}
+
+/* ---------- chapters ---------- */
+.chapter{padding:64px 0 8px;position:relative}
+.chapter__rule{height:1px;background:linear-gradient(90deg,var(--red),transparent 60%);margin-bottom:30px}
+.chapter__head{display:flex;align-items:flex-start;gap:22px;margin-bottom:26px}
+.chapter__num{font-family:var(--serif);font-weight:900;font-size:clamp(56px,11vw,104px);line-height:.8;
+  color:transparent;-webkit-text-stroke:1.5px rgba(255,75,92,.45);text-stroke:1.5px rgba(255,75,92,.45);
+  letter-spacing:-.04em;flex:none;margin-top:-6px}
+.chapter__kicker{font-family:var(--mono);font-size:12px;letter-spacing:.28em;text-transform:uppercase;color:var(--red);margin-bottom:8px}
+.chapter__title{font-family:var(--serif);font-weight:700;font-size:clamp(26px,4.4vw,40px);line-height:1.18;margin:0;letter-spacing:-.01em}
+
+/* prose */
+.prose{font-size:17px;color:#d7d9dd}
+.prose p{margin:0 0 1.15em}
+.prose a{color:var(--red);text-decoration:none;border-bottom:1px solid rgba(255,75,92,.35)}
+.prose a:hover{border-bottom-color:var(--red)}
+.prose strong{color:var(--paper);font-weight:700}
+.prose code{font-family:var(--mono);font-size:.86em;background:var(--ink-2);border:1px solid var(--line);
+  padding:.1em .4em;border-radius:5px;color:#ffd0d4}
+.prose pre{background:#070a0e;border:1px solid var(--line);border-radius:10px;padding:18px;overflow:auto;font-family:var(--mono);font-size:14px}
+.prose pre code{background:none;border:none;padding:0;color:#cdd6df}
+/* pull quote (blockquote) */
+.prose blockquote{margin:34px 0;padding:6px 0 6px 26px;border-left:3px solid var(--red);
+  font-family:var(--serif);font-weight:500;font-size:clamp(20px,3vw,30px);line-height:1.4;color:var(--paper)}
+.prose blockquote p{margin:0}
+/* tables (Default Shift) */
+.prose table{width:100%;border-collapse:collapse;margin:26px 0;font-size:14.5px}
+.prose th{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+  text-align:left;color:var(--red);border-bottom:1px solid var(--line);padding:12px 14px;vertical-align:top}
+.prose td{border-bottom:1px solid var(--line);padding:13px 14px;vertical-align:top;color:#cfd4da}
+.prose tr td:first-child{font-weight:700;color:var(--paper)}
+/* lists */
+.prose ul,.prose ol{margin:0 0 1.15em;padding-left:1.3em}
+.prose li{margin:.4em 0}
+.prose ul li::marker{color:var(--red)}
+.prose ol li::marker{color:var(--red);font-family:var(--mono)}
+
+/* checklist (4.5) */
+.checklist strong{display:inline-block;font-family:var(--mono);font-size:11.5px;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--red);margin:18px 0 4px}
+
+/* ---------- field notes cards ---------- */
+.fieldgroup{padding:30px 0 4px}
+.fieldgroup__head{display:flex;align-items:baseline;gap:14px;margin:8px 0 22px;
+  border-bottom:1px solid var(--line);padding-bottom:14px}
+.fieldgroup__tag{font-family:var(--mono);font-size:11px;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--ink);background:var(--red);padding:4px 9px;border-radius:4px;font-weight:600;flex:none}
+.fieldgroup__title{font-family:var(--serif);font-weight:700;font-size:clamp(19px,2.8vw,25px);margin:0;line-height:1.25}
+.cards{display:grid;gap:18px}
+.card{background:linear-gradient(180deg,var(--panel),var(--ink-2));border:1px solid var(--line);
+  border-left:2px solid rgba(255,75,92,.5);border-radius:12px;padding:22px 24px;transition:.18s}
+.card:hover{border-left-color:var(--red);box-shadow:0 16px 50px -34px rgba(255,75,92,.5)}
+.card__head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:12px}
+.card__title{font-family:var(--serif);font-weight:700;font-size:19px;line-height:1.3;margin:0;color:var(--paper)}
+.card__title code{font-family:var(--mono);font-size:.8em;background:var(--ink);padding:.1em .35em;border-radius:4px;color:#ffd0d4}
+.card__chips{display:flex;gap:6px;flex:none;flex-wrap:wrap;justify-content:flex-end}
+.chip{font-family:var(--mono);font-size:10px;letter-spacing:.1em;font-weight:600;padding:4px 8px;border-radius:5px;white-space:nowrap}
+.chip--cve{background:var(--ink);color:var(--muted);border:1px solid var(--line)}
+.sev--crit{background:rgba(255,75,92,.16);color:var(--red);border:1px solid rgba(255,75,92,.4)}
+.sev--high{background:rgba(245,165,36,.14);color:var(--amber);border:1px solid rgba(245,165,36,.4)}
+.sev--med{background:rgba(154,167,180,.12);color:var(--muted);border:1px solid var(--line)}
+.card__body{font-size:15.5px;color:#c4cad1;line-height:1.7}
+.card__body p{margin:0 0 .9em}
+.card__body a{color:var(--red);text-decoration:none;border-bottom:1px solid rgba(255,75,92,.3)}
+.card__body code{font-family:var(--mono);font-size:.84em;background:var(--ink);border:1px solid var(--line);padding:.08em .35em;border-radius:4px;color:#ffd0d4}
+.card__shift{margin-top:14px!important;padding:13px 16px;background:rgba(255,75,92,.07);
+  border:1px solid rgba(255,75,92,.2);border-radius:8px;font-size:14.5px;color:#dfe3e8}
+.card__shift-k{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--red);font-weight:600;display:block;margin-bottom:5px}
+
+/* refs */
+.refs__list ul{list-style:none;padding:0;columns:1}
+.refs__list li{font-family:var(--mono);font-size:13px;border-bottom:1px solid var(--line);padding:10px 0;margin:0;word-break:break-all}
+.refs__list a{border:none}
+
+/* jargon tooltips */
+.term{border-bottom:1px dotted var(--red);cursor:help;position:relative;color:inherit}
+.term:hover::after,.term:focus::after{
+  content:attr(data-tip);position:absolute;left:0;bottom:calc(100% + 9px);
+  width:max-content;max-width:300px;white-space:normal;
+  background:#05080d;border:1px solid var(--line);border-left:2px solid var(--red);
+  color:var(--paper);font-family:var(--sans);font-size:13px;font-weight:400;line-height:1.55;letter-spacing:0;
+  padding:10px 13px;border-radius:8px;box-shadow:0 14px 36px -12px rgba(0,0,0,.85);z-index:60;pointer-events:none}
+.term:hover::before,.term:focus::before{
+  content:"";position:absolute;left:10px;bottom:calc(100% + 3px);border:6px solid transparent;
+  border-top-color:var(--line);z-index:61;pointer-events:none}
+
+/* glossary box */
+.glossary{border-top:1px solid var(--line);margin-top:64px;padding-top:40px}
+.glossary__label{font-family:var(--mono);font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--dim);margin-bottom:22px}
+.glossary__grid{display:grid;grid-template-columns:repeat(2,1fr);gap:6px 40px;margin:0}
+.glossary dt{font-family:var(--mono);font-size:13px;color:var(--red);font-weight:600;margin-top:14px}
+.glossary dd{margin:3px 0 0;font-size:14px;color:#c4cad1;line-height:1.6}
+@media(max-width:720px){.glossary__grid{grid-template-columns:1fr}}
+
+/* footer */
+.colophon{border-top:1px solid var(--line);margin-top:70px;padding:46px 0 70px;
+  font-family:var(--mono);font-size:12.5px;color:var(--dim);letter-spacing:.04em}
+.colophon b{color:var(--red);font-weight:600;letter-spacing:.18em;text-transform:uppercase}
+.colophon .row{display:flex;justify-content:space-between;flex-wrap:wrap;gap:14px;margin-top:10px}
+
+@media(max-width:720px){ .toc{grid-template-columns:1fr} .chapter__head{gap:14px} body{font-size:16px} }
+
+/* load reveal */
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.cover__theme,.cover__sub,.cover__tag{animation:rise .7s both}
+.cover__sub{animation-delay:.08s}.cover__tag{animation-delay:.16s}
+</style>
+</head>
+<body>
+  <header class="cover">
+    <div class="wrap">
+      <div class="cover__bar"><span class="brand">● DevSecNews</span><span>Issue 2026-05</span></div>
+      <div class="cover__media">
+        <video autoplay muted loop playsinline poster="assets/devsecnews-board-2026-05.jpg"><source src="assets/devsecnews-board-2026-05.mp4" type="video/mp4" /></video>
+      </div>
+      <h1 class="cover__theme">취약점 인플레이션</h1>
+      <p class="cover__sub">발견이 공짜가 되자 우리는 신뢰를 자동화했고, 5월에 그 신뢰가 위조됐다</p>
+      <p class="cover__tag">Discovery is cheap. Verification is scarce. Trust is the battlefield.</p>
+      <div class="cover__foot"><span>2026년 05월호</span><span>Node.js · Java · AI/MCP</span><span>Developer Security</span></div>
+    </div>
+    <div class="cover__scroll" aria-hidden="true">↓</div>
+  </header>
+
+  <div class="scroller">
+  <nav class="contents"><div class="wrap">
+    <div class="contents__label">In this issue</div>
+    <div class="toc"><a class="toc__item" href="#s1"><span class="toc__num">01</span><span class="toc__kicker">The Inflation</span><span class="toc__head">발견이 공짜가 된 시대, 검증이 병목이다</span></a><a class="toc__item" href="#s2"><span class="toc__num">02</span><span class="toc__kicker">The Forged Badge</span><span class="toc__head">검증 배지를 단 악성코드</span></a><a class="toc__item" href="#s3"><span class="toc__num">03</span><span class="toc__kicker">The Same Mistake, Four Times</span><span class="toc__head">신호를 실행으로 올린 네 가지</span></a><a class="toc__item" href="#s4"><span class="toc__num">04</span><span class="toc__kicker">Put The Human Back</span><span class="toc__head">스캐너가 아니라 승인자다</span></a><a class="toc__item" href="#s5"><span class="toc__num">05</span><span class="toc__kicker">Patch &amp; Defend</span><span class="toc__head">이번 달 패치하고 막기</span></a><a class="toc__item" href="#refs"><span class="toc__num">·</span><span class="toc__kicker">REFERENCES</span><span class="toc__head">참고자료</span></a></div>
+  </div></nav>
+
+  <main class="wrap">
+    <section class="chapter" id="s1">
+      <div class="chapter__rule"></div>
+      <div class="chapter__head">
+        <span class="chapter__num" aria-hidden="true">01</span>
+        <div>
+          <div class="chapter__kicker">The Inflation</div>
+          <h2 class="chapter__title">발견이 공짜가 된 시대, 검증이 병목이다</h2>
+        </div>
+      </div>
+      <div class="prose"><p>올해 보안의 전제 하나가 바뀌었다. 취약점을 찾는 일이 더는 비싸지 않다. AI 스캐너는 코드를 훑어 취약점 후보를 쏟아내고, AI 에이전트는 취약 코드 도달부터 익스플로잇 사다리까지 단계별로 기어오른다. ExploitBench·ExploitGym 같은 벤치마크는 모델이 그 사다리를 어디까지 오르는지 측정하는데, 가리키는 방향은 한쪽이다. 발견과 악용 시도의 비용은 계속 떨어진다. (<a href="https://github.com/exploitbench/exploitbench">ExploitBench</a>, 2026-05 확인 / <a href="https://rdi.berkeley.edu/blog/exploitgym/">ExploitGym, Berkeley RDI</a>, 2026-05 확인)</p>
+<p>문제는 발견이 아니라 그다음이다. 리포트는 쏟아지는데, 사람이 그 홍수를 다 검증하지 못한다. 중복인지, 진짜 악용 가능한지, 패치 증거가 있는지 가려내는 triage가 밀린다. 발견은 공짜가 됐지만 검증은 그대로 비싸다. 보안진단을 마지막 이벤트가 아니라 개발 공정 안의 반복 검증으로 끌고 들어와야 하는 이유가 여기 있다. (<a href="https://windshock.github.io/ko/post/2026-05-01-security-assessment-as-development-process/">windshock.github.io</a>, 2026-05-01)</p>
+<p>검증이 발견 속도를 못 따라가면 사람은 검증을 <strong>자동 신호</strong>에 떠넘긴다. &quot;서명됐으니 됐다&quot;, &quot;<abbr class="term" tabindex="0" data-tip="패키지가 어느 빌드·커밋에서 나왔는지 기록한 '출처 증명'. 안전 보장이 아니라 출처 기록이다." title="패키지가 어느 빌드·커밋에서 나왔는지 기록한 '출처 증명'. 안전 보장이 아니라 출처 기록이다.">provenance</abbr>가 붙었으니 안전하다&quot;, &quot;스캐너가 통과시켰으니 괜찮다.&quot; 발견의 인플레이션은 그래서 조용히 신뢰의 위기로 번진다. 일일이 못 보는 것을, 자동 배지가 대신 봐줬다고 믿기 시작하니까.</p>
+<p>그리고 2026년 5월, 바로 그 배지가 위조됐다.</p>
+<blockquote>
+<p>Discovery is cheap. Verification is scarce. Trust is the battlefield.</p>
+</blockquote>
+</div>
+    </section><section class="chapter" id="s2">
+      <div class="chapter__rule"></div>
+      <div class="chapter__head">
+        <span class="chapter__num" aria-hidden="true">02</span>
+        <div>
+          <div class="chapter__kicker">The Forged Badge</div>
+          <h2 class="chapter__title">검증 배지를 단 악성코드</h2>
+        </div>
+      </div>
+      <div class="prose"><p>2026년 5월 11일 저녁 6분 동안, npm에 패키지 84개가 올라왔다. <code>@tanstack/react-router</code>를 포함한 42개. 전부 유효한 <abbr class="term" tabindex="0" data-tip="공급망 무결성 등급 표준(Supply-chain Levels for Software Artifacts). 등급이 높을수록 빌드 출처가 더 검증된다." title="공급망 무결성 등급 표준(Supply-chain Levels for Software Artifacts). 등급이 높을수록 빌드 출처가 더 검증된다.">SLSA</abbr> Build Level 3 provenance <abbr class="term" tabindex="0" data-tip="빌드 출처를 서명해 붙인 증명서." title="빌드 출처를 서명해 붙인 증명서.">attestation</abbr>을 달고 있었다. &quot;이 패키지는 진짜 TanStack의 CI 파이프라인이 빌드했다&quot;는 암호학적 증명서다. 증명서는 진짜였다. 그런데 패키지는 전부 악성코드였다. (<a href="https://www.stepsecurity.io/blog/mini-shai-hulud-is-back-a-self-spreading-supply-chain-attack-hits-the-npm-ecosystem">StepSecurity</a>, 2026-05-11)</p>
+<p>이게 5월의 진짜 사건이다. 취약점이 터진 게 아니라, <strong>신뢰 그 자체가 위조됐다.</strong></p>
+<p>배경을 봐야 무게가 보인다. 2025년 9월, 1세대 Shai-Hulud 웜이 npm을 휩쓴 뒤 업계의 진단은 분명했다. 문제는 훔칠 수 있는 사람의 비밀이다. 그래서 답도 분명했다. 사람을 빼자. GitHub와 npm은 로컬 publish에 <abbr class="term" tabindex="0" data-tip="비밀번호 대신 보안키·생체 인증을 쓰는 표준. 피싱에 강하다." title="비밀번호 대신 보안키·생체 인증을 쓰는 표준. 피싱에 강하다.">FIDO</abbr> 기반 2FA를 의무화하고, 토큰 수명을 7일로 깎고, 장기 토큰 대신 <abbr class="term" tabindex="0" data-tip="OpenID Connect. CI가 장기 토큰 대신 단기 신원 토큰으로 인증하는 방식." title="OpenID Connect. CI가 장기 토큰 대신 단기 신원 토큰으로 인증하는 방식.">OIDC</abbr> <abbr class="term" tabindex="0" data-tip="CI가 단기 신원으로 인증해 장기 토큰 없이 패키지를 게시하는 방식." title="CI가 단기 신원으로 인증해 장기 토큰 없이 패키지를 게시하는 방식.">trusted publishing</abbr>을 밀었다. CI가 OpenID Connect로 인증하면 npm이 자동으로 provenance를 발행한다. 베팅은 명확했다. 사람이 들고 다니는 비밀번호보다 기계의 신원과 암호학적 출처 증명이 안전하다. (<a href="https://thehackernews.com/2025/09/github-mandates-2fa-and-short-lived.html">The Hacker News</a>, 2025-09 / <a href="https://docs.npmjs.com/trusted-publishers/">npm trusted publishing</a>, 2026-05 확인)</p>
+<p>Mini Shai-Hulud는 이 방어를 깨지 않았다. <strong>그 방어가 됐다.</strong> 웜은 GitHub Actions runner에 떠 있는 OIDC 토큰(<code>ACTIONS_ID_TOKEN_REQUEST_TOKEN</code>)을 훔쳐 <abbr class="term" tabindex="0" data-tip="신원을 받아 단기 서명 인증서를 발급하는 기관." title="신원을 받아 단기 서명 인증서를 발급하는 기관.">Fulcio</abbr>에서 서명 인증서를 받고, <abbr class="term" tabindex="0" data-tip="키를 따로 보관하지 않고 소프트웨어에 서명·검증하게 해주는 오픈소스 서명 인프라." title="키를 따로 보관하지 않고 소프트웨어에 서명·검증하게 해주는 오픈소스 서명 인프라.">Sigstore</abbr>에 악성 산출물 서명을 정식으로 요청했다. 인증서를 위조한 게 아니다. 진짜 TanStack 파이프라인으로 인증한 채 서명을 받았다. 시크릿은 runner의 <code>/proc/{pid}/mem</code>을 직접 읽어 마스킹을 우회하고(마스킹은 로그 표시만 가린다), 자동화용 <code>bypass_2fa</code> 토큰을 찾아 같은 메인테이너의 패키지를 열거해 다시 publish했다. (<a href="https://www.stepsecurity.io/blog/mini-shai-hulud-is-back-a-self-spreading-supply-chain-attack-hits-the-npm-ecosystem">StepSecurity</a>, 2026-05-11)</p>
+<p>핵심은 한 줄이다. <strong>provenance는 &quot;어느 파이프라인이 만들었나&quot;를 증명하지, &quot;그 파이프라인이 정상 동작했나&quot;를 증명하지 않는다.</strong> 우리는 <em>출처</em>를 <em>안전</em>이라고 팔았다. 서명 인증서를 손에 넣은 공격자에게 그 둘은 같은 것이 된다. (<a href="https://labs.cloudsecurityalliance.org/research/csa-research-note-shai-hulud-ai-supply-chain-20260517-csa-st/">CSA</a>, 2026-05-17)</p>
+</div>
+    </section><section class="chapter" id="s3">
+      <div class="chapter__rule"></div>
+      <div class="chapter__head">
+        <span class="chapter__num" aria-hidden="true">03</span>
+        <div>
+          <div class="chapter__kicker">The Same Mistake, Four Times</div>
+          <h2 class="chapter__title">신호를 실행으로 올린 네 가지</h2>
+        </div>
+      </div>
+      <div class="prose"><p>신뢰 신호는 본래 사람을 빼기 위한 약속이다. &quot;서명됐으니 믿어라&quot;, &quot;로컬이니 안전하다&quot;, &quot;스캔 통과했으니 됐다.&quot; 이 약속이 성립하려면 신호가 실행·배포로 <em>승격</em>되는 지점에 승인자가 있어야 한다. 5월의 사건들은 영역이 달라도 전부 그 승인자가 없는 자리에서 터졌다.</p>
+<p><strong>npx — 내가 친 명령이 곧 설치 명령이 된다.</strong> <code>npx build-tool</code>은 로컬에 <code>build-tool</code>이 없으면 같은 문자열을 패키지 이름으로 승격해 registry에서 받아 실행한다. scoped 패키지(<code>@company/internal-build-tool</code>)가 노출하는 binary 이름은 scope를 못 담으니, 공개되지 않은 명령 이름 하나가 실행 경계가 된다. 공격자가 알아야 할 건 내부 패키지명이 아니라 README·CI 로그에 적힌 명령 이름뿐이다. &quot;내가 실행하려던 것&quot;과 &quot;실제로 받아 실행되는 것&quot; 사이에 아무도 없다. (<a href="https://www.landh.tech/blog/20260521-npx-used-confusion-and-its-super-effective/">Lupin &amp; Holmes</a>, 2026-05-21)</p>
+<p><strong>MCP — 설정이 곧 실행이 된다.</strong> <code>mcp.json</code>의 command·args는 겉보기엔 환경 구성이지만, AI 추천 → 승인 → 설정 → 도구 호출 → 로컬 실행으로 곧장 이어진다. 이건 새 문제가 아니라 XML-RPC부터 반복된 신뢰 경계 실패다. 설정을 &quot;코드보다 덜 위험한 것&quot;으로 다루는 순간 승인자가 사라진다. <code>0.0.0.0</code> 바인딩과 무인증 JSON-RPC는 &quot;로컬이니 안전&quot;이라는 마지막 가정마저 무너뜨린다. (<a href="https://windshock.github.io/ko/post/2026-05-07-mcp-is-repeating-rpc-security-history/">windshock.github.io</a>, 2026-05-07)</p>
+<p><strong>Spring AI — 모델 출력이 곧 <abbr class="term" tabindex="0" data-tip="외부 입력이 최종적으로 위험하게 쓰이는 지점(파일 쓰기·DB 쿼리·명령 실행 등)." title="외부 입력이 최종적으로 위험하게 쓰이는 지점(파일 쓰기·DB 쿼리·명령 실행 등).">sink</abbr>에 닿는다.</strong> 5월 공개된 Spring AI 네 건은 전부 같은 모양이다. 대화 메모리(<code>CVE-2026-41712</code>·<code>41713</code>), vector store(<code>41705</code>), 모델이 만든 파일명(<code>41863</code>), AI 기능이 만지는 입력이 검증 없이 데이터·쿼리·파일에 도달한다. &quot;우리 앱의 데이터&quot;라는 이유로 모델 입출력을 신뢰 입력으로 다룬 결과다. (<a href="https://spring.io/security/cve-2026-41712/">spring.io</a>, 2026-05-08)</p>
+<p><strong>진단 — &quot;스캔했다&quot;가 곧 &quot;검증됐다&quot;가 된다.</strong> 한 인증 백엔드 진단은 모듈 스코프 기본값 탓에 메인 모듈만 보고, 옆 모듈의 엔드포인트가 응답에 AES key/iv를 그대로 실어 보내고 같은 모듈에 그 키가 하드코딩된 사실을 놓쳤다. 리포트는 깔끔하게 통과했다. 스캐너의 출력은 발견이지 판정이 아닌데, 스코프를 누가 정했는지 묻는 사람이 없었다. (<a href="https://windshock.github.io/ko/post/2026-05-19-sec-audit-static-feedback-loop/">windshock.github.io</a>, 2026-05-19)</p>
+<p>네 사건의 공통점은 공격 기법이 아니다. 신호를 실행·배포·노출로 승격하는 지점에 사람이 없었다. 그리고 그 빈자리는 사고가 난 뒤에야 보인다.</p>
+</div>
+    </section><section class="chapter" id="s4">
+      <div class="chapter__rule"></div>
+      <div class="chapter__head">
+        <span class="chapter__num" aria-hidden="true">04</span>
+        <div>
+          <div class="chapter__kicker">Put The Human Back</div>
+          <h2 class="chapter__title">스캐너가 아니라 승인자다</h2>
+        </div>
+      </div>
+      <div class="prose"><p>그럼 더 좋은 신호를 만들면 되지 않나. 5월은 그 길이 막혔다고 답한다. provenance는 위조됐고, MCP 스캐너는 한 랩 벤치마크에서 24개 기대 탐지 중 recall이 0~4%대였다. 승격 경계에서 &quot;자동으로 더 잘 판정하는 신호&quot;는 막다른 길이다. (<a href="https://github.com/windshock/mcpscan">github.com/windshock/mcpscan</a>, 2026-05 확인)</p>
+<p>남는 답은 하나다. <strong>되돌릴 수 없는 단계에 사람을 다시 넣는 것.</strong> publish, 실행, 시크릿 접근 같은 비가역 지점에.</p>
+<p>흥미로운 건 업계가 5월에 정확히 그렇게 움직였다는 점이다. npm은 <abbr class="term" tabindex="0" data-tip="패키지를 바로 공개하지 않고 검토·승인 단계를 거쳐 게시하는 npm 방식." title="패키지를 바로 공개하지 않고 검토·승인 단계를 거쳐 게시하는 npm 방식.">staged publishing</abbr>과 함께 &quot;<abbr class="term" tabindex="0" data-tip="배포 직전 실제 사람이 라이브 2FA 챌린지로 승인했다는 증거. 자동화 자격증명으로는 통과할 수 없다." title="배포 직전 실제 사람이 라이브 2FA 챌린지로 승인했다는 증거. 자동화 자격증명으로는 통과할 수 없다.">proof of presence</abbr>&quot;를 내놨다(npm CLI 11.15.0). 코드가 배포되기 전 <em>실제 사람이 검토·승인했다는 증거</em>를 요구하는데, 이 승인은 자동화 자격증명·OIDC 토큰·비대화형 경로로는 완료할 수 없고 오직 라이브 2FA 챌린지로만 충족된다. 10년간 신뢰를 자동화해 온 생태계가, 위조 불가능한 단 하나의 통제로 <strong>사람을 도로 집어넣은</strong> 것이다. (<a href="https://thehackernews.com/2026/05/npm-adds-2fa-gated-publishing-and.html">The Hacker News</a>, 2026-05 / <a href="https://github.com/orgs/community/discussions/174507">npm 공급망 보안 계획</a>, 2026-05 확인)</p>
+<p>&quot;사람은 확장이 안 된다&quot;는 반론이 바로 따라온다. 맞다. 그래서 승인자를 <em>모든 곳</em>에 두자는 게 아니다. 파이프라인의 대부분은 자동으로 둔다. 사람은 <strong>신호가 실행이나 배포로 승격되는 비가역 경계 한 곳</strong>에만 선다. proof of presence가 publish 순간에만 사람을 요구하듯이. 비용은 그 한 번이고, 막는 건 위조된 신뢰 전체다.</p>
+<p>그래서 5월의 처방은 제품별로 흩어지지 않는다. npm은 publish에 사람을, MCP는 실행에 allowlist 승인을, Spring AI는 모델 출력이 sink에 닿기 전 경계를, 진단은 스코프를 정하는 사람을 둔다. 전부 &quot;자동 신호 ↑&quot;가 아니라 **&quot;승인 경계 ↓&quot;**다.</p>
+</div>
+    </section><section class="chapter" id="s5">
+      <div class="chapter__rule"></div>
+      <div class="chapter__head">
+        <span class="chapter__num" aria-hidden="true">05</span>
+        <div>
+          <div class="chapter__kicker">Patch &amp; Defend</div>
+          <h2 class="chapter__title">이번 달 패치하고 막기</h2>
+        </div>
+      </div>
+      <div class="prose"><p>주장은 여기까지다. 아래는 이번 달 당장 손대야 할 것 — 버전, 침해지표, 도구.</p>
+</div>
+    </section><section class="fieldgroup">
+      <div class="fieldgroup__head"><span class="fieldgroup__tag">npm 공급망 (Node.js)</span><h3 class="fieldgroup__title">npm 공급망 (Node.js)</h3></div>
+      <div class="cards"><article class="card">
+      <div class="card__head"><h4 class="card__title">Mini Shai-Hulud 침해 범위와 대응</h4><div class="card__chips"><span class="chip sev--crit">WORM</span></div></div>
+      <div class="card__body"><p><code>@tanstack/*</code> 42개 + <code>@uipath</code> 80여 개 포함 130개 이상 패키지, 2026-05-11 게시. 노출 시간대(2026-05-11 전후)에 감염 스코프를 설치한 runner의 GitHub PAT·npm 토큰·OIDC·클라우드 키를 교체하고, <code>gh-token-monitor</code> LaunchAgent/systemd 유닛과 <code>.claude/settings.json</code>·<code>.vscode/tasks.json</code> persistence 흔적을 제거한다. 토큰 폐기를 감지하면 <code>rm -rf ~/</code>가 돌므로 <strong>의심 머신을 먼저 격리한 뒤</strong> 폐기한다. (<a href="https://unit42.paloaltonetworks.com/monitoring-npm-supply-chain-attacks/">Unit42</a>, 2026-05-21 갱신 / <a href="https://connect.securonix.com/threat-research-intelligence-62/mini-shai-hulud-the-self-replicating-npm-worm-that-turned-software-development-against-itself-307">Securonix</a>, 2026-05 확인)</p>
+<p class="card__shift"><span class="card__shift-k">기본 설계 전환:</span> provenance가 붙었다고 통과시키지 않는다 — 출처 증명과 안전 검증을 분리한다.</p>
+</div>
+    </article>
+<article class="card">
+      <div class="card__head"><h4 class="card__title">npx confusion · dependency confusion</h4></div>
+      <div class="card__body"><p><code>npx &lt;name&gt;</code>을 <code>npx --no-install &lt;name&gt;</code>로 바꿔 registry fallback을 막고, <code>package.json</code>의 <code>bin</code>으로 노출한 unscoped 명령 이름은 registry에 선점한다. Microsoft가 2026-05-29 보고한 33개 악성 패키지처럼 내부 이름을 가로채는 <abbr class="term" tabindex="0" data-tip="내부 전용 패키지와 같은 이름을 공개 레지스트리에 올려, 빌드가 공개본을 당겨오게 만드는 공격." title="내부 전용 패키지와 같은 이름을 공개 레지스트리에 올려, 빌드가 공개본을 당겨오게 만드는 공격.">dependency confusion</abbr>은 내부 scope를 <code>.npmrc</code>에서 사내 registry로 고정해 막는다. (<a href="https://www.aikido.dev/blog/npx-confusion-unclaimed-package-names">Aikido</a>, 2026-05 확인 / <a href="https://www.microsoft.com/en-us/security/blog/2026/05/29/33-malicious-npm-packages-abuse-dependency-confusion-profile-developer-environments/">Microsoft Security Blog</a>, 2026-05-29)</p>
+<p class="card__shift"><span class="card__shift-k">기본 설계 전환:</span> 명령 이름·내부 패키지 이름을 &quot;실행 경계&quot;로 보고 미리 claim·고정한다.</p>
+</div>
+    </article>
+<article class="card card--tool">
+      <div class="card__head"><h4 class="card__title">설치·CI 방어 (외부)</h4><div class="card__chips"><span class="chip chip--tool">TOOLING</span></div></div>
+      <div class="card__body"><p><strong>Socket</strong>은 게시 즉시 패키지 행위 변화(갑자기 <code>~/.aws/credentials</code>를 읽거나 네트워크를 여는)를 플래그한다. <strong>Renovate/Dependabot</strong>의 release-age 게이트(<code>minimumReleaseAge</code>)로 게시 7일 미만 버전 설치를 보류하면 웜의 초기 확산창을 닫는다. CI는 <strong>StepSecurity Harden-Runner</strong>로 <abbr class="term" tabindex="0" data-tip="시스템에서 바깥으로 나가는 네트워크 트래픽." title="시스템에서 바깥으로 나가는 네트워크 트래픽.">egress</abbr>를 allowlist하고, 빌드는 <code>npm ci --ignore-scripts</code> + lockfile 고정을 기본값으로 둔다. (<a href="https://socket.dev/">Socket</a>, 2026-05 확인 / <a href="https://docs.renovatebot.com/">Renovate docs</a>, 2026-05 확인 / <a href="https://github.com/step-security/harden-runner">Harden-Runner</a>, 2026-05 확인 / <a href="https://github.com/lirantal/npm-security-best-practices">npm 보안 베스트 프랙티스</a>, 2026-05 확인)</p>
+<p class="card__shift"><span class="card__shift-k">기본 설계 전환:</span> release-age 게이트 + 설치 스크립트 차단 + egress allowlist를 팀 기본값으로 고정한다.</p>
+</div>
+    </article>
+<article class="card card--tool">
+      <div class="card__head"><h4 class="card__title">사고 대응·탐지 (오픈소스)</h4><div class="card__chips"><span class="chip chip--tool">TOOLING</span></div></div>
+      <div class="card__body"><p><strong>PoisonChain</strong>은 저장소 전수 조사·semver 노출 분석·빌드 로그에서 <code>npm install</code> 침해와 <code>npm ci</code> 안전 경로 구분·팀 귀속을 한 파이프라인으로 묶는다. <strong>shai-hulud-test</strong>는 Colima의 Falco로 컨테이너 내부 <code>npm install</code>의 curl·임시파일 드롭·node→shell을 잡는 데모 랩이다. (<a href="https://github.com/windshock/PoisonChain">github.com/windshock/PoisonChain</a>, 2026-05 확인 / <a href="https://github.com/windshock/shai-hulud-test">github.com/windshock/shai-hulud-test</a>, 2026-05 확인)</p>
+<p class="card__shift"><span class="card__shift-k">기본 설계 전환:</span> lockfile 진단과 설치 행위 탐지를 한 타임라인에 정렬한다.</p>
+</div>
+    </article>
+<article class="card">
+      <div class="card__head"><h4 class="card__title">Node.js core 5월 상태</h4></div>
+      <div class="card__body"><p>5월 신규 Node.js core 보안 릴리스는 확인되지 않는다(직전 2026-03-24). 런타임 CVE 대신 패키지 신뢰 경계에 집중한다. (<a href="https://nodejs.org/en/blog/vulnerability">nodejs.org/en/blog/vulnerability</a>, 2026-05-30 확인)</p>
+<p class="card__shift"><span class="card__shift-k">기본 설계 전환:</span> &quot;core CVE 없음&quot;을 안전으로 읽지 않는다.</p>
+</div>
+    </article></div>
+    </section><section class="fieldgroup">
+      <div class="fieldgroup__head"><span class="fieldgroup__tag">Java · Spring</span><h3 class="fieldgroup__title">이번 달 반드시 패치</h3></div>
+      <div class="cards"><article class="card">
+      <div class="card__head"><h4 class="card__title">Spring Cloud Config Server directory traversal (CVE-2026-40982)</h4><div class="card__chips"><span class="chip chip--cve">CVE-2026-40982</span><span class="chip sev--crit">CRITICAL</span></div></div>
+      <div class="card__body"><p>조작된 URL로 디렉터리 탈출이 가능한 critical 이슈. 영향 <code>3.1.x</code>·<code>4.1.x</code>·<code>4.2.x</code>·<code>4.3.x</code>·<code>5.0.x</code>, 수정 <code>4.3.3</code>·<code>5.0.3</code>(OSS)·<code>3.1.14</code>/<code>4.1.10</code>/<code>4.2.7</code>(엔터프라이즈). 함께 공개된 <code>CVE-2026-40981</code>은 Google Secrets Manager 백엔드에서 다른 GCP 프로젝트 시크릿까지 노출될 수 있는 high. (<a href="https://spring.io/security/cve-2026-40982/">spring.io</a>, 2026-05-06 / <a href="https://spring.io/security/cve-2026-40981/">spring.io</a>, 2026-05-06)</p>
+<p class="card__shift"><span class="card__shift-k">기본 설계 전환:</span> 설정 서버는 신뢰된 배포 채널이 아니라 입력 검증 대상이다 — 경로 정규화·allowlist + 시크릿 권한 최소화.</p>
+</div>
+    </article>
+<article class="card">
+      <div class="card__head"><h4 class="card__title">Spring AI 4건 (CVE-2026-41712 / 41713 / 41705 / 41863)</h4><div class="card__chips"><span class="chip chip--cve">CVE-2026-41712</span><span class="chip sev--high">HIGH</span></div></div>
+      <div class="card__body"><p>전부 영향 <code>1.0.0–1.0.x</code>·<code>1.1.0–1.1.x</code>, 수정 <code>1.0.7</code>·<code>1.1.6</code> — <strong>한 패치 묶음</strong>. <code>41712</code>(high): <code>ChatMemory</code> <code>DEFAULT_CONVERSATION_ID</code> 기본값 탓 교차 사용자 누출(업그레이드 후 모든 <code>ChatClient</code>에 conversation ID 명시 필요). <code>41713</code>(high): <code>PromptChatMemoryAdvisor</code> 메모리 포이즌닝. <code>41705</code>(high): <code>MilvusVectorStore#doDelete</code> filter-expression 인젝션. <code>41863</code>(medium): Anthropic Skills 파일명 경로 탈출. (<a href="https://spring.io/security/cve-2026-41712/">spring.io</a>, 2026-05-08 / <a href="https://spring.io/security/cve-2026-41863/">spring.io</a>, 2026-05-23)</p>
+<p class="card__shift"><span class="card__shift-k">기본 설계 전환:</span> 모델 입력·메모리·출력이 닿는 sink를 코드 리뷰 체크리스트에 넣고, AI 라이브러리도 일반 라이브러리와 같은 패치 주기로 관리한다.</p>
+</div>
+    </article>
+<article class="card card--tool">
+      <div class="card__head"><h4 class="card__title">Spring 의존성 추적 (외부)</h4><div class="card__chips"><span class="chip chip--tool">TOOLING</span></div></div>
+      <div class="card__body"><p><strong>Dependabot/Renovate</strong>로 <code>org.springframework.*</code> 업그레이드 PR을 자동 생성하고, <strong>Snyk</strong> 같은 <abbr class="term" tabindex="0" data-tip="소프트웨어 구성 분석(Software Composition Analysis). 의존성의 알려진 취약점을 추적하는 도구 분류." title="소프트웨어 구성 분석(Software Composition Analysis). 의존성의 알려진 취약점을 추적하는 도구 분류.">SCA</abbr>로 게시 직후 신규 CVE를 추적한다. JDK/JRE CPU(분기)와 Spring 의존성(상시)은 패치 티켓을 분리한다. (<a href="https://snyk.io/">Snyk</a>, 2026-05 확인 / <a href="https://docs.renovatebot.com/">Renovate docs</a>, 2026-05 확인)</p>
+<p class="card__shift"><span class="card__shift-k">기본 설계 전환:</span> &quot;라이브러리 한 줄 올리기&quot;를 사람 기억이 아니라 자동 PR + SCA 알림으로 받는다.</p>
+</div>
+    </article></div>
+    </section><section class="fieldgroup">
+      <div class="fieldgroup__head"><span class="fieldgroup__tag">AI · MCP</span><h3 class="fieldgroup__title">AI · MCP</h3></div>
+      <div class="cards"><article class="card card--tool">
+      <div class="card__head"><h4 class="card__title">MCP 설정·트래픽 점검</h4><div class="card__chips"><span class="chip chip--tool">TOOLING</span></div></div>
+      <div class="card__body"><p><strong>Invariant Labs MCP-Scan</strong>은 <code>mcp.json</code> 도구 설명을 스캔해 <abbr class="term" tabindex="0" data-tip="MCP 도구 설명에 숨긴 악성 지시로 AI 에이전트를 조종하는 공격." title="MCP 도구 설명에 숨긴 악성 지시로 AI 에이전트를 조종하는 공격.">tool poisoning</abbr>·프롬프트 인젝션·<abbr class="term" tabindex="0" data-tip="처음엔 정상이던 패키지·도구가 이후 버전에서 악성으로 바뀌는 공격." title="처음엔 정상이던 패키지·도구가 이후 버전에서 악성으로 바뀌는 공격.">rug pull</abbr>을 잡고, <code>proxy</code> 모드로 런타임 MCP 트래픽을 감시한다. <strong>Cisco mcp-scanner</strong>·windshock <strong>mcp-guard</strong>도 함께 둘 수 있다. 단 스캐너 recall이 낮으므로(§4) <strong>승인된 서버만 실행하는 allowlist를 1차 통제로</strong> 두고 스캐너는 보조 신호로만 쓴다. (<a href="https://github.com/invariantlabs-ai/mcp-scan">Invariant MCP-Scan</a>, 2026-05 확인 / <a href="https://github.com/windshock/mcpscan">github.com/windshock/mcpscan</a>, 2026-05 확인)</p>
+<p class="card__shift"><span class="card__shift-k">기본 설계 전환:</span> <code>mcp.json</code>의 command·args·바인딩 주소를 인벤토리로 만들고 <code>0.0.0.0</code>·무인증 엔드포인트를 금지 조건으로 둔다.</p>
+</div>
+    </article>
+<article class="card card--tool">
+      <div class="card__head"><h4 class="card__title">Windshock Lens: 추론을 로컬 경계 안에</h4><div class="card__chips"><span class="chip chip--tool">TOOLING</span></div></div>
+      <div class="card__body"><p>반대 방향 설계. Windshock Lens(이전 ScamGuard AI, v0.2.0 개명 2026-05-28)는 Chrome 내장 Gemini Nano로 의심 페이지를 브라우저 안에서 분석하고, 분류 추론을 외부 API로 보내지 않는다. AI 기능의 신뢰 경계를 네트워크 밖이 아니라 로컬 안으로 좁힌 사례다. (<a href="https://github.com/windshock/lens">github.com/windshock/lens</a>, 2026-05 확인)</p>
+<p class="card__shift"><span class="card__shift-k">기본 설계 전환:</span> AI 기능을 붙일 때 추론 데이터가 어느 경계를 넘는지 먼저 정한다.</p>
+</div>
+    </article></div>
+    </section><section class="chapter refs" id="refs">
+      <div class="chapter__rule"></div>
+      <div class="chapter__head"><span class="chapter__num" aria-hidden="true">§</span><div><div class="chapter__kicker">REFERENCES</div><h2 class="chapter__title">참고자료</h2></div></div>
+      <div class="prose refs__list"><ul>
+<li><a href="https://www.stepsecurity.io/blog/mini-shai-hulud-is-back-a-self-spreading-supply-chain-attack-hits-the-npm-ecosystem">https://www.stepsecurity.io/blog/mini-shai-hulud-is-back-a-self-spreading-supply-chain-attack-hits-the-npm-ecosystem</a></li>
+<li><a href="https://unit42.paloaltonetworks.com/monitoring-npm-supply-chain-attacks/">https://unit42.paloaltonetworks.com/monitoring-npm-supply-chain-attacks/</a></li>
+<li><a href="https://connect.securonix.com/threat-research-intelligence-62/mini-shai-hulud-the-self-replicating-npm-worm-that-turned-software-development-against-itself-307">https://connect.securonix.com/threat-research-intelligence-62/mini-shai-hulud-the-self-replicating-npm-worm-that-turned-software-development-against-itself-307</a></li>
+<li><a href="https://labs.cloudsecurityalliance.org/research/csa-research-note-shai-hulud-ai-supply-chain-20260517-csa-st/">https://labs.cloudsecurityalliance.org/research/csa-research-note-shai-hulud-ai-supply-chain-20260517-csa-st/</a></li>
+<li><a href="https://thehackernews.com/2025/09/github-mandates-2fa-and-short-lived.html">https://thehackernews.com/2025/09/github-mandates-2fa-and-short-lived.html</a></li>
+<li><a href="https://docs.npmjs.com/trusted-publishers/">https://docs.npmjs.com/trusted-publishers/</a></li>
+<li><a href="https://thehackernews.com/2026/05/npm-adds-2fa-gated-publishing-and.html">https://thehackernews.com/2026/05/npm-adds-2fa-gated-publishing-and.html</a></li>
+<li><a href="https://github.com/orgs/community/discussions/174507">https://github.com/orgs/community/discussions/174507</a></li>
+<li><a href="https://www.landh.tech/blog/20260521-npx-used-confusion-and-its-super-effective/">https://www.landh.tech/blog/20260521-npx-used-confusion-and-its-super-effective/</a></li>
+<li><a href="https://www.aikido.dev/blog/npx-confusion-unclaimed-package-names">https://www.aikido.dev/blog/npx-confusion-unclaimed-package-names</a></li>
+<li><a href="https://www.microsoft.com/en-us/security/blog/2026/05/29/33-malicious-npm-packages-abuse-dependency-confusion-profile-developer-environments/">https://www.microsoft.com/en-us/security/blog/2026/05/29/33-malicious-npm-packages-abuse-dependency-confusion-profile-developer-environments/</a></li>
+<li><a href="https://socket.dev/">https://socket.dev/</a></li>
+<li><a href="https://docs.renovatebot.com/">https://docs.renovatebot.com/</a></li>
+<li><a href="https://github.com/step-security/harden-runner">https://github.com/step-security/harden-runner</a></li>
+<li><a href="https://github.com/lirantal/npm-security-best-practices">https://github.com/lirantal/npm-security-best-practices</a></li>
+<li><a href="https://snyk.io/">https://snyk.io/</a></li>
+<li><a href="https://nodejs.org/en/blog/vulnerability">https://nodejs.org/en/blog/vulnerability</a></li>
+<li><a href="https://spring.io/security/cve-2026-40982/">https://spring.io/security/cve-2026-40982/</a></li>
+<li><a href="https://spring.io/security/cve-2026-40981/">https://spring.io/security/cve-2026-40981/</a></li>
+<li><a href="https://spring.io/security/cve-2026-41712/">https://spring.io/security/cve-2026-41712/</a></li>
+<li><a href="https://spring.io/security/cve-2026-41713/">https://spring.io/security/cve-2026-41713/</a></li>
+<li><a href="https://spring.io/security/cve-2026-41705/">https://spring.io/security/cve-2026-41705/</a></li>
+<li><a href="https://spring.io/security/cve-2026-41863/">https://spring.io/security/cve-2026-41863/</a></li>
+<li><a href="https://github.com/invariantlabs-ai/mcp-scan">https://github.com/invariantlabs-ai/mcp-scan</a></li>
+<li><a href="https://windshock.github.io/ko/post/2026-05-01-security-assessment-as-development-process/">https://windshock.github.io/ko/post/2026-05-01-security-assessment-as-development-process/</a></li>
+<li><a href="https://windshock.github.io/ko/post/2026-05-07-mcp-is-repeating-rpc-security-history/">https://windshock.github.io/ko/post/2026-05-07-mcp-is-repeating-rpc-security-history/</a></li>
+<li><a href="https://windshock.github.io/ko/post/2026-05-19-sec-audit-static-feedback-loop/">https://windshock.github.io/ko/post/2026-05-19-sec-audit-static-feedback-loop/</a></li>
+<li><a href="https://github.com/exploitbench/exploitbench">https://github.com/exploitbench/exploitbench</a></li>
+<li><a href="https://rdi.berkeley.edu/blog/exploitgym/">https://rdi.berkeley.edu/blog/exploitgym/</a></li>
+<li><a href="https://github.com/windshock/PoisonChain">https://github.com/windshock/PoisonChain</a></li>
+<li><a href="https://github.com/windshock/shai-hulud-test">https://github.com/windshock/shai-hulud-test</a></li>
+<li><a href="https://github.com/windshock/mcpscan">https://github.com/windshock/mcpscan</a></li>
+<li><a href="https://github.com/windshock/lens">https://github.com/windshock/lens</a></li>
+</ul>
+</div>
+    </section>
+    <section class="glossary">
+      <div class="glossary__label">이번 호 용어 — 점선 용어는 본문에서 마우스를 올리면 뜻이 뜹니다</div>
+      <dl class="glossary__grid">
+        <dt>proof of presence</dt><dd>배포 직전 실제 사람이 라이브 2FA 챌린지로 승인했다는 증거. 자동화 자격증명으로는 통과할 수 없다.</dd>
+<dt>trusted publishing</dt><dd>CI가 단기 신원으로 인증해 장기 토큰 없이 패키지를 게시하는 방식.</dd>
+<dt>staged publishing</dt><dd>패키지를 바로 공개하지 않고 검토·승인 단계를 거쳐 게시하는 npm 방식.</dd>
+<dt>FIDO</dt><dd>비밀번호 대신 보안키·생체 인증을 쓰는 표준. 피싱에 강하다.</dd>
+<dt>dependency confusion</dt><dd>내부 전용 패키지와 같은 이름을 공개 레지스트리에 올려, 빌드가 공개본을 당겨오게 만드는 공격.</dd>
+<dt>tool poisoning</dt><dd>MCP 도구 설명에 숨긴 악성 지시로 AI 에이전트를 조종하는 공격.</dd>
+<dt>rug pull</dt><dd>처음엔 정상이던 패키지·도구가 이후 버전에서 악성으로 바뀌는 공격.</dd>
+<dt>provenance</dt><dd>패키지가 어느 빌드·커밋에서 나왔는지 기록한 '출처 증명'. 안전 보장이 아니라 출처 기록이다.</dd>
+<dt>attestation</dt><dd>빌드 출처를 서명해 붙인 증명서.</dd>
+<dt>SLSA</dt><dd>공급망 무결성 등급 표준(Supply-chain Levels for Software Artifacts). 등급이 높을수록 빌드 출처가 더 검증된다.</dd>
+<dt>Sigstore</dt><dd>키를 따로 보관하지 않고 소프트웨어에 서명·검증하게 해주는 오픈소스 서명 인프라.</dd>
+<dt>Fulcio</dt><dd>신원을 받아 단기 서명 인증서를 발급하는 기관.</dd>
+<dt>OIDC</dt><dd>OpenID Connect. CI가 장기 토큰 대신 단기 신원 토큰으로 인증하는 방식.</dd>
+<dt>sink</dt><dd>외부 입력이 최종적으로 위험하게 쓰이는 지점(파일 쓰기·DB 쿼리·명령 실행 등).</dd>
+<dt>egress</dt><dd>시스템에서 바깥으로 나가는 네트워크 트래픽.</dd>
+<dt>SCA</dt><dd>소프트웨어 구성 분석(Software Composition Analysis). 의존성의 알려진 취약점을 추적하는 도구 분류.</dd>
+      </dl>
+    </section>
+  </main>
+
+  <footer class="colophon"><div class="wrap">
+    <b>DevSecNews</b>
+    <div class="row"><span>Issue 2026-05 · 2026년 05월호</span><span>윈드쇼크 · windshock.github.io</span></div>
+    <div class="row"><span>발견은 흔해졌다 · 검증은 귀해졌다 · 신뢰가 전장이다</span></div>
+  </div></footer>
+  </div>
+  <script>
+  (function(){
+    var cover=document.querySelector('.cover');
+    if(!cover) return;
+    var wrap=cover.querySelector('.wrap'),
+        media=cover.querySelector('.cover__media'),
+        arrow=cover.querySelector('.cover__scroll');
+    function tick(){
+      var p=Math.min(Math.max(window.scrollY/window.innerHeight,0),1);
+      if(wrap){wrap.style.opacity=(1-p*0.9).toFixed(3);
+        wrap.style.transform='scale('+(1-p*0.07).toFixed(3)+')';
+        wrap.style.filter='blur('+(p*5).toFixed(1)+'px)';}
+      if(media) media.style.transform='translateY('+(p*36).toFixed(1)+'px)';
+      if(arrow) arrow.style.opacity=Math.max(0,1-p*4).toFixed(3);
+    }
+    addEventListener('scroll',function(){requestAnimationFrame(tick);},{passive:true});
+    tick();
+  })();
+  </script>
+</body>
+</html>

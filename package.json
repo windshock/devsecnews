@@ -7,9 +7,11 @@
     "build:split": "node scripts/split-md.mjs",
     "build:html:all": "node scripts/build-all.mjs",
     "build:html:file": "node scripts/md2html.mjs",
+    "build:magazine": "node scripts/md2magazine.mjs",
     "build:cards:html": "node scripts/md2cards.mjs",
     "build:cards:png": "node scripts/cards2png.mjs",
     "build:cards": "node scripts/build-cards.mjs",
+    "build:billboard": "node scripts/create-billboard-gif.mjs",
     "deploy": "node scripts/deploy.mjs",
     "verify": "node scripts/verify.mjs",
     "verify:strict": "node scripts/verify.mjs --strict"
