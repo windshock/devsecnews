@@ -11,3 +11,11 @@ cards/**/*.png
 # Optional local tooling
 .cursor/
 .vscode/
+
+# Stray model/runtime dirs that landed in the working tree (do NOT commit)
+fish-speech/
+fish-speech-v1.5/
+_workspace/
+test-results/
+scripts/__pycache__/
+*.bak

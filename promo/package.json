@@ -7,7 +7,9 @@
   "scripts": {
     "studio": "remotion studio src/index.jsx",
     "render": "remotion render src/index.jsx Main dist/devsecnews-promo.mp4",
-    "render:ko": "remotion render src/index.jsx MainKO dist/devsecnews-promo-ko.mp4"
+    "render:ko": "remotion render src/index.jsx MainKO dist/devsecnews-promo-ko.mp4",
+    "render:board": "remotion render src/index.jsx Board dist/devsecnews-board-2026-05.mp4",
+    "render:square": "remotion render src/index.jsx BoardSquare dist/devsecnews-board-2026-05-square.mp4"
   },
   "dependencies": {
     "@remotion/cli": "^4.0.0",

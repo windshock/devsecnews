@@ -1,0 +1,14 @@
+{
+  "_note": "Audio for the 2026-05 '취약점 인플레이션' billboard (Board composition, 900 frames @ 30fps = 30s). The composition plays ONE pre-mixed track: board-mix.mp3. All mixing (gentle ducking ratio 2.5, swell, SFX placement) is baked in ffmpeg, not Remotion.",
+  "duration_seconds": 30,
+  "final_track": "board-mix.mp3",
+  "pipeline": [
+    "1. Narration: 4 per-scene MeloTTS clips (~/Downloads/tts/melotts-kr --speed 1.4), placed on a 25s timeline with ~0.5s pauses between (adelay+amix) → narration bed. English transliterated to Hangul.",
+    "2. BGM: Pixabay 'Dark Cinematic' #174648 (SoundGalleryByDmitryTaras, Pixabay Content License), segment 50–75s, fades, loudnorm I=-20, then a volume swell 16.5→18.7s peak settling by 20.2s.",
+    "3. Duck: BGM sidechain-compressed under the narration bed (threshold 0.03, ratio 6) so the voice stays clear and BGM fills the gaps.",
+    "4. SFX (synthesized in ffmpeg, license-free): whoosh on scene transitions (~4.0/11.5/19.5s), 6 ticks over the counter climb (~4.1–7.3s), low impact boom on TRUST CHAIN BROKEN (~18.7s).",
+    "5. amix(ducked BGM, narration, SFX) → loudnorm I=-15 → board-mix.mp3."
+  ],
+  "narration_ko": "2026년 5월, 취약점 인플레이션. // 에이아이는 더 많이 찾아내지만, 검증해야 할 일은 오히려 쌓여 갑니다. 찾기는 쉬워졌고, 검증은 귀해졌습니다. // 최근 공급망 공격은 분명한 경고입니다. 악성 패키지 하나가 개발자 피씨와 빌드 시스템, 코드 저장소까지 신뢰를 무너뜨립니다. // 이제 보안의 승패는, 누가 더 많이 찾느냐가 아니라 무엇을 신뢰할 수 있느냐에서 갈립니다. 데브섹뉴스.",
+  "_legacy": "narr-board-ko.mp3 and bgm-board.mp3 are intermediate/earlier single-track versions; board-mix.mp3 supersedes them."
+}
